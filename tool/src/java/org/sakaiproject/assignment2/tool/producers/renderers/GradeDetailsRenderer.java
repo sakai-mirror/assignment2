@@ -69,7 +69,10 @@ public class GradeDetailsRenderer implements BasicProducer {
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
 
-        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
+        // double check that assignment is graded and this user is actually a "student" in the gradebook tool
+        // and, thus, eligible for gradebook grading
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null &&
+                externalGradebookLogic.isUserAStudentInGradebook(assignment.getContextId(), assignmentSubmission.getUserId())) {
 
             // make sure this gradebook item still exists
             GradebookItem gradebookItem;

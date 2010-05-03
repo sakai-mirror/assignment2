@@ -417,17 +417,16 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
             // first, retrieve all of the students that this user can manage for this assignment
             List<String> manageableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
-            // filter the manageable students to only include gradable ones
-            manageableStudents = gradebookLogic.getFilteredStudentsForGradebookItem(currUserId, 
-                    assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE, manageableStudents);
             
-            // get the grade information
-            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(manageableStudents, assignment.getContextId(), assignment.getGradebookItemId());
+            // get the grade information. there should be record returned for
+            // every gradable student, even if they don't have a grade or comment yet
+            Map<String, GradeInformation> userIdGradeMap = gradebookLogic.getGradeInformationForStudents(manageableStudents, assignment.getContextId(), assignment.getGradebookItemId(), AssignmentConstants.GRADE);
 
             for (String studentId : manageableStudents) {
                 // get their User info
                 User student = userIdUserMap.get(studentId);
-                if (student != null) {
+                GradeInformation gradeInfo = userIdGradeMap.get(studentId);
+                if (student != null && gradeInfo != null) {
                     gradesBuilder.append("\"");
                     gradesBuilder.append(student.getDisplayId());
                     gradesBuilder.append("\"");
@@ -437,29 +436,24 @@ public class ZipExportLogicImpl implements ZipExportLogic
                     gradesBuilder.append("\"");
                     gradesBuilder.append(",");
 
-                    // now check for grade information
-                    GradeInformation gradeInfo = userIdGradeMap.get(studentId);
-                    if (gradeInfo != null) {
-                        String gradebookGrade = "";
-                        String gradebookComment = "";
+                    // now build the grade information
+                    String gradebookGrade = "";
+                    String gradebookComment = "";
 
-                        if (gradeInfo.getGradebookGrade() != null) {
-                            gradebookGrade = gradeInfo.getGradebookGrade();
-                        }
-                        if (gradeInfo.getGradebookComment() != null) {
-                            gradebookComment = gradeInfo.getGradebookComment();
-                        }
-                        gradesBuilder.append("\"");
-                        gradesBuilder.append(gradebookGrade);
-                        gradesBuilder.append("\"");
-                        gradesBuilder.append(",");
-                        gradesBuilder.append("\"");
-                        gradesBuilder.append(gradebookComment);
-                        gradesBuilder.append("\"");
-                        gradesBuilder.append(",");
-                    } else {
-                        gradesBuilder.append(",,");
+                    if (gradeInfo.getGradebookGrade() != null) {
+                        gradebookGrade = gradeInfo.getGradebookGrade();
                     }
+                    if (gradeInfo.getGradebookComment() != null) {
+                        gradebookComment = gradeInfo.getGradebookComment();
+                    }
+                    gradesBuilder.append("\"");
+                    gradesBuilder.append(gradebookGrade);
+                    gradesBuilder.append("\"");
+                    gradesBuilder.append(",");
+                    gradesBuilder.append("\"");
+                    gradesBuilder.append(gradebookComment);
+                    gradesBuilder.append("\"");
+                    gradesBuilder.append(",");
 
                     gradesBuilder.append("\n");
                 }
