@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
@@ -156,7 +157,9 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
                 userId.equals(AssignmentTestDataLoad.STUDENT2_UID) ||
                 userId.equals(AssignmentTestDataLoad.STUDENT3_UID)) {
             if (permission.equals(AssignmentConstants.PERMISSION_SUBMIT) || 
-                    permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS)) {
+                    permission.equals(AssignmentConstants.PERMISSION_VIEW_ASSIGNMENTS) ||
+                    permission.equals(ExternalGradebookLogic.GB_VIEW_OWN_GRADES) ||
+                    permission.equals(ExternalGradebookLogic.GB_STUDENT)) {
                 return true;
             } else {
                 return false;

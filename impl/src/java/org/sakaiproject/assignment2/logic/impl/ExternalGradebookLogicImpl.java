@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +39,6 @@ import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
-import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -434,11 +434,15 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
     }
 
-    public Map<String, GradeInformation> getGradeInformationForStudents(Collection<String> studentIdList, String contextId, Long gradebookItemId) {
+    public Map<String, GradeInformation> getGradeInformationForStudents(Collection<String> studentIdList, String contextId, Long gradebookItemId, String viewOrGrade) {
         if (contextId == null || gradebookItemId == null) {
             throw new IllegalArgumentException("null contextId or gradebookItemId " +
                     "passed to getGradeInformationForStudents. contextId:" + 
                     contextId + " gradebookItemId:" + gradebookItemId);
+        }
+        
+        if (viewOrGrade == null || (!AssignmentConstants.VIEW.equals(viewOrGrade) && !AssignmentConstants.GRADE.equals(viewOrGrade))) {
+            throw new IllegalArgumentException("Invalid value passed to getGradeInformationForStudents. viewOrGrade=" + viewOrGrade);
         }
 
         Map<String, GradeInformation> studentIdToGradeInfoMap = new HashMap<String, GradeInformation>();
@@ -446,6 +450,10 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         if (studentIdList != null && !studentIdList.isEmpty()) {
             // let's retrieve a map of the students and their grades
             Map<String, GradeDefinition> studentIdToGradeDefMap = new HashMap<String, GradeDefinition>();
+            
+            // first, we need to filter the studentIdList passed in to only include students the
+            // curr user is allowed to view or grade
+            studentIdList = getFilteredStudentsForGradebookItem(null, contextId, gradebookItemId, viewOrGrade, studentIdList);
 
             try {
                 List<GradeDefinition>gradeDefs = gradebookService.getGradesForStudentsForItem(contextId, 
@@ -623,9 +631,8 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
             }
 
             if (studentIds != null && !studentIds.isEmpty()) {
-
                 // now determine which don't have a grade yet
-                Map<String, GradeInformation> studentIdGradeInfoMap = getGradeInformationForStudents(studentIds, contextId, gradebookItemId);
+                Map<String, GradeInformation> studentIdGradeInfoMap = getGradeInformationForStudents(studentIds, contextId, gradebookItemId, AssignmentConstants.GRADE);
                 List<String> ungradedStudents = new ArrayList<String>();
 
                 if (studentIdGradeInfoMap != null && !studentIdGradeInfoMap.isEmpty()) {
@@ -813,6 +820,26 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         gradebookPerms.add(GB_TA);
         
         return authzLogic.getRolePermissionsForSite(contextId, gradebookPerms);
+    }
+    
+    public Set<String> getStudentsInGradebook(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to getStudentsInGradebook");
+        }
+        
+        return authzLogic.getUsersWithPermission(contextId, GB_STUDENT);
+    }
+    
+    public boolean isUserAStudentInGradebook(String contextId, String userId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("Null contextId passed to isUserAStudentInGradebook");
+        }
+        
+        if (userId == null) {
+            userId = externalLogic.getCurrentUserId();
+        }
+        
+        return authzLogic.userHasPermission(userId, contextId, GB_STUDENT);
     }
 
 }

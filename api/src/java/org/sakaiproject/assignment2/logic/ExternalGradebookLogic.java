@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
@@ -80,6 +81,11 @@ public interface ExternalGradebookLogic {
      * Realm permission that identifies a "TA" who may have overridden grader permissions
      */
     public static final String GB_TA = "section.role.ta";
+    
+    /**
+     * Realm permission that the Gradebook uses to identify a "Student"
+     */
+    public static final String GB_STUDENT = "section.role.student";
 
     /**
      * The Assignment2 tool stores all grading information in the gradebook. Thus,
@@ -352,14 +358,18 @@ public interface ExternalGradebookLogic {
      * @param studentIdList
      * @param contextId
      * @param gradebookItemId the id of the gradebook item associated with the assignment
+     * @param viewOrGrade this method will filter your passed studentIdList either by the
+     * students you may view or the students you may grade depending on whether you pass
+     * {@link AssignmentConstants#VIEW} or {@link AssignmentConstants#GRADE} here to
+     * avoid a SecurityException from the gb tool
      * @return a map of the studentId to the GradeInformation record populated
      * with the student's grade info from the gradebook item associated with the
-     * given assignment.
+     * given assignment. if the current user is not allowed to view grade info for a student in the
+     * studentIdList, that student will be skipped and not included in the returned map. Every
+     * viewable/gradable student will be included in the map even if they do not have a grade or comment yet
      * @throws IllegalArgumentException - if contextId or gradebookItemId are null
-     * @throws SecurityException - if the current user is not authorized to
-     * view grade information for a student in the list for the assoc gb item
      */
-    public Map<String, GradeInformation> getGradeInformationForStudents(Collection<String> studentIdList, String contextId, Long gradebookItemId);
+    public Map<String, GradeInformation> getGradeInformationForStudents(Collection<String> studentIdList, String contextId, Long gradebookItemId, String viewOrGrade);
 
     /**
      * 
@@ -371,14 +381,15 @@ public interface ExternalGradebookLogic {
 
     /**
      * Assign the given grade to all students in the list who do not have a grade
-     * yet (grade is null or empty string) for this gradebook item.
+     * yet (grade is null or empty string) for this gradebook item. The student list
+     * will be filtered by students the current user is allowed to grade prior to assigning the
+     * grade.  Ungradable students in the list will be ignored.
      * @param contextId
      * @param gradebookItemId - the id of the gradebook item the assignment is associated with
-     * @param studentIds - ids of the students that the current user is allowed to grade for this assignment
+     * @param studentIds - ids of the students that you would like to assign a grade to if they
+     * do not yet have a grade
      * @param grade non-null grade to be saved for all of the students who do not yet have a grade
      * @throws InvalidGradeException if the passed grade is not valid for this gradebook item
-     * @throws SecurityException - if the current user is not authorized to
-     * grade a student in the list for the assoc gb item
      */
     public void assignGradeToUngradedStudents(String contextId, Long gradebookItemId, List<String> studentIds, String grade);
 
@@ -455,4 +466,23 @@ public interface ExternalGradebookLogic {
      * to true/false if that role has the given permission
      */
     public Map<Role, Map<String, Boolean>> getGradebookPermissionsForRoles(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @return a set of the userids for users who are considered students in the gradebook.
+     * This could be useful because it is possible for a user to make a submission in Assignment2
+     * but not be gradable in the gradebook because of permission discrepancies between the two tools
+     */
+    public Set<String> getStudentsInGradebook(String contextId);
+    
+    /**
+     * 
+     * @param contextId
+     * @param userId if null will assume the current user
+     * @return true if the given user is a "student" in the context of the gradebook
+     * tool. This could be useful because it is possible for a user to make a submission in Assignment2
+     * but not be gradable in the gradebook because of permission discrepancies between the two tools
+     */
+    public boolean isUserAStudentInGradebook(String contextId, String userId);
 }

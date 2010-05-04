@@ -140,7 +140,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                     }
                 } else {
                     if (asnnSubVersion.getSubmittedText() != null && asnnSubVersion.getSubmittedText().trim().length() > 0) {
-                        UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text");
+                        UIMessage.make(joint, "submission-text-header", "assignment2.student-submit.submission_text.submitted");
                         UIVerbatim.make(joint, "submission-text", asnnSubVersion.getSubmittedText());
                     }
                 }

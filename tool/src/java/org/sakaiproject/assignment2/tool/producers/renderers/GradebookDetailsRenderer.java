@@ -60,9 +60,15 @@ public class GradebookDetailsRenderer {
 
     public void makeGradebookDetails(UIContainer tofill, String divID, AssignmentSubmission as, Long assignmentId, String userId){
 
+        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
+        
+        // we don't include grade details if this student isn't gradable in the Gradebook tool
+        if (!gradebookLogic.isUserAStudentInGradebook(assignment.getContextId(), as.getUserId())) {
+            return;
+        }
+        
         UIJointContainer joint = new UIJointContainer(tofill, divID, "gradebook_details:", ""+1);
 
-        Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         //Grade Permission
         Boolean grade_perm = gradebookLogic.isCurrentUserAbleToGradeStudentForItem(assignment.getContextId(), as.getUserId(), assignment.getGradebookItemId());
 

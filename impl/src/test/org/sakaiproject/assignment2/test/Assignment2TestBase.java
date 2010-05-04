@@ -88,6 +88,9 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         } 
 
         externalLogic = new ExternalLogicStub();
+        
+        authz = new AssignmentAuthzLogicStub();
+        authz.setExternalLogic(externalLogic);
 
         gradebookService = new GradebookServiceStub();
         gradebookService.setExternalLogic(externalLogic);
@@ -95,13 +98,11 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         gradebookLogic = new ExternalGradebookLogicImpl();
         gradebookLogic.setGradebookService(gradebookService);
         gradebookLogic.setExternalLogic(externalLogic);
+        gradebookLogic.setAssignmentAuthzLogic(authz);
 
         announcementLogic = new ExternalAnnouncementLogicImpl();
         
         contentReviewLogic = new ExternalContentReviewLogicImpl();
-        
-        authz = new AssignmentAuthzLogicStub();
-        authz.setExternalLogic(externalLogic);
         
         permissionLogic = new AssignmentPermissionLogicImpl();
         permissionLogic.setDao(dao);

@@ -1752,6 +1752,8 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     }
 
     public void testGetNumNewSubmissions() {
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        
         // try a null assignment
         try {
             submissionLogic.getNumNewSubmissions(null, new ArrayList<String>());

@@ -236,6 +236,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
 
             UIOutput.make(form, "submit_text");
+            
+            if (studentPreviewSubmission) {
+                UIMessage.make(form, "submit_text_label", "assignment2.student-submit.submission_text.submitted");
+            } else {
+                UIMessage.make(form, "submit_text_label", "assignment2.student-submit.submission_text");
+            }
 
             if (studentPreviewSubmission) {
                 // TODO FIXME This is being duplicated

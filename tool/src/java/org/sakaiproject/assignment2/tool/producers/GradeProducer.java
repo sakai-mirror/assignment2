@@ -657,6 +657,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             return;
         }
         
+        // we don't render this section if the user isn't a student in the gradebook (per the gradebook's permissions)
+        if (!gradebookLogic.isUserAStudentInGradebook(assignment.getContextId(), studentId)) {
+            return;
+        }
+        
         UIOutput.make(tofill, "gradebook-details-container");
         
         int gradeEntryType = gradebookLogic.getGradebookGradeEntryType(assignment.getContextId());
