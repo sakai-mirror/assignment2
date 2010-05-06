@@ -181,34 +181,40 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           // Grading
           // We include whether this assignment is graded and, if it is,
           // we include points possible if it is graded by points.
-          String gradedString = assignment.isGraded() ?  messageLocator.getMessage("assignment2.details.graded.yes") :
-              messageLocator.getMessage("assignment2.details.graded.no");
-          UIOutput.make(tofill, "is-graded", gradedString);
-          
+          // if user does not have gradebook privileges, we hide the grading info
+
           if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
               // make sure this gradebook item still exists
-              GradebookItem gradebookItem;
               try {
-                  gradebookItem = 
-                      gradebookLogic.getGradebookItemById(assignment.getContextId(), 
-                              assignment.getGradebookItemId());
+                  GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), 
+                          assignment.getGradebookItemId());
+
+                  UIMessage.make(tofill, "graded", "assignment2.details.graded");
+                  UIMessage.make(tofill, "is-graded", "assignment2.details.graded.yes");
+
+                  // only display points possible if grade entry by points
+                  if (gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
+                      UIOutput.make(tofill, "points-possible-row");
+
+                      String pointsDisplay;
+                      if (gradebookItem.getPointsPossible() == null) {
+                          pointsDisplay = messageLocator.getMessage("assignment2.details.gradebook.points_possible.none");
+                      } else {
+                          pointsDisplay = gradebookItem.getPointsPossible().toString();
+                      }
+                      UIOutput.make(tofill, "points-possible", pointsDisplay); 
+                  }
+
               } catch (GradebookItemNotFoundException ginfe) {
                   if (log.isDebugEnabled()) log.debug("Attempt to access assignment " + 
                           assignment.getId() + " but associated gb item no longer exists!");
-                  gradebookItem = null;
+              } catch (SecurityException se) {
+                  // this user doesn't have gb privileges, so hide the gb info
               }
-              // only display points possible if grade entry by points
-              if (gradebookItem != null && gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
-                  UIOutput.make(tofill, "points-possible-row");
-
-                  String pointsDisplay;
-                  if (gradebookItem.getPointsPossible() == null) {
-                      pointsDisplay = messageLocator.getMessage("assignment2.details.gradebook.points_possible.none");
-                  } else {
-                      pointsDisplay = gradebookItem.getPointsPossible().toString();
-                  }
-                  UIOutput.make(tofill, "points-possible", pointsDisplay); 
-              }
+          } else {
+              // this assignment is ungraded
+              UIMessage.make(tofill, "graded", "assignment2.details.graded");
+              UIMessage.make(tofill, "is-graded", "assignment2.details.graded.no");
           }
           
           // if this assignment requires submission, we'll see if resubmission is allowed
