@@ -88,6 +88,16 @@ public class LocalPermissionLogic {
     public Boolean checkCurrentUserHasViewPermission(ViewParameters viewParams) {
         String contextId = externalLogic.getCurrentContextId();
         String viewId = viewParams.viewID;
+        
+        // let's see if we can derive it from the viewParams
+        if (contextId == null) {
+            if (viewParams instanceof SimpleAssignmentViewParams) {
+                // let's try to derive the contextId from the assignmentId
+                SimpleAssignmentViewParams params = (SimpleAssignmentViewParams) viewParams;
+                Assignment2 assign = assignmentLogic.getAssignmentById(params.assignmentId);
+                contextId = assign.getContextId();
+            }
+        }
 
         /* This first check is special and for our new hybrid pages that need to
          * go to the content directory for various Fluid interfaces.

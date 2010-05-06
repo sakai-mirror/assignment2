@@ -50,7 +50,6 @@ public class LayoutProducer implements NullaryProducer {
     private ViewParameters viewParameters;
     private ViewGroup group;
     private ExternalLogic externalLogic;
-    private Placement placement;
 
     public void fillComponents(UIContainer tofill) {
 
@@ -59,16 +58,17 @@ public class LayoutProducer implements NullaryProducer {
         } else {
             UIJointContainer page = new UIJointContainer(tofill, "page-replace:", "page:");
 
-            if (org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement() != null) {
+            Placement placement = org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement();
+            if (placement != null) {
                 //Initialize iframeId var -- for a few pages that need it still :-(
-                String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId());
+                String frameId = org.sakaiproject.util.Web.escapeJavascript("Main" + placement.getId());
                 UIVerbatim.make(tofill, "iframeId_init", "var iframeId = \"" + frameId + "\";");
+                
+                UIVerbatim.make(tofill, "sakai-location-decl-js", "var sakai = sakai || {};"
+                        + "sakai.curPlacement = '"+placement.getId()+"';"
+                        + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
             }
             
-            UIVerbatim.make(tofill, "sakai-location-decl-js", "var sakai = sakai || {};"
-                    + "sakai.curPlacement = '"+placement.getId()+"';"
-                    + "sakai.curContext = '"+externalLogic.getCurrentContextId()+"';");
-
 
             if (viewParameters.viewID.equals(ListProducer.VIEW_ID)){
                 UILink.make(tofill, "asnn-js-include:","/sakai-assignment2-tool/content/js/list.js");
@@ -125,10 +125,6 @@ public class LayoutProducer implements NullaryProducer {
     
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
-    }
-
-    public void setPlacement(Placement placement) {
-        this.placement = placement;
     }
     
     public void setPageProducer(NullaryProducer pageproducer) {

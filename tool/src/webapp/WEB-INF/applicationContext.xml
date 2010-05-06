@@ -239,5 +239,14 @@
 	      <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService" />
 	      <property name="assignment2SubmissionEntityProvider" ref="org.sakaiproject.assignment2.tool.entity.Assignment2SubmissionEntityProvider" />
 	</bean>
+    
+    <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
+      class="org.sakaiproject.assignment2.tool.entity.ViewAssignment2EntityProvider">
+    </bean>
+    
+    <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
+      class="org.sakaiproject.assignment2.tool.entity.ViewSubmissionEntityProvider">
+      <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+    </bean>
 	
 </beans>
