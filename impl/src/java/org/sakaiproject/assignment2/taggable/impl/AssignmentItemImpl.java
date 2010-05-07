@@ -102,11 +102,9 @@ public class AssignmentItemImpl implements TaggableItem {
 
     public String getItemDetailUrl()
     {
-        Assignment2 assignment = submission.getAssignment();
-        String siteId = assignment.getContextId();
-        String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
-        String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
-            "/" + AssignmentConstants.TOOL_VIEW_SUBMISSION + "/" + Long.toString(assignment.getId()) + "/" + userId;
+        String url = ServerConfigurationService.getServerUrl() + "/direct/view-assignment2-submission/" + 
+        Long.toString(submission.getId());
+        
         return url;
     }
     
@@ -174,8 +172,9 @@ public class AssignmentItemImpl implements TaggableItem {
 
     public boolean getUseDecoration()
     {
-        //TODO: not for sure about this one
-        return true;
+        // this appends some extra osp junk to the end of the url before the parameters
+        // and we lose the params when this is there for some reason
+        return false;
     }
     
     private Site getSite(String siteId) {

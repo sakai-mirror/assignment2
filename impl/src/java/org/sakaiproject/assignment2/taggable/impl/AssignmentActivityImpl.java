@@ -81,12 +81,10 @@ public class AssignmentActivityImpl implements TaggableActivity {
 
     public String getActivityDetailUrl()
     {
-        //http://localhost:8080/tool/070a6228-96c3-42d0-9c55-4569c9eea900/view-assignment/1/
+        //http://localhost:8080/direct/view-assignment2/1234
         
-    	String siteId = assignment.getContextId();
-    	String placement = getSite(siteId).getToolForCommonId("sakai.assignment2").getId();
-    	String url = ServerConfigurationService.getToolUrl() + "/" + placement + 
-    		"/" + AssignmentConstants.TOOL_VIEW_ASSIGN + "/" + Long.toString(assignment.getId());
+    	String url = ServerConfigurationService.getServerUrl() + "/direct/view-assignment2/" + 
+    	Long.toString(assignment.getId());
     	
         return url;
     }

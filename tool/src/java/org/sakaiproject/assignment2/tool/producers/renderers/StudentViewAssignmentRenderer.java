@@ -168,6 +168,16 @@ public class StudentViewAssignmentRenderer {
                     new SimpleViewParameters(StudentAssignmentListProducer.VIEW_ID));
         } else {
             UIMessage.make(tofill, "breadcrumb", "assignment2.student-assignment-list.heading");
+            // if we have an id, this is an edit assignment page, otherwise it is an add assignment page
+            if (assignment.getId()!=null)
+            {
+                UIMessage.make(tofill, "add_edit_breadcrumb", "assignment2.assignment_preview.edit_assignment");
+            }
+            else
+            {
+                UIMessage.make(tofill, "add_edit_breadcrumb", "assignment2.assignment_preview.add_assignment");
+            }
+            UIMessage.make(tofill, "preview_breadcrumb", "assignment2.assignment_preview.preview_as_student");
         }
 
         if (!previewAsStudent) {

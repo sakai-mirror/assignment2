@@ -47,6 +47,13 @@ public class ViewSubmissionParams extends SimpleViewParameters implements Verifi
         this.assignmentId = assignmentId;
         this.userId = userId;
     }
+    
+    public ViewSubmissionParams(String viewId, Long assignmentId, String userId, String tagReference){
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.userId = userId;
+        this.tagReference = tagReference;
+    }
 
     public String getParseSpec(){
         return super.getParseSpec() + ",@1:assignmentId,@2:userId,tagReference";

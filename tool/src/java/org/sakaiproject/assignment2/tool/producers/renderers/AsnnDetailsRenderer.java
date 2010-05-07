@@ -126,36 +126,43 @@ public class AsnnDetailsRenderer implements BasicProducer {
 
         UIOutput.make(joint, "open-date", df.format(assignment.getOpenDate()));
 
-        // Graded?
-        if (assignment.isGraded()) {
-            UIMessage.make(joint, "is_graded", "assignment2.student-submit.yes_graded");
-            
-            // check to see if we should display points possible
-            if (assignment.getGradebookItemId() != null && 
-                    gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
-                // try to retrieve the gb item
-                try {
-                    GradebookItem gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
-                    if (gbItem != null) {
-                        UIOutput.make(joint, "points-possible-row");
+     // Grading
+        // We include whether this assignment is graded and, if it is,
+        // we include points possible if it is graded by points. If the
+        // user does not have gradebook privileges, we hide the grading info
 
-                        String pointsDisplay;
-                        if (gbItem.getPointsPossible() == null) {
-                            pointsDisplay = messageLocator.getMessage("assignment2.student-submit.points_possible.none");
-                        } else {
-                            pointsDisplay = gbItem.getPointsPossible().toString();
-                        }
-                        UIOutput.make(joint, "points-possible", pointsDisplay); 
+        if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
+            // make sure this gradebook item still exists
+            try {
+                GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), 
+                        assignment.getGradebookItemId());
+                
+                UIMessage.make(joint, "graded", "assignment2.details.graded");
+                UIMessage.make(joint, "is-graded", "assignment2.student-submit.yes_graded");
+                
+                // only display points possible if grade entry by points
+                if (gradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == ExternalGradebookLogic.ENTRY_BY_POINTS) {
+                    UIOutput.make(joint, "points-possible-row");
+
+                    String pointsDisplay;
+                    if (gradebookItem.getPointsPossible() == null) {
+                        pointsDisplay = messageLocator.getMessage("assignment2.details.gradebook.points_possible.none");
+                    } else {
+                        pointsDisplay = gradebookItem.getPointsPossible().toString();
                     }
-                } catch (GradebookItemNotFoundException ginfe) {
-                    // don't display anything b/c the gb item was likely deleted
-                    if (log.isDebugEnabled()) log.debug("Student attempting to access assignment " + 
-                            assignment.getId() + " but associated gb item no longer exists!");
+                    UIOutput.make(joint, "points-possible", pointsDisplay); 
                 }
+
+            } catch (GradebookItemNotFoundException ginfe) {
+                if (log.isDebugEnabled()) log.debug("Attempt to access assignment " + 
+                        assignment.getId() + " but associated gb item no longer exists!");
+            } catch (SecurityException se) {
+                // this user doesn't have gb privileges, so hide the gb info
             }
-        }
-        else {
-            UIMessage.make(joint, "is_graded", "assignment2.student-submit.no_graded");
+        } else {
+            // this assignment is ungraded
+            UIMessage.make(joint, "graded", "assignment2.details.graded");
+            UIMessage.make(joint, "is-graded", "assignment2.student-submit.no_graded");
         }
 
         /*

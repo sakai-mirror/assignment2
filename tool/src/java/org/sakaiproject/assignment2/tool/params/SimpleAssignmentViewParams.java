@@ -53,6 +53,12 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
         super(viewId);
         this.assignmentId = assignmentId;
     }
+    
+    public SimpleAssignmentViewParams(String viewId, Long assignmentId, String tagReference){
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.tagReference = tagReference;
+    }
 
     public String getParseSpec() {
         return super.getParseSpec() + ",@1:assignmentId,tagReference";
