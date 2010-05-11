@@ -1,3 +1,10 @@
+/* Fluid Reorderer */
+.fl-reorderer-movable-hover{
+  background-color: lightyellow;
+  cursor: move;
+}
+
+
 /* Daisy Diff */
 span.diff-html-removed {
   background-color: yellow;
