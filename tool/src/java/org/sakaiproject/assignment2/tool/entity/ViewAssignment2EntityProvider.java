@@ -21,8 +21,14 @@
 
 package org.sakaiproject.assignment2.tool.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.LocalCacheLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentDetailsViewParams;
 import org.sakaiproject.assignment2.tool.producers.ViewAssignmentProducer;
 import org.sakaiproject.entitybroker.EntityReference;
@@ -60,11 +66,26 @@ CoreEntityProvider, EntityViewParamsInferrer, RequestStorable {
         EntityReference ref = new EntityReference(reference);
         Long assignId = Long.parseLong(ref.getId());
         
-        // if the request includes a tagReference, we need to pass it along
+        // if the request includes a tagReference and/or tagDecoWrapper, we need to pass it along
         // in case it gives expanded permissions for viewing the assignment
         String tagReference = (String) requestStorage.getStoredValue("tagReference");
+        String tagDecoWrapper = (String) requestStorage.getStoredValue("tagDecoWrapper");
+        
+        if (tagReference != null && !"".equals(tagReference)) {
+            Map<String, Object> optionalParams = new HashMap<String, Object>();
+            optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, tagReference);
+            
+            if (permissionLogic.isUserAllowedToViewAssignmentId(null, assignId, optionalParams)) {
+                // we need to see if this user has access to this assignment
+                localCacheLogic.addAssignmentAttachmentsToCache(assignId, optionalParams);
+                
+                // add a security advisor to the cache for use when a user clicks the link
+                // to view the attachment
+                localCacheLogic.addAttachmentCacheSecurityAdvisor();
+            }
+        }
 
-        return new AssignmentDetailsViewParams(ViewAssignmentProducer.VIEW_ID, assignId, null, tagReference);
+        return new AssignmentDetailsViewParams(ViewAssignmentProducer.VIEW_ID, assignId, null, tagReference, tagDecoWrapper);
      }
      
      private RequestStorage requestStorage;
@@ -72,4 +93,13 @@ CoreEntityProvider, EntityViewParamsInferrer, RequestStorable {
          this.requestStorage = requestStorage;
      }
 
+     private LocalCacheLogic localCacheLogic;
+     public void setLocalCacheLogic(LocalCacheLogic localCacheLogic) {
+         this.localCacheLogic = localCacheLogic;
+     }
+     
+     private AssignmentPermissionLogic permissionLogic;
+     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+         this.permissionLogic = permissionLogic;
+     }
 }

@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.LocalCacheLogic;
 import org.sakaiproject.assignment2.tool.params.AssignmentDetailsViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionParams;
 import org.sakaiproject.assignment2.tool.producers.ViewAssignmentProducer;
@@ -71,14 +72,26 @@ CoreEntityProvider, EntityViewParamsInferrer, RequestStorable {
         // if the request includes a tagReference, we need to pass it along
         // in case it gives expanded permissions for viewing the submission
         String tagReference = (String) requestStorage.getStoredValue("tagReference");
+        String tagDecoWrapper = (String) requestStorage.getStoredValue("tagDecoWrapper");
         
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, tagReference);
         
         // now we need to derive the assignmentid and userid from the submission
         AssignmentSubmission sub = submissionLogic.getAssignmentSubmissionById(submissionId, optionalParams);
+        
+        // if we made it this far, we have permission to view the submission. in case the
+        // tag ref is overriding default permissions, we may need to also override
+        // security on any attachments
+        if (tagReference != null && !"".equals(tagReference)) {
+            localCacheLogic.addAssignmentAttachmentsToCache(sub.getAssignment().getId(), optionalParams);
+            localCacheLogic.addSubmittedAttachmentsToCache(sub.getAssignment().getId(), sub.getUserId(), optionalParams);
+            
+            // we also need to add a SecurityAdvisor to the session for use when the user clicks the attach link
+            localCacheLogic.addAttachmentCacheSecurityAdvisor();
+        }
 
-        return new ViewSubmissionParams(ViewStudentSubmissionProducer.VIEW_ID, sub.getAssignment().getId(), sub.getUserId(), tagReference);
+        return new ViewSubmissionParams(ViewStudentSubmissionProducer.VIEW_ID, sub.getAssignment().getId(), sub.getUserId(), tagReference, tagDecoWrapper);
      }
      
      private RequestStorage requestStorage;
@@ -89,6 +102,11 @@ CoreEntityProvider, EntityViewParamsInferrer, RequestStorable {
      private AssignmentSubmissionLogic submissionLogic;
      public void setAssignmentSubmissionLogic(AssignmentSubmissionLogic submissionLogic) {
          this.submissionLogic = submissionLogic;
+     }
+     
+     private LocalCacheLogic localCacheLogic;
+     public void setLocalCacheLogic(LocalCacheLogic localCacheLogic) {
+         this.localCacheLogic = localCacheLogic;
      }
 
 }

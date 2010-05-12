@@ -371,4 +371,10 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
+    public void addToSession(String attribute, Object value)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

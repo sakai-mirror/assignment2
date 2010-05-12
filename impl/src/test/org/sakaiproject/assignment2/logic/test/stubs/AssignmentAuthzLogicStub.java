@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.test.AssignmentTestDataLoad;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 
 
 /**
@@ -202,6 +203,24 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void addSecurityAdvisor(SecurityAdvisor advisor)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public SecurityAdvisor getSecurityAdvisor(String function, List<String> references)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void removeSecurityAdvisor()
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

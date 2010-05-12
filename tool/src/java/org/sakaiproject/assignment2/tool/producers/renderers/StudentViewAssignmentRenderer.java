@@ -229,7 +229,7 @@ public class StudentViewAssignmentRenderer {
 
                 if (versionHistory.size() == 1 && !submissionIsOpen) {
                     AssignmentSubmissionVersion singleVersion = versionHistory.get(0);
-                    asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false, false);
+                    asnnSubmissionVersionRenderer.fillComponents(joint, "assignment-single-version:", singleVersion, false, false, null);
 
                     // we need to mark this feedback as read (if released and unread)
                     if (singleVersion.isFeedbackReleased() && !singleVersion.isFeedbackRead()) {
@@ -275,7 +275,7 @@ public class StudentViewAssignmentRenderer {
                     } else {
                         // make the instructions and details with the toggle bar at the bottom
                         // of the screen
-                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
+                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false, null);
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
                         tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }

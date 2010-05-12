@@ -46,6 +46,15 @@
 	<bean id="localAssignmentLogic"
 		class="org.sakaiproject.assignment2.tool.LocalAssignmentLogic">
 	</bean>
+  
+  <bean id="localCacheLogic"
+    class="org.sakaiproject.assignment2.tool.LocalCacheLogic">
+    <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+    <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+    <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+    <property name="a2SessionCache" ref="org.sakaiproject.assignment2.tool.beans.SessionCache" />
+    <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
+  </bean>
     
     <bean id="DisplayUtil" class="org.sakaiproject.assignment2.tool.DisplayUtil">
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
@@ -242,11 +251,14 @@
     
     <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
       class="org.sakaiproject.assignment2.tool.entity.ViewAssignment2EntityProvider">
+      <property name="localCacheLogic" ref="localCacheLogic" />
+      <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
     </bean>
     
     <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"  
       class="org.sakaiproject.assignment2.tool.entity.ViewSubmissionEntityProvider">
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
+      <property name="localCacheLogic" ref="localCacheLogic" />
     </bean>
 	
 </beans>

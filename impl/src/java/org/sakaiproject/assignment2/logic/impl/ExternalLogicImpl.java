@@ -452,4 +452,8 @@ public class ExternalLogicImpl implements ExternalLogic {
     	
     	return returnList;
     }
+    
+    public void addToSession(String attribute, Object value) {
+        sessionManager.getCurrentSession().setAttribute(attribute, value);
+    }
 }

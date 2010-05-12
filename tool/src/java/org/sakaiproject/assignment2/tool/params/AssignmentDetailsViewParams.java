@@ -49,8 +49,8 @@ public class AssignmentDetailsViewParams extends SimpleAssignmentViewParams {
         this.fromView = fromView;
     }
     
-    public AssignmentDetailsViewParams(String viewId, Long assignmentId, String fromView, String tagReference){
-        super(viewId, assignmentId, tagReference);
+    public AssignmentDetailsViewParams(String viewId, Long assignmentId, String fromView, String tagReference, String tagDecoWrapper){
+        super(viewId, assignmentId, tagReference, tagDecoWrapper);
         this.fromView = fromView;
     }
 

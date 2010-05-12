@@ -21,18 +21,26 @@
 
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
 import org.sakaiproject.assignment2.logic.AttachmentInformation;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.beans.SessionCache;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.entity.api.Entity;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -83,16 +91,32 @@ public class AttachmentListRenderer {
      * @param divID
      * @param currentViewID
      * @param aaSet
+     * @param optionalParams optional extra information that might be useful for rendering the assignment info.
+     * ie, you may need extended privileges for viewing the attachments so you could pass that info here
      */
-    public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
+    public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet, Map<String, Object> optionalParams) {
         Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (aaSet != null){
             for (AssignmentAttachment aa : aaSet) {
                 attRefPropertiesMap.put(aa.getAttachmentReference(), aa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap, optionalParams);
     }
+    
+    /**
+     * Use this for rendering attachments from an Assignment2 assignment
+     * object. 
+     * 
+     * @param tofill
+     * @param divID
+     * @param currentViewID
+     * @param aaSet
+     */
+    public void makeAttachmentFromAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<AssignmentAttachment> aaSet) {
+        makeAttachmentFromAssignmentAttachmentSet(tofill, divID, currentViewID, aaSet, null);
+    }
+
 
     public void makeAttachmentFromAssignment2OTPAttachmentSet(UIContainer tofill, String divID, String currentViewID, String a2OTPKey) {
         Assignment2 assignment = (Assignment2)assignment2EntityBeanLocator.locateBean(a2OTPKey);
@@ -102,18 +126,18 @@ public class AttachmentListRenderer {
                 attRefPropertiesMap.put(aa.getAttachmentReference(), aa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap, null);
     }
 
     public void makeAttachmentFromSubmissionAttachmentSet(UIContainer tofill, String divID, String currentViewID,
-            Set<SubmissionAttachment> asaSet) {
+            Set<SubmissionAttachment> asaSet, Map<String, Object> optionalParams) {
         Map<String, Map> attRefPropertiesMap = new HashMap<String, Map>();
         if (asaSet != null) {
             for (SubmissionAttachment asa : asaSet) {
                 attRefPropertiesMap.put(asa.getAttachmentReference(), asa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap, optionalParams);
     }
 
     public void makeAttachmentFromFeedbackAttachmentSet(UIContainer tofill, String divID, String currentViewID,
@@ -124,7 +148,7 @@ public class AttachmentListRenderer {
                 attRefPropertiesMap.put(afa.getAttachmentReference(), afa.getProperties());
             }
         }
-        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap);
+        makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap, null);
     }
 
     /**
@@ -133,8 +157,10 @@ public class AttachmentListRenderer {
      * @param divID
      * @param currentViewID
      * @param attRefPropertiesMap a map of the attachment reference to its associated properties map
+     * @param optionalParams optional extra information that might be useful for rendering the assignment info.
+     * ie, you may need extended privileges for viewing the attachments so you could pass that info here
      */
-    private void makeAttachment(UIContainer tofill, String divID, String currentViewID, Map<String, Map> attRefPropertiesMap) {
+    private void makeAttachment(UIContainer tofill, String divID, String currentViewID, Map<String, Map> attRefPropertiesMap, Map<String, Object> optionalParams) {
 
 
         int i = 1;
@@ -152,7 +178,15 @@ public class AttachmentListRenderer {
             // just an empty string.  This is on previewing an assignment.
             // To reproduce, just put in a title and hit preview.
             if (ref != null && !ref.equals("")) {
+                
                 AttachmentInformation attach = contentLogic.getAttachmentInformation(ref);
+                
+                if (attach == null) {
+                    // we may have a permission override in the cache that will allow us
+                    // to retrieve this attachment via a SecurityAdvisor
+                    attach = getAttachmentWithAdvisor(ref, optionalParams);
+                }
+                
                 if (attach != null) {
                     String file_size = "(" + attach.getContentLength() + ")";
 
@@ -169,6 +203,50 @@ public class AttachmentListRenderer {
             }
 
         } //Ending for loop
+    }
+    
+    private AttachmentInformation getAttachmentWithAdvisor(String attachmentReference, Map<String, Object> optionalParams) {
+        AttachmentInformation attach = null;
+        if (optionalParams != null && 
+                optionalParams.containsKey(AssignmentConstants.TAGGABLE_DECO_WRAPPER) && 
+                optionalParams.get(AssignmentConstants.TAGGABLE_DECO_WRAPPER) != null) {
+            
+            String tagDecoWrapper = (String) optionalParams.get(AssignmentConstants.TAGGABLE_DECO_WRAPPER);
+            tagDecoWrapper = tagDecoWrapper.replaceAll("_", Entity.SEPARATOR);
+            
+            List<String> attachRefs = sessionCache.getAsnn2AttachRefs(externalLogic.getCurrentUserId());
+            if (attachRefs != null && attachRefs.contains(attachmentReference)) {
+                // add a security advisor for this attachment
+                List<String> references = new ArrayList<String>();
+                references.add("/content" + attachmentReference);
+                SecurityAdvisor advisor = authzLogic.getSecurityAdvisor("content.read", references);
+                authzLogic.addSecurityAdvisor(advisor);
+                attach = contentLogic.getAttachmentInformation(attachmentReference);
+                authzLogic.removeSecurityAdvisor();
+
+                // now we need to modify the url to access this attachment
+                String attachUrl = attach.getUrl();
+                attachUrl = attachUrl.replaceFirst("access/content", "access/" + tagDecoWrapper + "/content");
+                attach.setUrl(attachUrl);
+            }
+        }
+
+        return attach;
+    }
+    
+    private SessionCache sessionCache;
+    public void setA2SessionCache(SessionCache sessionCache) {
+        this.sessionCache = sessionCache;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    private AssignmentAuthzLogic authzLogic;
+    public void setAssignmentAuthzLogic(AssignmentAuthzLogic authzLogic) {
+        this.authzLogic = authzLogic;
     }
 
 }

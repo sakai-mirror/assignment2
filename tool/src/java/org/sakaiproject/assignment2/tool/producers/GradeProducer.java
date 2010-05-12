@@ -594,7 +594,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 }
 
                 attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(versionContainer, "submitted_attachment_list:", params.viewID, 
-                        version.getSubmissionAttachSet());
+                        version.getSubmissionAttachSet(), null);
             }
         }
     }

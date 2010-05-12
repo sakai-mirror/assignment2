@@ -271,4 +271,11 @@ public interface ExternalLogic {
      */
     public String getGraderPermissionsUrl(String contextId);
     
+    /**
+     * Adds the given value with the given attribute to the current session
+     * @param attribute
+     * @param value
+     */
+    public void addToSession(String attribute, Object value);
+    
 }
