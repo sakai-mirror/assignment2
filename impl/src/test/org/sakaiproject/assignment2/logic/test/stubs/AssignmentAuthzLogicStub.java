@@ -197,7 +197,6 @@ public class AssignmentAuthzLogicStub implements AssignmentAuthzLogic
         return usersWithPermission;
     }
 
-    @Override
     public Map<Role, Map<String, Boolean>> getRolePermissionsForSite(String contextId,
             Collection<String> functions)
     {

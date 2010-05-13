@@ -235,10 +235,6 @@ public class UploadAllLogicImpl implements UploadAllLogic
                             updatedVersion.setFeedbackAttachSet(fbWrapper.feedbackAttachments);
                             updatedVersion.setId(fbWrapper.submissionVersionId);
 
-                            if (options.releaseFeedback) {
-                                updatedVersion.setFeedbackReleasedDate(now);
-                            }
-
                             Collection<AssignmentSubmissionVersion> existingVersionList = studentUidVersionsMap.get(studentUid);
                             if (existingVersionList == null) {
                                 existingVersionList = new ArrayList<AssignmentSubmissionVersion>();
@@ -258,10 +254,18 @@ public class UploadAllLogicImpl implements UploadAllLogic
 
         // now let's do the actual update
         if (!studentUidVersionsMap.isEmpty()) {
-            Set<String> studentsUpdated = submissionLogic.saveAllInstructorFeedback(assign, studentUidVersionsMap);
+            // since we don't have the existing feedback release date, we are going
+            // to save feedback ignoring the release to prevent versions being flagged
+            // as needing updates unnecessarily.  we will release separately
+            Set<String> studentsUpdated = submissionLogic.saveAllInstructorFeedback(assign, studentUidVersionsMap, false);
             if (studentsUpdated != null) {
                 addToUploadInfoMap(uploadInfo, studentsUpdated.size() + "", UploadInfo.NUM_STUDENTS_UPDATED);
-            }
+                
+                // now release the feedback for the updated students
+                if (options.releaseFeedback) {
+                    submissionLogic.releaseOrRetractFeedback(assign.getId(), studentsUpdated, true);
+                }
+            }            
         }
 
         return uploadInfo;

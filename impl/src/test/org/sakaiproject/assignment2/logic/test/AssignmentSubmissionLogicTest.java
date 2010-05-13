@@ -522,7 +522,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         Map<String, Collection<AssignmentSubmissionVersion>> updateMap = new HashMap<String, Collection<AssignmentSubmissionVersion>>();
         // try a null assignment
         try {
-            submissionLogic.saveAllInstructorFeedback(null, updateMap);
+            submissionLogic.saveAllInstructorFeedback(null, updateMap, true);
             fail("did not catch null assignment passed to saveAllInstructorFeedback");
         } catch (IllegalArgumentException iae) {}
 
@@ -533,7 +533,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         versionList.add(testData.st1a1CurrVersion);
         updateMap.put(AssignmentTestDataLoad.STUDENT2_UID, versionList);
         try {
-            submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap);
+            submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap, true);
             fail("did not catch passed studentId not associated with the given version");
         } catch (VersionNotFoundException iae) {}
 
@@ -541,7 +541,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         updateMap = new HashMap<String, Collection<AssignmentSubmissionVersion>>();
         updateMap.put(AssignmentTestDataLoad.STUDENT1_UID, versionList);
         try {
-            submissionLogic.saveAllInstructorFeedback(testData.a2, updateMap);
+            submissionLogic.saveAllInstructorFeedback(testData.a2, updateMap, true);
             fail("did not catch passed assignment not associated with the given version");
         } catch (VersionNotFoundException iae) {}
 
@@ -557,7 +557,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         versionList = new ArrayList<AssignmentSubmissionVersion>();
         versionList.add(newVersion);
         updateMap.put(AssignmentTestDataLoad.STUDENT1_UID, versionList);
-        submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap);
+        submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap, true);
 
         AssignmentSubmission st1a1Submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a1);
         assertTrue(st1a1Submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -590,7 +590,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         versionList.add(newVersion);
         updateMap.put(AssignmentTestDataLoad.STUDENT1_UID, versionList);
 
-        submissionLogic.saveAllInstructorFeedback(testData.a2, updateMap);
+        submissionLogic.saveAllInstructorFeedback(testData.a2, updateMap, true);
         // try to retrieve it now
         AssignmentSubmission st1a2Submission = dao.getSubmissionWithVersionHistoryForStudentAndAssignment(AssignmentTestDataLoad.STUDENT1_UID, testData.a2);
         assertTrue(st1a2Submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
@@ -599,6 +599,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         AssignmentSubmissionVersion st1a2CurrVersion = dao.getCurrentSubmissionVersionWithAttachments(st1a2Submission);
         assertNotNull(st1a2CurrVersion);
+        assertNull(st1a2CurrVersion.getFeedbackReleasedDate());
         // fb without a submission should have submittedVersionNumber = 0
         assertEquals(0, st1a2CurrVersion.getSubmittedVersionNumber()); 
         Long st1a2CurrVersionId = st1a2CurrVersion.getId();
@@ -610,7 +611,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         versionList.add(newVersion);
         updateMap.put(AssignmentTestDataLoad.STUDENT1_UID, versionList);
         // let's try to re-save this one without the attachments
-        submissionLogic.saveAllInstructorFeedback(testData.a2, updateMap);
+        submissionLogic.saveAllInstructorFeedback(testData.a2, updateMap, true);
         st1a2Submission = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, st1a2SubId);
         assertTrue(st1a2Submission.getUserId().equals(AssignmentTestDataLoad.STUDENT1_UID));
 
@@ -625,7 +626,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         updateMap.put(AssignmentTestDataLoad.STUDENT2_UID, versionList);
         // should not be allowed to grade student 2
         try {
-            submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap);
+            submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap, true);
             fail("Did not catch SecurityException when TA attempted to grade unauth student!");
         } catch (SecurityException se) {}
 
@@ -641,7 +642,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         versionList.add(newVersion);
         updateMap.put(AssignmentTestDataLoad.STUDENT1_UID, versionList);
 
-        submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap);
+        submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap, true);
         versionHistory = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
         assertEquals(versionHistory.size(), 2);
         /*TODO Fix this - it isn't working b/c id of student's version < feedback-only version
@@ -653,7 +654,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // student should not be authorized
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
         try {
-            submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap);
+            submissionLogic.saveAllInstructorFeedback(testData.a1, updateMap, true);
             fail("Student was able to saveInstructorFeedback without authorization!!!");
         } catch (SecurityException se) {}
     }
@@ -1242,10 +1243,10 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assertFalse(draft);
     }
 
-    public void testReleaseAllFeedbackForAssignment() {
+    public void testReleaseOrRetractFeedback() {
         // try a null assignmentId
         try {
-            submissionLogic.releaseOrRetractAllFeedback(null, true);
+            submissionLogic.releaseOrRetractFeedback(null, null, true);
             fail("did not catch null assignmentId passed to releaseAllFeedbackForAssignment");
         } catch (IllegalArgumentException iae) {}
 
@@ -1253,20 +1254,20 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // try an assignmentId that doesn't exist
         try {
-            submissionLogic.releaseOrRetractAllFeedback(12345L, true);
+            submissionLogic.releaseOrRetractFeedback(12345L, null, true);
             fail("did not catch non-existent assignId passed to releaseAllFeedbackForAssignment");
         } catch (AssignmentNotFoundException iae) {}
 
         // try as a student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT1_UID);
         try {
-            submissionLogic.releaseOrRetractAllFeedback(testData.a1Id, true);
+            submissionLogic.releaseOrRetractFeedback(testData.a1Id, null, true);
             fail("Did not catch a student releasing feedback!!");
         } catch (SecurityException se) {}
 
         // try as a TA
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
-        submissionLogic.releaseOrRetractAllFeedback(testData.a1Id, true);
+        submissionLogic.releaseOrRetractFeedback(testData.a1Id, null, true);
         // should only have updated the one student this TA is allowed to grade!
         List<AssignmentSubmissionVersion> st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
         for (AssignmentSubmissionVersion asv : st1a1History) {
@@ -1280,7 +1281,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // instructor should update all
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
-        submissionLogic.releaseOrRetractAllFeedback(testData.a3Id, true);
+        submissionLogic.releaseOrRetractFeedback(testData.a3Id, null, true);
 
         // every version should be released for all students
         List<AssignmentSubmissionVersion> st1a3History = dao.getVersionHistoryForSubmission(testData.st1a3Submission);
@@ -1295,6 +1296,64 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         for (AssignmentSubmissionVersion asv : st3a3History) {
             assertNotNull(asv.getFeedbackReleasedDate());
         }
+        
+        //  now let's try passing specific students
+        List<String> students = new ArrayList<String>();
+        students.add(AssignmentTestDataLoad.STUDENT1_UID);
+        students.add(AssignmentTestDataLoad.STUDENT2_UID);
+        
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
+        submissionLogic.releaseOrRetractFeedback(testData.a3Id, students, false);
+        // only st3 should be released
+        st1a3History = dao.getVersionHistoryForSubmission(testData.st1a3Submission);
+        for (AssignmentSubmissionVersion asv : st1a3History) {
+            assertNull(asv.getFeedbackReleasedDate());
+        }
+        st2a3History = dao.getVersionHistoryForSubmission(testData.st2a3Submission);
+        for (AssignmentSubmissionVersion asv : st2a3History) {
+            assertNull(asv.getFeedbackReleasedDate());
+        }
+        st3a3History = dao.getVersionHistoryForSubmission(testData.st3a3Submission);
+        for (AssignmentSubmissionVersion asv : st3a3History) {
+            assertNotNull(asv.getFeedbackReleasedDate());
+        }
+
+        // try as a TA
+        externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
+        try {
+            submissionLogic.releaseOrRetractFeedback(testData.a1Id, students, true);
+            fail("Did not catch TA releasing fb for student 2 for a1");
+        } catch (SecurityException se) {}
+
+        // remove student 2 from the list
+        students = new ArrayList<String>();
+        students.add(AssignmentTestDataLoad.STUDENT1_UID);
+
+        submissionLogic.releaseOrRetractFeedback(testData.a1Id, students, true);
+        // should only have updated the one student
+        st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+        for (AssignmentSubmissionVersion asv : st1a1History) {
+            assertNotNull(asv.getFeedbackReleasedDate());
+        }
+        // nothing should be released for student 2
+        st2a1History = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
+        for (AssignmentSubmissionVersion asv : st2a1History) {
+            assertNull(asv.getFeedbackReleasedDate());
+        }
+        
+        // double check that retracting works (st2 was already retracted)
+        submissionLogic.releaseOrRetractFeedback(testData.a1Id, students, false);
+        // should only have updated the one student this TA is allowed to grade!
+        st1a1History = dao.getVersionHistoryForSubmission(testData.st1a1Submission);
+        for (AssignmentSubmissionVersion asv : st1a1History) {
+            assertNull(asv.getFeedbackReleasedDate());
+        }
+        // nothing should be released for student 2
+        st2a1History = dao.getVersionHistoryForSubmission(testData.st2a1Submission);
+        for (AssignmentSubmissionVersion asv : st2a1History) {
+            assertNull(asv.getFeedbackReleasedDate());
+        }
+        
     }
 
     public void testReleaseAllFeedbackForSubmission() {
