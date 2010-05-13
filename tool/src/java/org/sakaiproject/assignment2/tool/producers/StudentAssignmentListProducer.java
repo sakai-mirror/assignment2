@@ -255,10 +255,12 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
             for (AssignmentSubmissionVersion version: submissions) {
                 if (version.isFeedbackReleased()) {
                     feedbackExists = true;
+                    
+                    if (!version.isFeedbackRead()) {
+                        unreadFeedbackExists = true;
+                    }
                 }
-                if (!version.isFeedbackRead()) {
-                    unreadFeedbackExists = true;
-                }
+                
             }
 
             if (feedbackExists && unreadFeedbackExists) {
