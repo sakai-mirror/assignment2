@@ -59,8 +59,11 @@ public class GradeDetailsRenderer implements BasicProducer {
      * @param clientID
      * @param assignmentSubmission
      * @param includeToggle
+     * @param displayOnlyIfReleased true if you only want this section to display if the
+     * grade has been released. If false, will display section but grade and comment information
+     * will be N/A if not released
      */
-    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean includeToggle) {
+    public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean includeToggle, boolean displayOnlyIfReleased) {
         /***
          * Grade Details including:
          *   - Grade
@@ -86,8 +89,9 @@ public class GradeDetailsRenderer implements BasicProducer {
                 gradebookItem = null;
             }
 
-            // only display grade info if released
-            if (gradebookItem != null && gradebookItem.isReleased()) {
+            // check to see if displayOnlyIfReleased is true or false and display accordingly
+            if (gradebookItem != null && 
+                    (!displayOnlyIfReleased || (displayOnlyIfReleased && gradebookItem.isReleased()))) {
 
                 UIJointContainer joint = new UIJointContainer(parent, clientID, "grade-details-widget:");
 
@@ -112,10 +116,10 @@ public class GradeDetailsRenderer implements BasicProducer {
                 // Details Table
                 UIOutput.make(joint, "grade-details-table");
 
-                // Render the graded information if it's available.
+                // Render the graded information if it's available and gb item is released
                 String grade = null;
                 String comment = null;
-                if (gradebookItem != null) {
+                if (gradebookItem != null && gradebookItem.isReleased()) {
                     GradeInformation gradeInfo = externalGradebookLogic.getGradeInformationForStudent(curContext, assignment.getGradebookItemId(), currentUser.getId());
                     if (gradeInfo != null) {
                         grade = gradeInfo.getGradebookGrade();

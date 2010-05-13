@@ -219,12 +219,7 @@ public class StudentViewAssignmentRenderer {
                 asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, true, false, false);
                 
             } else {
-                
-                // display grade information, if appropriate
-                if (assignment.isGraded()) {
-                    gradeDetailsRenderer.fillComponents(joint, "grade-details-top:", assignmentSubmission, false);
-                }
-                
+
                 List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
 
                 if (versionHistory.size() == 1 && !submissionIsOpen) {
@@ -240,6 +235,25 @@ public class StudentViewAssignmentRenderer {
                 } else if (versionHistory.size() > 1 || (versionHistory.size() == 1 && !versionHistory.get(0).isDraft())) {
                     // only expand feedback if the student didn't click "resubmit"
                     asnnSubmissionHistoryRenderer.fillComponents(joint, "assignment-previous-submissions:", assignmentSubmission, !resubmit);
+                }
+                
+                // we only display the grade information if grade is released OR released fb exists, so
+                // we need to determine if released fb exists
+                if (assignment.isGraded()) {
+                    boolean feedbackExists = false;
+                    if (versionHistory != null) {
+                        for (AssignmentSubmissionVersion ver : versionHistory) {
+                            if (ver.isFeedbackReleased()) {
+                                feedbackExists = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // display grade information, if appropriate
+
+                    gradeDetailsRenderer.fillComponents(joint, "grade-details-top:", assignmentSubmission, false, !feedbackExists);
+
                 }
 
                 // determine if this is a resubmission scenario. we will use
