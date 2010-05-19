@@ -186,6 +186,11 @@ public class AssignmentConstants {
      * due to this tag
      */
     public static final String TAGGABLE_REF_KEY = "taggableRef";
+    /**
+     * Key used to pass additional information from the "tagger" to handle
+     * extended privileges for accessing attachments
+     */
+    public static final String TAGGABLE_DECO_WRAPPER = "tagDecoWrapper";
     
     // VIEW IDS for Assignment2 tool (may be used for generating urls outside the application layer)
     /**

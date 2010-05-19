@@ -138,6 +138,9 @@
    	  <property name="externalContentLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentLogic" />
    	  <property name="assignment2EntityBeanLocator" ref="Assignment2"/>
       <property name="reviewStatusRenderer" ref="ReviewStatusRenderer" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+      <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
+      <property name="a2SessionCache" ref="org.sakaiproject.assignment2.tool.beans.SessionCache" />
    </bean>
    
    <bean id="GradebookDetailsRenderer" class="org.sakaiproject.assignment2.tool.producers.renderers.GradebookDetailsRenderer">

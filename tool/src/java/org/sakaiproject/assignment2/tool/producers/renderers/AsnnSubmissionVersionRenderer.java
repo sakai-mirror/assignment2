@@ -1,5 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -81,9 +83,11 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
      * @param multipleVersionDisplay true if this version is being displayed in a multi-version scenario.
      * this will prevent unnecessary repeated headers
      * @param hideFeedback true if you want to hide feedback for all users unless the user is allowed to manage the submission.  (hides annotated text, feedback notes, and feedback attachments)
+     * @param optionalParams optional extra information that might be useful for rendering the assignment info.
+     * ie, you may need extended privileges for viewing the attachments so you could pass that info here
      * @return
      */
-    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay, boolean hideFeedback) {
+    public UIContainer fillComponents(UIContainer parent, String clientID, AssignmentSubmissionVersion asnnSubVersion, boolean multipleVersionDisplay, boolean hideFeedback, Map<String, Object> optionalParams) {
         UIJointContainer joint = new UIJointContainer(parent, clientID, "asnn2-submission-version-widget:");
 
         AssignmentSubmission assignmentSubmssion = asnnSubVersion.getAssignmentSubmission();
@@ -123,7 +127,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
                     }
                     UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 
-                            asnnSubVersion.getSubmissionAttachSet());
+                            asnnSubVersion.getSubmissionAttachSet(), optionalParams);
                 }
             }
 

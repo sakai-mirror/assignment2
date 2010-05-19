@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 
 /**
  * This interface is used for Assignment2-specific authorization based upon
@@ -250,4 +251,23 @@ public interface AssignmentAuthzLogic {
      * role has the permission in the given contextId
      */
     public Map<Role, Map<String, Boolean>> getRolePermissionsForSite(String contextId, Collection<String> functions);
+    
+    /**
+     * 
+     * @param function
+     * @param references
+     * @return a SecurityAdvisor for the given function and references
+     */
+    public SecurityAdvisor getSecurityAdvisor(String function, List<String> references);
+    
+    /**
+     * Adds the given SecurityAdvisor to this thread at the top of the stack
+     * @param advisor
+     */
+    public void addSecurityAdvisor(SecurityAdvisor advisor);
+    
+    /**
+     * Remove one SecurityAdvisor from the top of this thread if it exists
+     */
+    public void removeSecurityAdvisor();
 }

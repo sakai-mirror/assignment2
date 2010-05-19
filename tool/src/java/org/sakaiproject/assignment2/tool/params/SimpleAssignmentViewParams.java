@@ -46,6 +46,9 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
     // use this optional reference to go back and see if the user should have expanded
     // permissions to view this assignment
     public String tagReference;
+    // this param is used similarly to the tagReference but is mainly used for modifying
+    // the url for attachments to allow extended privileges, if appropriate
+    public String tagDecoWrapper;
 
     public SimpleAssignmentViewParams() {}
 
@@ -54,10 +57,11 @@ public class SimpleAssignmentViewParams extends SimpleViewParameters implements 
         this.assignmentId = assignmentId;
     }
     
-    public SimpleAssignmentViewParams(String viewId, Long assignmentId, String tagReference){
+    public SimpleAssignmentViewParams(String viewId, Long assignmentId, String tagReference, String tagDecoWrapper){
         super(viewId);
         this.assignmentId = assignmentId;
         this.tagReference = tagReference;
+        this.tagDecoWrapper = tagDecoWrapper;
     }
 
     public String getParseSpec() {

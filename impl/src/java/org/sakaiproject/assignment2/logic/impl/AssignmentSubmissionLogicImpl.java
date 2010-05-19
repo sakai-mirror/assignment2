@@ -383,7 +383,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         }
     }
 
-    public Set<String> saveAllInstructorFeedback(Assignment2 assignment, Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap) {
+    public Set<String> saveAllInstructorFeedback(Assignment2 assignment, Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap, boolean updateFeedbackRelease) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to saveInstructorFeedback");
         }
@@ -482,11 +482,12 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         Set<SubmissionAttachmentBase> attachToDelete = identifyAttachmentsToDelete(version.getFeedbackAttachSet(), updatedVersion.getFeedbackAttachSet());
                         Set<SubmissionAttachmentBase> attachToCreate = identifyAttachmentsToCreate(version.getFeedbackAttachSet(), updatedVersion.getFeedbackAttachSet());
 
-                        // check to see if any changes were actually made
+                        // check to see if any changes were actually made. we only look
+                        // for changes in the feedback release date if updateFeedbackRelease is true
                         boolean needsSave = false;
                         if (valueUpdated(version.getFeedbackNotes(), updatedVersion.getFeedbackNotes(), true) ||
                                 valueUpdated(version.getAnnotatedText(), updatedVersion.getAnnotatedText(), true) ||
-                                valueUpdated(version.getFeedbackReleasedDate(), updatedVersion.getFeedbackReleasedDate(), false) ||
+                                (updateFeedbackRelease && valueUpdated(version.getFeedbackReleasedDate(), updatedVersion.getFeedbackReleasedDate(), false)) ||
                                 (attachToDelete != null && !attachToDelete.isEmpty()) ||
                                 (attachToCreate != null && !attachToCreate.isEmpty())) {
                             needsSave = true;
@@ -605,7 +606,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         Map<String, Collection<AssignmentSubmissionVersion>> studentIdVersionsMap = new HashMap<String, Collection<AssignmentSubmissionVersion>>();
         studentIdVersionsMap.put(studentId, versionsToUpdate);
 
-        saveAllInstructorFeedback(assignment, studentIdVersionsMap);
+        saveAllInstructorFeedback(assignment, studentIdVersionsMap, true);
     }
 
     public List<AssignmentSubmission> getViewableSubmissionsWithHistoryForAssignmentId(Long assignmentId, String filterGroupId) {
@@ -984,8 +985,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
 
         return currVersionIsDraft;
     }
-
-    public void releaseOrRetractAllFeedback(Long assignmentId, boolean release) {
+    
+    public void releaseOrRetractFeedback(Long assignmentId, Collection<String> students, boolean release) {
         if (assignmentId == null) {
             throw new IllegalArgumentException("null assignmentId passed to releaseAllFeedbackForAssignment");
         }
@@ -997,59 +998,71 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         if (assignment == null) {
             throw new AssignmentNotFoundException("Assignment with id " + assignmentId + " does not exist");
         }
-
+        
         if (!permissionLogic.isUserAllowedToManageSubmissionsForAssignment(currUserId, assignment)) {
-            throw new SecurityException("User attempted to release feedback for assignment " + assignmentId + " without authorization");
+            throw new SecurityException("User attempted to release/retract feedback for assignment " + assignmentId + " without authorization");
         }
 
-        List<String> gradableStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
-        if (gradableStudents != null && !gradableStudents.isEmpty()) {
-            Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
-                    gradableStudents, assignment);
+        // retrieve all of the students this user is allowed to manage for this assignment
+        List<String> allowedStudents = permissionLogic.getViewableStudentsForAssignment(currUserId, assignment);
+        
+        // if students is null, assume all allowed students
+        if (students == null) {
+            students = allowedStudents;
+        }
+        
+        // check for students who the current user isn't allowed to manage who may be in the list
+        for (String student : students) {
+            if (!allowedStudents.contains(student)) {
+                throw new SecurityException("User attempted to release/retract feedback for student " + student + " without permission");
+            }
+        }
 
-            if (submissionList != null && !submissionList.isEmpty()) {
+        Set<AssignmentSubmission> submissionList = dao.getSubmissionsWithVersionHistoryForStudentListAndAssignment(
+                students, assignment);
 
-                Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet<AssignmentSubmissionVersion>();
+        if (submissionList != null && !submissionList.isEmpty()) {
 
-                for (AssignmentSubmission submission : submissionList) {
-                    if (submission != null) {
-                        if (submission.getSubmissionHistorySet() != null &&
-                                !submission.getSubmissionHistorySet().isEmpty()) {
-                            // we need to iterate through all of the versions and
-                            // release them
-                            for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet())
-                            {
-                                if (version != null) {
-                                    if (release) {
-                                        version.setFeedbackReleasedDate(now);
-                                    } else {
-                                        version.setFeedbackReleasedDate(null);
-                                    }
+            Set<AssignmentSubmissionVersion> versionsToUpdate = new HashSet<AssignmentSubmissionVersion>();
 
-                                    version.setModifiedBy(currUserId);
-                                    version.setModifiedDate(now);
-
-                                    versionsToUpdate.add(version);
+            for (AssignmentSubmission submission : submissionList) {
+                if (submission != null) {
+                    if (submission.getSubmissionHistorySet() != null &&
+                            !submission.getSubmissionHistorySet().isEmpty()) {
+                        // we need to iterate through all of the versions and
+                        // release them
+                        for (AssignmentSubmissionVersion version : submission.getSubmissionHistorySet())
+                        {
+                            if (version != null) {
+                                if (release) {
+                                    version.setFeedbackReleasedDate(now);
+                                } else {
+                                    version.setFeedbackReleasedDate(null);
                                 }
+
+                                version.setModifiedBy(currUserId);
+                                version.setModifiedDate(now);
+
+                                versionsToUpdate.add(version);
                             }
                         }
                     }
                 }
+            }
 
-                try {
-                    dao.saveMixedSet(new Set[] { versionsToUpdate });
-                    if (log.isDebugEnabled()) log.debug("All versions for assignment " + assignmentId + " released by " + externalLogic.getCurrentUserId());
-                } catch (HibernateOptimisticLockingFailureException holfe) {
-                    if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
-                    throw new StaleObjectModificationException("An optimistic locking " +
-                            "failure occurred while attempting to update submission " +
-                            "versions for assignment " + assignmentId, holfe);
-                } catch (StaleObjectStateException sose) {
-                    if(log.isInfoEnabled()) log.info("An optimistic locking failure " +
-                            "occurred while attempting to update submission versions for assignment " + assignmentId);
-                    throw new StaleObjectModificationException("An optimistic locking " +
-                            "failure occurred while attempting to update submission versions for assignment " + assignmentId, sose);
-                }
+            try {
+                dao.saveMixedSet(new Set[] { versionsToUpdate });
+                if (log.isDebugEnabled()) log.debug("All versions for assignment " + assignmentId + " released by " + externalLogic.getCurrentUserId());
+            } catch (HibernateOptimisticLockingFailureException holfe) {
+                if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission versions for assignment " + assignmentId);
+                throw new StaleObjectModificationException("An optimistic locking " +
+                        "failure occurred while attempting to update submission " +
+                        "versions for assignment " + assignmentId, holfe);
+            } catch (StaleObjectStateException sose) {
+                if(log.isInfoEnabled()) log.info("An optimistic locking failure " +
+                        "occurred while attempting to update submission versions for assignment " + assignmentId);
+                throw new StaleObjectModificationException("An optimistic locking " +
+                        "failure occurred while attempting to update submission versions for assignment " + assignmentId, sose);
             }
         }
     }
@@ -1058,50 +1071,13 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         if (submissionId == null) {
             throw new IllegalArgumentException("null submissionId passed to releaseAllFeedbackForSubmission");
         }
-
-        String currUserId = externalLogic.getCurrentUserId();
-        Date now = new Date();
-
-        AssignmentSubmission subWithHistory = dao.getSubmissionWithVersionHistoryById(submissionId);
-
-        if (subWithHistory == null) {
-            throw new SubmissionNotFoundException("No submission exists with id " + submissionId);
-        }
-
-        if (!permissionLogic.isUserAllowedToManageSubmission(currUserId, subWithHistory.getUserId(), subWithHistory.getAssignment())) {
-            throw new SecurityException("User " + currUserId + " attempted to release feedback" +
-                    " for student " + subWithHistory.getUserId() + " and assignment " + 
-                    subWithHistory.getAssignment().getId() + "without authorization");
-        }
-
-        if (subWithHistory.getSubmissionHistorySet() != null &&
-                !subWithHistory.getSubmissionHistorySet().isEmpty()) {
-            // we need to iterate through all of the versions and
-            // release them
-            Set<AssignmentSubmissionVersion> updatedVersions = new HashSet<AssignmentSubmissionVersion>();
-            for (AssignmentSubmissionVersion version : subWithHistory.getSubmissionHistorySet()) {
-                if (version != null) {
-                    if (release) {
-                        version.setFeedbackReleasedDate(now);
-                    } else {
-                        version.setFeedbackReleasedDate(null);
-                    }
-                    version.setModifiedBy(currUserId);
-                    version.setModifiedDate(now);
-                    updatedVersions.add(version);
-                }
-            }
-
-            try {
-                dao.saveMixedSet(new Set[] { updatedVersions });
-                if (log.isDebugEnabled()) log.debug("All submission versions for submission " + submissionId + " released by " + externalLogic.getCurrentUserId());
-            } catch (HibernateOptimisticLockingFailureException holfe) {
-                if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update release all version for submission " + submissionId);
-
-                throw new StaleObjectModificationException("An optimistic locking " +
-                        "failure occurred while attempting to update release all version for submission " + submissionId, holfe);
-            }
-        }
+        
+        AssignmentSubmission submission = getAssignmentSubmissionById(submissionId);
+        
+        List<String> students = new ArrayList<String>();
+        students.add(submission.getUserId());
+        
+        releaseOrRetractFeedback(submission.getAssignment().getId(), students, release);
     }
 
     public void releaseOrRetractFeedbackForVersion(Long submissionVersionId, boolean release) {

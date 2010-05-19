@@ -153,7 +153,7 @@ public interface AssignmentSubmissionLogic {
 
     /**
      * Save instructor feedback for a particular version. If student has not made
-     * a submission, will create the submission and version. utilizes {@link #saveAllInstructorFeedback(Assignment2, Map)} 
+     * a submission, will create the submission and version. utilizes {@link #saveAllInstructorFeedback(Assignment2, Map, boolean)} 
      * for the save
      * @param versionId - id of the version that you want to update. if null, there must
      * not be a student submission yet.
@@ -179,12 +179,15 @@ public interface AssignmentSubmissionLogic {
      * @param assignment the assignment you are providing feedback for
      * @param studentUidVersionsMap map of the studentUid to the collection of AssignmentSubmissionVersions
      * for that student and assignment to update/add
+     * @param updateFeedbackRelease if true, will update the {@link AssignmentSubmissionVersion#getFeedbackReleasedDate()} with
+     * the release date on the passed version. if false, will ignore this property and assume you
+     * are handling feedback release separately
      * @return a set of studentUids of the students with updated feedback. if nothing has
      * changed, the record is not updated and that student will not be in this set if no updates were required for any of his/her versions
      * @throws SecurityException if user is not allowed to submit feedback
      * for even one of the students in the studentUidVersionMap. will not update any feedback
      */
-    public Set<String> saveAllInstructorFeedback(Assignment2 assignment, Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap);
+    public Set<String> saveAllInstructorFeedback(Assignment2 assignment, Map<String, Collection<AssignmentSubmissionVersion>> studentUidVersionsMap, boolean updateFeedbackRelease);
 
     /**
      * 
@@ -270,17 +273,19 @@ public interface AssignmentSubmissionLogic {
     public boolean isMostRecentVersionDraft(AssignmentSubmission submission);
 
     /**
-     * set the version's "released" status for all of the submissions that the current 
-     * user is able to submit feedback for. if the user is only authorized for
-     * a subset of the students for this assignment, the unauthorized students
-     * will not be affected. only affects non-draft versions
+     * set the version's "released" status for the given list of students. 
+     * Only affects non-draft versions
      * @param assignmentId
+     * @param students the students to release feedback for, if fb exists. leave null if you
+     * want to release feedback for all of the students the current user is allowed to
+     * manage for this assignment
      * @param release true if you want to release all feedback for this assignment.
      * false if you want to retract all feedback
-     * @throws SecurityException if user is not allowed to submit feedback
+     * @throws SecurityException if user is not allowed to manage submissions for this assignment or
+     * students contains a student the user is not allowed to manage
      * @throws AssignmentNotFoundException if no assignment with the given assignmentId
      */
-    public void releaseOrRetractAllFeedback(Long assignmentId, boolean release);
+    public void releaseOrRetractFeedback(Long assignmentId, Collection<String> students, boolean release);
 
     /**
      * set all of the non-draft versions for this submission to "released"

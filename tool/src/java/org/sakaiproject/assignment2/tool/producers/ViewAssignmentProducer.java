@@ -87,6 +87,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
         
         Map<String, Object> optionalParamMap = new HashMap<String, Object>();
         optionalParamMap.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
+        optionalParamMap.put(AssignmentConstants.TAGGABLE_DECO_WRAPPER, params.tagDecoWrapper);
         if (!permissionLogic.isUserAllowedToViewAssignmentId(null, assignmentId, optionalParamMap)) {
             throw new SecurityException("Attempt to view assignment without permission");
         }
@@ -195,7 +196,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
         
         //render the instructions
         asnnInstructionsRenderer.makeInstructions(tofill, "instructions_section:", assignment, 
-                false, false, false);
+                false, false, false, optionalParamMap);
     }
 
     public ViewParameters getViewParameters() {

@@ -94,6 +94,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           
           Map<String, Object> optionalParams = new HashMap<String, Object>();
           optionalParams.put(AssignmentConstants.TAGGABLE_REF_KEY, params.tagReference);
+          optionalParams.put(AssignmentConstants.TAGGABLE_DECO_WRAPPER, params.tagDecoWrapper);
           if (!permissionLogic.isUserAllowedToViewSubmissionForAssignment(null, studentUserId, assignmentId, optionalParams))
           {
               // user is not allowed to view the submission for this studentId
@@ -258,7 +259,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           }
           
           // instructions widget
-          asnnInstructionsRenderer.makeInstructions(tofill, "instructions:", assignment, false, false, false);
+          asnnInstructionsRenderer.makeInstructions(tofill, "instructions:", assignment, false, false, false, optionalParams);
           
           if (!submittedVersions.isEmpty())
           {
@@ -275,7 +276,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
                   String toggleHoverText = messageLocator.getMessage("assignment2.version.toggle.hover");
                   UIBranchContainer versionDiv = UIBranchContainer.make(tofill, "toggle-wrapper:");
                   toggleRenderer.makeToggle(versionDiv, "version_toggle:", null, true, headerText, toggleHoverText, false, false, false, false, null);
-                  asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission:", single, true, optionalParams.containsKey(AssignmentConstants.TAGGABLE_REF_KEY));
+                  asnnSubmissionVersionRenderer.fillComponents(versionDiv, "submission:", single, true, optionalParams.containsKey(AssignmentConstants.TAGGABLE_REF_KEY), optionalParams);
               }
           }
     }

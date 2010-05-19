@@ -1,5 +1,7 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
+import java.util.Map;
+
 import org.sakaiproject.assignment2.model.Assignment2;
 
 import uk.org.ponder.messageutil.MessageLocator;
@@ -50,8 +52,10 @@ public class AsnnInstructionsRenderer implements BasicProducer {
      * and not just the toggle arrow. if includeToggle is false, will ignore this property
      * @param toggleExpanded true if the toggle should be expanded. if includeToggle is false, will 
      * ignore this property
+     * @param optionalParams optional extra information that might be useful for rendering the assignment info.
+     * ie, you may need extended privileges for viewing the attachments so you could pass that info here
      */
-    public void makeInstructions(UIContainer tofill, String divID, Assignment2 assignment, boolean includeToggle, boolean includeToggleBar, boolean toggleExpanded){
+    public void makeInstructions(UIContainer tofill, String divID, Assignment2 assignment, boolean includeToggle, boolean includeToggleBar, boolean toggleExpanded, Map<String, Object> optionalParams){
 
         UIJointContainer joint = new UIJointContainer(tofill, divID, "assn2-assignment-instructions-widget:");
 
@@ -92,10 +96,25 @@ public class AsnnInstructionsRenderer implements BasicProducer {
         if (assignment.getAttachmentSet() != null && !assignment.getAttachmentSet().isEmpty()) {
             UIOutput.make(joint, "assignAttachmentsFieldset");
             attachmentListRenderer.makeAttachmentFromAssignmentAttachmentSet(tofill, "assign_attach_list:", viewParameters.viewID, 
-                    assignment.getAttachmentSet());
+                    assignment.getAttachmentSet(), optionalParams);
         }
     }
-
+    
+    /**
+     * 
+     * @param tofill
+     * @param divID
+     * @param assignment
+     * @param includeToggle true if the instructions should be toggleable
+     * @param includeToggleBar true if the toggleable instructions should use a toggle bar
+     * and not just the toggle arrow. if includeToggle is false, will ignore this property
+     * @param toggleExpanded true if the toggle should be expanded. if includeToggle is false, will 
+     * ignore this property
+     */
+    public void makeInstructions(UIContainer tofill, String divID, Assignment2 assignment, boolean includeToggle, boolean includeToggleBar, boolean toggleExpanded){
+        makeInstructions(tofill, divID, assignment, includeToggle, includeToggleBar, toggleExpanded, null);
+    }
+    
     public void fillComponents(UIContainer parent, String clientID) {
 
     }

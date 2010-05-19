@@ -1,3 +1,10 @@
+/* Fluid Reorderer */
+.fl-reorderer-movable-hover{
+  background-color: lightyellow;
+  cursor: move;
+}
+
+
 /* Daisy Diff */
 span.diff-html-removed {
   background-color: yellow;
@@ -910,8 +917,10 @@ a.tagDescription {
  * editor, so use this class to restore defaults */
 .restoreDefaultStyles ul li {
     list-style-type: disc;
+    margin-left:15px;
 }
 
 .restoreDefaultStyles ol li {
     list-style-type: decimal;
+    margin-left:20px;
 }

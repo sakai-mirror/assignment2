@@ -320,7 +320,6 @@ public class ExternalLogicStub implements ExternalLogic {
         return null;
     }
 
-    @Override
     public List<String> getUsersInGroup(String contextId, String groupId)
     {
         
@@ -347,7 +346,7 @@ public class ExternalLogicStub implements ExternalLogic {
         return usersInGroup;
     }
 
-    @Override
+
     public Map<String, String> getUserDisplayIdUserIdMapForUsers(Collection<String> userIds)
     {
         // TODO Auto-generated method stub
@@ -364,11 +363,17 @@ public class ExternalLogicStub implements ExternalLogic {
     	return null;
     }
 
-    @Override
+
     public String getGraderPermissionsUrl(String contextId)
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void addToSession(String attribute, Object value)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -39,6 +39,9 @@ public class ViewSubmissionParams extends SimpleViewParameters implements Verifi
     // use this optional reference to go back and see if the user should have expanded
     // permissions to view this submission
     public String tagReference;
+    // this param is used similarly to the tagReference but is mainly used for modifying
+    // the url for attachments to allow extended privileges, if appropriate
+    public String tagDecoWrapper;
 
     public ViewSubmissionParams(){}
 
@@ -54,9 +57,17 @@ public class ViewSubmissionParams extends SimpleViewParameters implements Verifi
         this.userId = userId;
         this.tagReference = tagReference;
     }
+    
+    public ViewSubmissionParams(String viewId, Long assignmentId, String userId, String tagReference, String tagDecoWrapper){
+        super(viewId);
+        this.assignmentId = assignmentId;
+        this.userId = userId;
+        this.tagReference = tagReference;
+        this.tagDecoWrapper = tagDecoWrapper;
+    }
 
     public String getParseSpec(){
-        return super.getParseSpec() + ",@1:assignmentId,@2:userId,tagReference";
+        return super.getParseSpec() + ",@1:assignmentId,@2:userId,tagReference,tagDecoWrapper";
     }
 
     public Boolean verify()

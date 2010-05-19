@@ -83,7 +83,9 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
         } catch (IdUnusedException iue) {
             log.warn("IdUnusedException thrown when attempting to retrieve ContentResource with ref: " + reference, iue);
         } catch (PermissionException pe) {
-            log.warn("IdUnusedException thrown when attempting to retrieve ContentResource with ref: " + reference, pe);
+            // we aren't logging the full stacktrace here because this exception might occur if
+            // you are accessing an attachment via osp. we'll try again with special security override info if that's the case
+            log.warn("PermissionException thrown when attempting to retrieve ContentResource with ref: " + reference);
         }
 
         return resource;

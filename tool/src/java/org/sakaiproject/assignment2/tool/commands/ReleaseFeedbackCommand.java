@@ -35,6 +35,6 @@ public class ReleaseFeedbackCommand {
             throw new IllegalArgumentException("Null assignmentId param passed to ReleaseFeedbackCommand");
         }
 
-        submissionLogic.releaseOrRetractAllFeedback(assignmentId, releaseFeedback);
+        submissionLogic.releaseOrRetractFeedback(assignmentId, null, releaseFeedback);
     }
 }
