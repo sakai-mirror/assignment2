@@ -158,23 +158,19 @@ public class AssignmentSubmissionBean {
 
     public String processActionSaveAndReleaseFeedbackForSubmission(){
         this.releaseFeedback = true;
-        processActionGradeSubmit();
-
-        return SUBMIT;
+        return processActionGradeSubmit();
     }
     
     public String processActionGradeSubmitOption()
     {
-    	String rv = "";
-    	if (RELEASE_NEXT.equals(submitOption) || RELEASE_PREV.equals(submitOption) || RELEASE_RETURNTOLIST.equals(submitOption))
-    	{
-    	    rv = processActionSaveAndReleaseFeedbackForSubmission();
-    	}
-    	else
-    	{
-    		rv = processActionGradeSubmit();
-    	}
-    	return submitOption;
+        if (RELEASE_NEXT.equals(submitOption) || RELEASE_PREV.equals(submitOption) || RELEASE_RETURNTOLIST.equals(submitOption))
+        {
+            return processActionSaveAndReleaseFeedbackForSubmission();
+        }
+        else
+        {
+            return processActionGradeSubmit();
+        }
     }
 
     /**
@@ -303,7 +299,7 @@ public class AssignmentSubmissionBean {
                     assignment.getGradebookItemId(), assignmentSubmission.getUserId(), grade, gradeComment);
         }
         
-        return SUBMIT;
+        return submitOption;
     }
 
     public String processActionGradePreview(){
