@@ -1,10 +1,14 @@
 package org.sakaiproject.assignment2.tool.producers;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.beans.UploadBean;
@@ -12,6 +16,8 @@ import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.ViewSubmissionsViewParams;
 
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.messageutil.TargettedMessage;
+import uk.org.ponder.messageutil.TargettedMessageList;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -19,6 +25,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -57,6 +64,22 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
         this.gradebookLogic = gradebookLogic;
     }
 
+    // Dependency
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
+    
+    private TargettedMessageList messages;
+    public void setMessages(TargettedMessageList messages) {
+        this.messages = messages;
+    }
+    
+    private AssignmentPermissionLogic assignmentPermissionLogic;
+    public void setAssignmentPermissionLogic(AssignmentPermissionLogic assignmentPermissionLogic){
+    	this.assignmentPermissionLogic = assignmentPermissionLogic;
+    }
+    
     // Property 
     private UploadBean uploadBean;
     public void setUploadBean(UploadBean uploadBean) {
@@ -85,8 +108,10 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
         }
 
         UIOutput.make(tofill, "title-header", titleHeading);
-
+        boolean anyUngradable = false;
         if (uploadBean.parsedContent != null) {
+        	Set<String> submitters = assignmentPermissionLogic.getSubmittersInSite(assignment.getContextId());
+            Map<String, String> displayIdUserIdMap = externalLogic.getUserDisplayIdUserIdMapForUsers(submitters);
             for (List<String> parts: uploadBean.parsedContent) {
 
                 // make sure there are 4 parts to the content representing
@@ -100,13 +125,24 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
                     }
                 }
 
+                
                 UIBranchContainer row = UIBranchContainer.make(tofill, "student-row:");
-
+                
                 UIOutput.make(row, "student-id", parts.get(0));
                 UIOutput.make(row, "student-name", parts.get(1));
                 UIOutput.make(row, "grade", parts.get(2));
                 UIOutput.make(row, "comments", parts.get(3));
+                
+                if(displayIdUserIdMap.containsKey(parts.get(0)) &&
+                		!assignmentPermissionLogic.isUserAllowedToManageSubmission(null, displayIdUserIdMap.get(parts.get(0)), assignment)){
+                	row.decorate(new UIFreeAttributeDecorator("class", "uploadHighlight"));
+                	anyUngradable = true;
+                }
             }
+        }
+        
+        if(anyUngradable){
+        	messages.addMessage(new TargettedMessage("assignment2.upload_grades_confirm.warning.ids_not_imported"));
         }
 
         makeBreadcrumbs(tofill, assignment);
