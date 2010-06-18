@@ -249,6 +249,12 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             }
             else if (!preview) {
                 UIInput text = UIInput.make(form, "text:", asvOTP + ".submittedText");
+                // if this is a resubmission, load the user's most recent submission in the text
+                if (resubmit)
+                {
+                    AssignmentSubmissionVersion previousVersion = assignmentSubmission.getCurrentSubmissionVersion();
+                    text.setValue(previousVersion.getSubmittedText());
+                }
                 text.mustapply = Boolean.TRUE;
                 richTextEvolver.evolveTextInput(text);
             } 
@@ -264,13 +270,22 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         // Attachment Stuff
         // the editor will only display attachments for the current version if
-        // it is a draft. otherwise, the user is working on a new submission
+        // it is a draft or a resubmission. otherwise, the user is working on a new submission
         UIOutput attachSection = null;
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_ATTACH_ONLY ||
                 assignment.getSubmissionType() == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH){
             attachSection = UIOutput.make(form, "submit_attachments");
 
-            if (studentPreviewSubmission || !preview) {
+            if (resubmit)
+            {
+                AssignmentSubmissionVersion previousVersion = assignmentSubmission.getCurrentSubmissionVersion();
+                String[] attachmentRefs = 
+                    previousVersion.getSubmittedAttachmentRefs();
+
+                renderSubmittedAttachments(false, asvOTP,
+                        asvOTPKey, form, attachmentRefs);
+            }
+            else if (studentPreviewSubmission || !preview) {
                 String[] attachmentRefs = 
                     studentSubmissionPreviewVersion.getSubmittedAttachmentRefs();
 
