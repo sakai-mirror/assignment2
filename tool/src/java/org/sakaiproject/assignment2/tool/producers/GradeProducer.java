@@ -524,7 +524,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
         // hidden field for group id
-        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", AssignmentSubmissionBean.SUBMIT_NEXT);
+        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", AssignmentSubmissionBean.SUBMIT);
         
         UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
             "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
