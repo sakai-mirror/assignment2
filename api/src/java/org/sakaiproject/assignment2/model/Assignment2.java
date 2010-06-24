@@ -61,6 +61,9 @@ public class Assignment2 {
     private int numSubmissionsAllowed;
     private boolean contentReviewEnabled;
     private String contentReviewRef;
+    private boolean modelAnswerEnabled;
+    private String modelAnswerText;
+    private int modelAnswerDisplayRule;
     private String creator;
     private Date createDate;
     private String modifiedBy;
@@ -767,5 +770,29 @@ public class Assignment2 {
         }
         
         return acceptsAttachments;
+    }
+
+    public boolean isModelAnswerEnabled() {
+        return modelAnswerEnabled;
+    }
+
+    public void setModelAnswerEnabled(boolean modelAnswerEnabled) {
+        this.modelAnswerEnabled = modelAnswerEnabled;
+    }
+
+    public String getModelAnswerText() {
+        return modelAnswerText;
+    }
+
+    public void setModelAnswerText(String modelAnswerText) {
+        this.modelAnswerText = modelAnswerText;
+    }
+
+    public int getModelAnswerDisplayRule() {
+        return modelAnswerDisplayRule;
+    }
+
+    public void setModelAnswerDisplayRule(int modelAnswerDisplayRule) {
+        this.modelAnswerDisplayRule = modelAnswerDisplayRule;
     }
 }

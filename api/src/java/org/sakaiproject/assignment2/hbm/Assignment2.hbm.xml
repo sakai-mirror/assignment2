@@ -100,6 +100,17 @@
         <property name="contentReviewRef" type="java.lang.String" >
             <column name="CONTENT_REVIEW_REF" length="255" not-null="false" />
         </property>
+        <!-- Whether this assignment is using a model answer -->
+        <property name="modelAnswerEnabled" type="boolean">
+            <column name="MODEL_ANSWER_ENABLED" />
+        </property>
+        <!-- Model Answer Text -->
+        <property name="modelAnswerText" type="text">
+            <column name="MODEL_ANSWER_TEXT" />
+        </property>
+        <property name="modelAnswerDisplayRule" type="integer">
+            <column name="MODEL_ANSWER_DISPLAY_RULE" />
+        </property>
         <!-- assignment creator  -->
         <property name="creator" type="java.lang.String" >
             <column name="CREATOR" length="99" not-null="true" />
