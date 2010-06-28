@@ -72,6 +72,7 @@ public class Assignment2 {
     private int optimisticVersion;
     private Set<AssignmentSubmission> submissionsSet;
     private Set<AssignmentAttachment> attachmentSet;
+    private Set<ModelAnswerAttachment> modelAnswerAttachmentSet;
     private Set<AssignmentGroup> assignmentGroupSet; 
     private Map properties;
 
@@ -700,6 +701,33 @@ public class Assignment2 {
         }
         this.attachmentSet = set;
     }
+    
+    public String[] getModelAnswerAttachmentRefs()
+    {
+        String[] refs = new String[0];
+        if (modelAnswerAttachmentSet != null) {
+            refs = new String[modelAnswerAttachmentSet.size()];
+            int i = 0;
+            for (ModelAnswerAttachment maa : modelAnswerAttachmentSet) {
+                refs[i++] = maa.getAttachmentReference();
+            }
+        }
+        return refs;
+    }
+
+    public void setModelAnswerAttachmentRefs(String[] attachmentRefs)
+    {
+        Set<ModelAnswerAttachment> set = new HashSet<ModelAnswerAttachment>();
+        for (int i = 0; i < attachmentRefs.length; i++) {
+            if (attachmentRefs[i] != null && !attachmentRefs[i].equals("")) {
+                ModelAnswerAttachment maa = new ModelAnswerAttachment();
+                maa.setAssignment(this);
+                maa.setAttachmentReference(attachmentRefs[i]);
+                set.add(maa);
+            }
+        }
+        this.modelAnswerAttachmentSet = set;
+    }
 
     /**
      * Convenience method for determining if assignment is currently open and
@@ -794,5 +822,14 @@ public class Assignment2 {
 
     public void setModelAnswerDisplayRule(int modelAnswerDisplayRule) {
         this.modelAnswerDisplayRule = modelAnswerDisplayRule;
+    }
+
+    public Set<ModelAnswerAttachment> getModelAnswerAttachmentSet() {
+        return modelAnswerAttachmentSet;
+    }
+
+    public void setModelAnswerAttachmentSet(
+            Set<ModelAnswerAttachment> modelAnswerAttachmentSet) {
+        this.modelAnswerAttachmentSet = modelAnswerAttachmentSet;
     }
 }

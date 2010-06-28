@@ -390,7 +390,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", 
                 assignment.getAssignmentAttachmentRefs());
         attachmentInput.mustapply = true;
-        attachmentInputEvolver.evolveAttachment(attachmentInput, null);
+        
+        String elementId = "reg_attachments";
+        
+        attachmentInputEvolver.evolveAttachment(attachmentInput, elementId);
 
         UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
         if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
@@ -400,7 +403,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInternalLink addAttachLink = UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                         Boolean.TRUE, 500, 700, OTPKey));
-        addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
+        addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)));
 
         /********
          * Require Submissions
@@ -624,20 +627,23 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         
         // Model Answer Attachments
         // CHANGE THIS WHEN FUNCTION IS MADE!!!!
-//        UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAttachmentRefs", 
-//                assignment.getAssignmentAttachmentRefs());
-//        modelAttachmentInput.mustapply = true;
-//        attachmentInputEvolver.evolveAttachment(modelAttachmentInput, null);
-//
-//        UIOutput modelNoAttach = UIOutput.make(form, "model_no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
-//        if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
-//            modelNoAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
-//        }
-//
-//        UIInternalLink modelAddAttachLink = UIInternalLink.make(form, "model_add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
-//                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
-//                        Boolean.TRUE, 500, 700, OTPKey));
-//        modelAddAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
+        UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAnswerAttachmentRefs", 
+                assignment.getModelAnswerAttachmentRefs());
+        modelAttachmentInput.mustapply = true;
+        
+        String modelElementId = "model_attachment";
+        
+        attachmentInputEvolver.evolveAttachment(modelAttachmentInput, modelElementId);
+
+        UIOutput modelNoAttach = UIOutput.make(form, "model_no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
+            modelNoAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
+
+        UIInternalLink modelAddAttachLink = UIInternalLink.make(form, "model_add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                        Boolean.TRUE, 500, 700, OTPKey));
+        modelAddAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(modelElementId)));
 
         //Post Buttons
         UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");
