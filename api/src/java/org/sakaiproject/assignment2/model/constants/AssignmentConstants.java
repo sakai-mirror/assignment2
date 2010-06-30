@@ -152,6 +152,18 @@ public class AssignmentConstants {
      * After accept until date has passed
      */
     public final static int MODEL_AFTER_ACCEPT_DATE = 5;
+    /**
+     * Constant for checking if the user is an instructor
+     */
+    public final static String MODEL_ANSWER_IS_INSTRUCTOR = "isInstructor";
+    /**
+     * Constant for checking if the user is on a preview screen
+     */
+    public final static String MODEL_ANSWER_IS_PREVIEW = "isPreview";
+    /**
+     * Assignment submission object
+     */
+    public final static String ASSIGNMENT_SUBMISSION = "assignmentSubmission";
 
     // Assignment status
     /**

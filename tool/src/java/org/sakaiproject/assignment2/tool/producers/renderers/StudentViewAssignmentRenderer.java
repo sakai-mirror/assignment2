@@ -268,18 +268,21 @@ public class StudentViewAssignmentRenderer {
                     }
                 }
                 
+                Map<String, Object> optionalParamMap = new HashMap<String, Object>();
+                optionalParamMap.put(AssignmentConstants.ASSIGNMENT_SUBMISSION, assignmentSubmission);
+                
                 // logic for displaying the assignment details and instructions
                 if (versionHistory == null || versionHistory.isEmpty()) {
                     asnnDetailsRenderer.fillComponents(joint, "assignment-details-top:", assignmentSubmission, false, false, false);
                     // only display these instructions if submission is closed. the editor will display them if open
                     if (!submissionIsOpen) {
-                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-top:", assignment, false, false, false);
+                        asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-top:", assignment, false, false, false, optionalParamMap);
                     }
                 } else {
                     if (resubmissionIsOpen && !resubmit) {
                         // make the instructions and details with the toggle bar at the bottom
                         // of the screen
-                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false);
+                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false, optionalParamMap);
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
                         tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }
@@ -289,7 +292,7 @@ public class StudentViewAssignmentRenderer {
                     } else {
                         // make the instructions and details with the toggle bar at the bottom
                         // of the screen
-                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false, null);
+                        asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false, optionalParamMap);
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
                         tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }
