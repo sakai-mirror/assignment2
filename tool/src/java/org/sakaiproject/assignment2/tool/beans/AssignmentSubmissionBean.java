@@ -299,6 +299,7 @@ public class AssignmentSubmissionBean {
                     assignment.getGradebookItemId(), assignmentSubmission.getUserId(), grade, gradeComment);
         }
         
+        messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
         return submitOption;
     }
 

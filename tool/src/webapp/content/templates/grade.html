@@ -289,6 +289,12 @@ jQuery(document).ready(function(){
             return false;
         }
     });
+
+    var fadeSuccessMsg = function() {
+        jQuery('.success').fadeOut("slow");
+    }   
+    setTimeout(fadeSuccessMsg,10000);
+    
     
 });
 
