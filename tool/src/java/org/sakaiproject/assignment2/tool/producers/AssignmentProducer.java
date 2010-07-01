@@ -626,7 +626,6 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 model_type_labels, assignment2OTP + ".modelAnswerDisplayRule").setMessageKeys();
         
         // Model Answer Attachments
-        // CHANGE THIS WHEN FUNCTION IS MADE!!!!
         UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAnswerAttachmentRefs", 
                 assignment.getModelAnswerAttachmentRefs());
         modelAttachmentInput.mustapply = true;
@@ -636,7 +635,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         attachmentInputEvolver.evolveAttachment(modelAttachmentInput, modelElementId);
 
         UIOutput modelNoAttach = UIOutput.make(form, "model_no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
-        if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
+        if (assignment.getModelAnswerAttachmentRefs() != null && assignment.getModelAnswerAttachmentRefs().length > 0) {
             modelNoAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
         }
 
