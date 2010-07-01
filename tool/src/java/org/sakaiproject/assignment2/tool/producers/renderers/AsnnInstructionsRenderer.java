@@ -96,14 +96,7 @@ public class AsnnInstructionsRenderer implements BasicProducer {
                 }
                 else if (madr==AssignmentConstants.MODEL_IMMEDIATELY)
                 {
-                    if (assignment.getOpenDate().before(new Date()))
-                    {
-                        modelAnswerEnabled = true;
-                    }
-                    else
-                    {
-                        modelAnswerEnabled = false;
-                    }
+                    modelAnswerEnabled = true;
                 }
                 else if (madr==AssignmentConstants.MODEL_AFTER_STUDENT_SUBMITS)
                 {

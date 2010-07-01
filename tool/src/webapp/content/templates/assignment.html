@@ -108,7 +108,6 @@
                     <input id="modelAnswerEnabled" rsf:id="modelAnswerEnabled" type="checkbox" />
                     <label for="model_answer" rsf:id="msg=assignment2.assignment_add.add_model_answer"> Add Model Answer!!!!!?</label>
                     <ol id="model_answer_area">
-                    <!--<fieldset rsf:id="model_answer_area" id="model_answer_area">-->
                         <li>
                             <label rsf:id="msg=assignment2.assignment_add.model_answer_text" class="block">Model Answer Text</label>
                             <p rsf:id="message-for:modelAnswerText"></p>
@@ -129,7 +128,6 @@
                             <select rsf:id="modelAnswerDisplayRule"></select>
                             <p rsf:id="message-for:modelAnswerDisplayRule"></p>
                         </li>
-                    <!--</fieldset>-->
                     </ol>
                 </li>
             </ol>
@@ -465,7 +463,6 @@ jQuery(document).ready(function(){
     asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
     
     var modelAnswerEnabled = jQuery("input[name='page-replace\:\:modelAnswerEnabled']").get(0);
-    //var modelAnswerArea = jQuery('#page-replace\\:\\:model_answer_area').get(0);
     var modelAnswerArea = jQuery('#model_answer_area').get(0);
     jQuery(modelAnswerEnabled).click(function(){
         asnn2.showHideByCheckbox(this, modelAnswerArea);

@@ -159,6 +159,20 @@ public class AssignmentAuthoringBean {
         if (!assignment.isGraded()) {
             assignment.setGradebookItemId(null);
         }
+        
+        if (assignment.isModelAnswerEnabled() == Boolean.FALSE)
+        {
+            assignment.setModelAnswerText(null);
+            assignment.setModelAnswerDisplayRule(AssignmentConstants.MODEL_NEVER);
+        }
+        else
+        {
+            if ("".equals(assignment.getModelAnswerText().trim()))
+            {
+                // make sure the text is null if it is blank
+                assignment.setModelAnswerText(null);
+            }
+        }
 
         //do groups
         Set<AssignmentGroup> newGroups = new HashSet<AssignmentGroup>();
@@ -341,6 +355,14 @@ public class AssignmentAuthoringBean {
                         processFormattedText(assignment.getInstructions(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
                     messages.addMessage(new TargettedMessage("assignment2.error.assignment_instructions", new Object[] {alertMsg.toString()}));
+                    textValid = false;
+                }
+            }
+            if (assignment.getModelAnswerText() != null) {
+                assignment.setModelAnswerText(FormattedText.
+                        processFormattedText(assignment.getModelAnswerText(), alertMsg, true, true));
+                if (alertMsg != null && alertMsg.length() > 0) {
+                    messages.addMessage(new TargettedMessage("assignment2.error.model_answer_text", new Object[] {alertMsg.toString()}));
                     textValid = false;
                 }
             }
