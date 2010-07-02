@@ -316,7 +316,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             validateAttachmentsAndGroups(modelAnswerAttachToCreate, attachToCreate, groupSet);
 
             // TODO ASNN-530 Where is this really happening and why doesn't the null
-            // error occur with regular attachments?
+            // error occur with regular attachments? 
+            /*
             if (assignment.getModelAnswerAttachmentSet() == null) {
                 assignment.setModelAnswerAttachmentSet(new HashSet<ModelAnswerAttachment>());
             }
@@ -326,14 +327,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             if (assignment.getAssignmentGroupSet() == null) {
                 assignment.setAssignmentGroupSet(new HashSet<AssignmentGroup>());
             }
-            
+            */
             Set<Assignment2> assignSet = new HashSet<Assignment2>();
             assignSet.add(assignment);
 
             
             // to avoid the WARN: Nothing to update messages...
-            Set setsToSave = new HashSet();
-            setsToSave.add(assignSet);
+            List<Set> setsToSave = new ArrayList<Set>();
             
             if (!attachToCreate.isEmpty()) {
                 setsToSave.add(attachToCreate);
@@ -346,8 +346,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             }
             
             if (setsToSave.size() > 0) {
-                Set[] toSave = new Set[setsToSave.size()];
-                setsToSave.toArray(toSave);
+                Set[] toSave = new Set[setsToSave.size()+1];
+                toSave[0] = assignSet;
+                for (int i = 1; i <= setsToSave.size(); i++) {
+                    toSave[i] = setsToSave.get(i-1);
+                }
                 dao.saveMixedSet(toSave);
             }
             else {
