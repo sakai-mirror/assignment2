@@ -432,6 +432,7 @@ jQuery(document).ready(function(){
     jQuery(due_date).click(function(){
         asnn2.showHideByCheckbox(this, due_date_container);
         asnn2editpage.tii_dueDateOptions();
+        asnn2.modelAnswerIntegrity();
     });
 
     asnn2.showHideByCheckbox(due_date, due_date_container);
@@ -441,6 +442,7 @@ jQuery(document).ready(function(){
     var accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
     jQuery(accept_until).click(function(){
         asnn2.showHideByCheckbox(this, accept_until_container);
+        asnn2.modelAnswerIntegrity();
     });
 
 	asnn2.showHideByCheckbox(accept_until, accept_until_container);
@@ -513,6 +515,7 @@ jQuery(document).ready(function(){
     }
 
     asnn2.showHideGradeSettingError();
+    asnn2.modelAnswerIntegrity();
 });
 //]]>
 </script>
