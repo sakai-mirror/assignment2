@@ -127,6 +127,11 @@
                             <label rsf:id="msg=assignment2.assignment_add.model_answer_display">Display model answer to student!!!!!</label>
                             <select rsf:id="modelAnswerDisplayRule"></select>
                             <p rsf:id="message-for:modelAnswerDisplayRule"></p>
+                            <div id="model_alert">
+                                <span style="display:none;" class="messageContent" rsf:id="model_warning" id="model_warning">
+                                If this assignment will be graded, select an existing Gradebook item or create a new one. Otherwise, select 'This assignment is not graded'.!!!!!!!!!!!!!!!
+                                </span>
+                            </div>
                         </li>
                     </ol>
                 </li>
@@ -442,17 +447,10 @@ jQuery(document).ready(function(){
 	
 	// Require Submissions checkbox
     var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
-	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
-		asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
-
-    	// if this assignment does not require submission, hide the TII display
-        if (tii_content) {
-          asnn2.showHideByCheckbox(this, tii_content);
-        }
-	});
     var acceptuntil = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
         jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
                 asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
+                asnn2.modelAnswerIntegrity();
 
         // if this assignment does not require submission, hide the TII display
         if (tii_content) {

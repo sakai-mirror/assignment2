@@ -765,6 +765,32 @@ var asnn2 = asnn2 || {};
             gradingOptions.removeClass("messageContentPadding");
         }
     };
+    
+    asnn2.modelAnswerIntegrity = function() {
+        var require_submissions = jQuery("input[name='page-replace\:\:require_submissions']").get(0).checked;
+        var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0).checked;
+        var accept_date = jQuery("input[name='page-replace\:\:require_accept_until']").get(0).checked;
+        if (require_submissions) {
+        }
+        else {
+            var madr = jQuery("select[name='page-replace\:\:modelAnswerDisplayRule-selection']");
+            var madrValue = madr.val();
+            var modelAlert = jQuery("#model_alert");
+            var modelWarningText = jQuery("#page-replace\\:\\:model_warning");
+            // probably a better way to do this than hard coding values
+            if (madrValue!="0" && madrValue!="1")
+            {
+                // display warning text, auto-select 'Immediately', and remove other options
+                modelAlert.addClass("messageConfirmation");
+                modelWarningText.show();
+                modelAlert.addClass("messageContentPadding");
+                madr.val('1');
+
+                // appending code used later
+                //madr.append('<option value="option5">option5</option>');
+            }
+        }
+    }
 
     /**
      * Setup the element for a Assignment Submission Version. This includes
