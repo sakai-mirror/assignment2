@@ -258,6 +258,9 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
               UIOutput.make(tofill, "resubmissions-allowed", resubmissionAllowedString);
           }
           
+          // for model answer
+          optionalParams.put(AssignmentConstants.MODEL_ANSWER_IS_INSTRUCTOR, permissionLogic.isUserAllowedToTakeInstructorAction(null, assignment.getContextId()));
+          
           // instructions widget
           asnnInstructionsRenderer.makeInstructions(tofill, "instructions:", assignment, false, false, false, optionalParams);
           

@@ -79,39 +79,64 @@
 		</fieldset>
 	</fieldset>
 	
-	<fieldset>
-		<legend rsf:id="msg=assignment2.assignment_add.assignment_details_legend">Assignment Details</legend>
-		<ol>
-			<li>
-				<label for="title" rsf:id="title_label" id="title_label"><span class="reqStar">*</span> Title</label> 
-				<input id="title" rsf:id="title" type="text" size="30" maxlength="100"/>
-				<span rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</span>
-			</li>
-			<li>
-				<label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
-				<p rsf:id="message-for:instructions"></p>
-				<div rsf:id="instructions:">
-					<textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
-					<!-- this should be the FCKEditor -->
-				</div>
-			</li>
-		</ol>
-	</fieldset>
-	
-	<fieldset id="attachmentsFieldset">
-		<legend>
-			<span rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</span>
-			<span><a rsf:id="add_attachments" class="thickbox">Add Attachments</a></span>
-		</legend>
-		<ol class="fragment-attachments-container" rsf:id="attachment_list:">
-			<li></li>
-		</ol> <!-- 
-		<ol>
-			<li>
-				
-			</li>
-		</ol> -->
-	</fieldset>
+        <fieldset>
+            <legend rsf:id="msg=assignment2.assignment_add.assignment_details_legend">Assignment Details</legend>
+            <ol>
+                <li>
+                    <label for="title" rsf:id="title_label" id="title_label"><span class="reqStar">*</span> Title</label> 
+                    <input id="title" rsf:id="title" type="text" size="30" maxlength="100"/>
+                    <span rsf:id="message-for:title">This is an example error: Adding an assignment requires a title</span>
+                </li>
+                <li>
+                    <label rsf:id="msg=assignment2.assignment_add.assignment_instructions" class="block">Assignment Instructions</label>
+                    <p rsf:id="message-for:instructions"></p>
+                    <div rsf:id="instructions:">
+                        <textarea name="something" cols="80" rows="20" wrap="virtual"></textarea>
+                        <!-- this should be the FCKEditor -->
+                    </div>
+                </li>
+                <li>
+                    <fieldset id="attachmentsFieldset">
+                        <span rsf:id="msg=assignment2.assignment_add.attachments_legend">Attachments</span>
+                        <span><a rsf:id="add_attachments" class="thickbox">Add Attachments</a></span>
+                        <ol class="fragment-attachments-container" rsf:id="attachment_list:">
+                            <li></li>
+                        </ol>
+                    </fieldset>
+                </li>
+                <li>
+                    <input id="modelAnswerEnabled" rsf:id="modelAnswerEnabled" type="checkbox" />
+                    <label for="model_answer" rsf:id="msg=assignment2.assignment_add.add_model_answer"> Add Model Answer!!!!!?</label>
+                    <ol id="model_answer_area">
+                        <li>
+                            <label rsf:id="msg=assignment2.assignment_add.model_answer_text" class="block">Model Answer Text</label>
+                            <p rsf:id="message-for:modelAnswerText"></p>
+                            <div rsf:id="modelAnswerText:">
+                                <textarea name="modelAnswerText" cols="80" rows="20" wrap="virtual"></textarea>
+                                <!-- this should be the FCKEditor -->
+                            </div>
+                            <fieldset id="modelAnswerFieldset">
+                                <span rsf:id="msg=assignment2.assignment_add.model_answer_attachments_legend">Model Answer Attachments!!!!!</span>
+                                <span><a rsf:id="model_add_attachments" class="thickbox">Add</a></span>
+                                <ol class="fragment-attachments-container" rsf:id="model_attachment_list:">
+                                    <li></li>
+                                </ol>
+                            </fieldset>
+                        </li>
+                        <li>
+                            <label rsf:id="msg=assignment2.assignment_add.model_answer_display">Display model answer to student!!!!!</label>
+                            <select rsf:id="modelAnswerDisplayRule"></select>
+                            <p rsf:id="message-for:modelAnswerDisplayRule"></p>
+                            <div id="model_alert">
+                                <span style="display:none;" class="messageContent" rsf:id="model_warning" id="model_warning">
+                                If this assignment will be graded, select an existing Gradebook item or create a new one. Otherwise, select 'This assignment is not graded'.!!!!!!!!!!!!!!!
+                                </span>
+                            </div>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+        </fieldset>
 	
 	   <fieldset>
         <legend rsf:id="msg=assignment2.assignment_add.other_legend">Submission Details</legend>
@@ -407,6 +432,7 @@ jQuery(document).ready(function(){
     jQuery(due_date).click(function(){
         asnn2.showHideByCheckbox(this, due_date_container);
         asnn2editpage.tii_dueDateOptions();
+        asnn2.modelAnswerIntegrity();
     });
 
     asnn2.showHideByCheckbox(due_date, due_date_container);
@@ -416,23 +442,17 @@ jQuery(document).ready(function(){
     var accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
     jQuery(accept_until).click(function(){
         asnn2.showHideByCheckbox(this, accept_until_container);
+        asnn2.modelAnswerIntegrity();
     });
 
 	asnn2.showHideByCheckbox(accept_until, accept_until_container);
 	
 	// Require Submissions checkbox
     var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
-	jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
-		asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
-
-    	// if this assignment does not require submission, hide the TII display
-        if (tii_content) {
-          asnn2.showHideByCheckbox(this, tii_content);
-        }
-	});
     var acceptuntil = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
         jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
                 asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
+                asnn2.modelAnswerIntegrity();
 
         // if this assignment does not require submission, hide the TII display
         if (tii_content) {
@@ -441,6 +461,14 @@ jQuery(document).ready(function(){
         });
 	var requireSubInput = jQuery("input[name='page-replace\:\:require_submissions']").get(0);
     asnn2.showHideSiblings(requireSubInput.parentNode.parentNode, requireSubInput.checked);
+    
+    var modelAnswerEnabled = jQuery("input[name='page-replace\:\:modelAnswerEnabled']").get(0);
+    var modelAnswerArea = jQuery('#model_answer_area').get(0);
+    jQuery(modelAnswerEnabled).click(function(){
+        asnn2.showHideByCheckbox(this, modelAnswerArea);
+    });
+    asnn2.showHideByCheckbox(modelAnswerEnabled,modelAnswerArea);
+
 
     // show/hide the turnitin section upon load
     if (tii_content) {
@@ -487,6 +515,7 @@ jQuery(document).ready(function(){
     }
 
     asnn2.showHideGradeSettingError();
+    asnn2.modelAnswerIntegrity();
 });
 //]]>
 </script>

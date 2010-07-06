@@ -194,6 +194,9 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
             UIOutput.make(tofill, "resubmissions-allowed", resubmissionAllowedString);
         }
         
+        // for model answer
+        optionalParamMap.put(AssignmentConstants.MODEL_ANSWER_IS_INSTRUCTOR, permissionLogic.isUserAllowedToTakeInstructorAction(null, assignment.getContextId()));
+        
         //render the instructions
         asnnInstructionsRenderer.makeInstructions(tofill, "instructions_section:", assignment, 
                 false, false, false, optionalParamMap);

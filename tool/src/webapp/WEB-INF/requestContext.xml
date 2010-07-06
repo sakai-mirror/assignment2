@@ -106,6 +106,7 @@
         <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
         <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
         <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
+        <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic"></property>
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"

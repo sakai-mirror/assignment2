@@ -266,8 +266,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
         } 
 
+        // for model answer
+        Map<String, Object> optionalParamMap = new HashMap<String, Object>();
+        optionalParamMap.put(AssignmentConstants.MODEL_ANSWER_IS_INSTRUCTOR, permissionLogic.isUserAllowedToTakeInstructorAction(null, assignment.getContextId()));
         // Instructions
-        asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
+        asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false, optionalParamMap);
 
         // Tagging info, if appropriate
         tagsRenderer.makeTagInformation(tofill, "tagging-info-grading:", assignment, false, false, false);

@@ -3,6 +3,7 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -117,6 +118,11 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
     public void setStudentSubmissionVersionFlowBean(StudentSubmissionVersionFlowBean studentSubmissionVersionFlowBean) {
         this.studentSubmissionVersionFlowBean = studentSubmissionVersionFlowBean;
     }
+    
+    private AssignmentPermissionLogic permissionLogic;
+    public void setPermissionLogic(AssignmentPermissionLogic permissionLogic) {
+        this.permissionLogic = permissionLogic;
+    }
 
     /**
      * Renders the actual editing area for the Assignment Submission.  The 
@@ -218,8 +224,14 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         // display instructions if it isn't the student preview. they do display if student is editing
         // or instructor is previewing
         if (!studentPreviewSubmission) {
+            // for model answer
+            Map<String, Object> optionalParamMap = new HashMap<String, Object>();
+            optionalParamMap.put(AssignmentConstants.MODEL_ANSWER_IS_INSTRUCTOR, permissionLogic.isUserAllowedToTakeInstructorAction(null, assignment.getContextId()));
+            optionalParamMap.put(AssignmentConstants.MODEL_ANSWER_IS_PREVIEW, preview);
+            optionalParamMap.put(AssignmentConstants.ASSIGNMENT_SUBMISSION, assignmentSubmission);
+            
             // render the instructions
-            asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false);
+            asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false, optionalParamMap);
             
             // render the assignment tags
             tagsRenderer.makeTagInformation(joint, "tagging-info-edit:", assignment, false, false, false);

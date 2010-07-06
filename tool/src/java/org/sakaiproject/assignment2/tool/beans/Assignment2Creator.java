@@ -53,6 +53,8 @@ public class Assignment2Creator {
         togo.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
         togo.setAttachmentSet(new HashSet<AssignmentAttachment>());
         togo.setNumSubmissionsAllowed(1);
+        togo.setModelAnswerEnabled(false);
+        togo.setModelAnswerDisplayRule(AssignmentConstants.MODEL_AFTER_STUDENT_SUBMITS);
 
         //Setting up Dates
         Calendar cal = Calendar.getInstance();

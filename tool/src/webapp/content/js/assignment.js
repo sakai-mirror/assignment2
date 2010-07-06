@@ -765,6 +765,87 @@ var asnn2 = asnn2 || {};
             gradingOptions.removeClass("messageContentPadding");
         }
     };
+    
+    asnn2.modelAnswerIntegrity = function() {
+
+        var require_submissions = jQuery("input[name='page-replace\:\:require_submissions']").get(0).checked;
+        var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0).checked;
+        var accept_date = jQuery("input[name='page-replace\:\:require_accept_until']").get(0).checked;
+        var madr = jQuery("select[name='page-replace\:\:modelAnswerDisplayRule-selection']");
+
+        if (!asnn2.modelDispSubOpts) {                          
+            asnn2.modelDispSubOpts = {}                         
+            for (var i = 0; i < 6; i++) {                   
+                asnn2.modelDispSubOpts[i] = madr.find("option[value='"+i+"']").clone();
+            }
+        }
+
+        madr.children().remove();                               
+
+        var addMadrOptions = function() {                       
+            for (var i = 0; i < arguments.length; i++) {        
+                var newopt = asnn2.modelDispSubOpts[arguments[i]].clone();
+                madr.append(newopt);                    
+            }
+        }
+
+        // See the design spec to make sense of these combinations
+        if (!require_submissions && !due_date && !accept_date) {
+            //alert("Null set");
+            addMadrOptions(0,1);
+        }
+        else if (require_submissions && !due_date && !accept_date) {
+            //alert("R");
+            addMadrOptions(0,1,2,3);
+        }
+        else if (!require_submissions && due_date && !accept_date) {
+            //alert("D"); 
+            addMadrOptions(0,1,4);            
+        }
+        else if (!require_submissions && !due_date && accept_date) {
+            //alert("Null A"); same as Null set because of the way you get here.
+            addMadrOptions(0,1);
+        }       
+        else if (require_submissions && due_date && !accept_date) {
+            //alert("RD");
+            addMadrOptions(0,1,2,3,4);
+        }
+        else if (require_submissions && !due_date && accept_date) {
+            //alert("RA"); 
+            addMadrOptions(0,1,2,3,5);
+        }       
+        else if (!require_submissions && due_date && accept_date) {
+            //alert("NULL DA"); same as D
+            addMadrOptions(0,1,4);
+        }
+        else if (require_submissions && due_date && accept_date) {
+            //alert("RDA");
+            addMadrOptions(0,1,2,3,4,5);
+        }   
+
+        /*
+            if (require_submissions) {
+            }
+            else {
+                var madr = jQuery("select[name='page-replace\:\:modelAnswerDisplayRule-selection']");
+                var madrValue = madr.val();
+                var modelAlert = jQuery("#model_alert");
+                var modelWarningText = jQuery("#page-replace\\:\\:model_warning");
+                // probably a better way to do this than hard coding values
+                if (madrValue!="0" && madrValue!="1")
+                {
+                    // display warning text, auto-select 'Immediately', and remove other options
+                    modelAlert.addClass("messageConfirmation");
+                    modelWarningText.show();
+                    modelAlert.addClass("messageContentPadding");
+                    madr.val('1');
+
+                    // appending code used later
+                    //madr.append('<option value="option5">option5</option>');
+                }
+            }
+         */
+    }
 
     /**
      * Setup the element for a Assignment Submission Version. This includes
