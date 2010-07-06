@@ -625,6 +625,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UISelect.make(form, "modelAnswerDisplayRule", model_type_values,
                 model_type_labels, assignment2OTP + ".modelAnswerDisplayRule").setMessageKeys();
         
+        UIMessage.make(tofill, "model_warning_submission", "assignment2.assignment_add.model_answer_warning_submission");
+        UIMessage.make(tofill, "model_warning_due_date", "assignment2.assignment_add.model_answer_warning_due_date");
+        UIMessage.make(tofill, "model_warning_accept_until", "assignment2.assignment_add.model_answer_warning_accept_until");
+        
         // Model Answer Attachments
         UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAnswerAttachmentRefs", 
                 assignment.getModelAnswerAttachmentRefs());
