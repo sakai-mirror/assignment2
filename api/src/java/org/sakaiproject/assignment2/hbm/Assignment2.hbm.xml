@@ -100,6 +100,17 @@
         <property name="contentReviewRef" type="java.lang.String" >
             <column name="CONTENT_REVIEW_REF" length="255" not-null="false" />
         </property>
+        <!-- Whether this assignment is using a model answer -->
+        <property name="modelAnswerEnabled" type="boolean">
+            <column name="MODEL_ANSWER_ENABLED" />
+        </property>
+        <!-- Model Answer Text -->
+        <property name="modelAnswerText" type="text">
+            <column name="MODEL_ANSWER_TEXT" />
+        </property>
+        <property name="modelAnswerDisplayRule" type="integer">
+            <column name="MODEL_ANSWER_DISPLAY_RULE" />
+        </property>
         <!-- assignment creator  -->
         <property name="creator" type="java.lang.String" >
             <column name="CREATOR" length="99" not-null="true" />
@@ -126,10 +137,15 @@
 	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentSubmission"/>            
     		</set>
         
-        <set name="attachmentSet" lazy="true" inverse="true" cascade="none">
-	        <key column="ASSIGNMENT_ID"/>                        
-	        <one-to-many class="org.sakaiproject.assignment2.model.AssignmentAttachment"/>            
-    		</set>
+        <set name="attachmentSet" lazy="true" where="ASSIGN_ATTACH_TYPE = 'A'" inverse="true" cascade="none">
+            <key column="ASSIGNMENT_ID"/>                        
+            <one-to-many class="org.sakaiproject.assignment2.model.AssignmentAttachment"/>            
+        </set>
+        
+        <set name="modelAnswerAttachmentSet" lazy="true" where="ASSIGN_ATTACH_TYPE = 'M'" inverse="true" cascade="none">
+            <key column="ASSIGNMENT_ID"/>                        
+            <one-to-many class="org.sakaiproject.assignment2.model.ModelAnswerAttachment"/>            
+        </set>
               
         <set name="assignmentGroupSet" lazy="true" inverse="true" cascade="none">
 	        <key column="ASSIGNMENT_ID"/>                        
@@ -141,6 +157,7 @@
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
+             left join fetch assignment.modelAnswerAttachmentSet
              where assignment.id in (:assignmentIdList)]]>
   	</query>
     
@@ -148,6 +165,7 @@
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
+             left join fetch assignment.modelAnswerAttachmentSet
              where assignment.contextId = :contextId
              order by assignment.sortIndex]]>
   	</query>
@@ -156,6 +174,7 @@
     <![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
              left join fetch assignment.assignmentGroupSet
              left join fetch assignment.attachmentSet
+             left join fetch assignment.modelAnswerAttachmentSet
              where assignment.id = :assignmentId]]>
   	</query>
   	

@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
@@ -121,6 +122,35 @@ public class Assignment2Validator  {
             
             if (!checkOptionSelected) {
                 messages.addMessage(new TargettedMessage("assignment2.turnitin.asnnedit.error.check_against"));
+                valid = false;
+            }
+        }
+        
+        // model answer stuff
+        if (assignment.isModelAnswerEnabled())
+        {
+            if ((assignment.getModelAnswerText()==null || "".equals(assignment.getModelAnswerText().trim())) && (assignment.getModelAnswerAttachmentSet()==null || assignment.getModelAnswerAttachmentSet().isEmpty()))
+            {
+                messages.addMessage(new TargettedMessage("assignment2.model_answer_empty"));
+                valid = false;
+            }
+            int madr = assignment.getModelAnswerDisplayRule();
+            if (!assignment.isRequiresSubmission())
+            {
+                if (madr!=AssignmentConstants.MODEL_NEVER && madr!=AssignmentConstants.MODEL_IMMEDIATELY)
+                {
+                    messages.addMessage(new TargettedMessage("assignment2.model_answer_invalid_submission"));
+                    valid = false;
+                }
+            }
+            if (assignment.getDueDate()==null && madr==AssignmentConstants.MODEL_AFTER_DUE_DATE)
+            {
+                messages.addMessage(new TargettedMessage("assignment2.model_answer_invalid_due_date"));
+                valid = false;
+            }
+            if (assignment.getAcceptUntilDate()==null && madr==AssignmentConstants.MODEL_AFTER_ACCEPT_DATE)
+            {
+                messages.addMessage(new TargettedMessage("assignment2.model_answer_invalid_accept_date"));
                 valid = false;
             }
         }

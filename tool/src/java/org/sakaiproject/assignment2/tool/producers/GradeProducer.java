@@ -266,8 +266,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             UIMessage.make(form, "non-electronic-submission", "assignment2.assignment_grade.nonelectronic_sub");
         } 
 
+        // for model answer
+        Map<String, Object> optionalParamMap = new HashMap<String, Object>();
+        optionalParamMap.put(AssignmentConstants.MODEL_ANSWER_IS_INSTRUCTOR, permissionLogic.isUserAllowedToTakeInstructorAction(null, assignment.getContextId()));
         // Instructions
-        asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false);
+        asnnInstructionsRenderer.makeInstructions(tofill, "assignment-instructions:", assignment, true, true, false, optionalParamMap);
 
         // Tagging info, if appropriate
         tagsRenderer.makeTagInformation(tofill, "tagging-info-grading:", assignment, false, false, false);
@@ -524,20 +527,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
         form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
         // hidden field for group id
-        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", "submit");
+        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", AssignmentSubmissionBean.SUBMIT);
         
         UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
-        "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
+            "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
         UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmitOption}");
-        //UICommand.make(form, "preview", UIMessage.make("assignment2.assignment_grade.preview"), "#{AssignmentSubmissionBean.processActionGradePreview}");
         UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
-        
-        
-     /*   List<AssignmentSubmission> submissions = submissionLogic.getViewableSubmissionsWithHistoryForAssignmentId(assignmentId, params.groupId);
-        UIInitBlock.make(form, "asnn2gradeview-init", "asnn2gradeview.init", 
-                new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
-                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, 1, orderBy, ascending, gradesReleased, params.pageIndex});
-*/
+
     }
     
     private void makeSaveGradingDialog(UIContainer tofill) {

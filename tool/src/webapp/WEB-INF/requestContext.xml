@@ -106,6 +106,7 @@
         <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
         <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
         <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
+        <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic"></property>
     </bean>
     
     <bean id="AsnnSubmissionVersionRenderer"
@@ -323,6 +324,9 @@
 	  <property name="messageLocator" ref="messageLocator" />
 	  <property name="uploadBean" ref="UploadBean" />
 	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" /> 
+	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
+	  <property name="messages" ref="targettedMessageList" />
+	  <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
 	</bean>
   
   <bean class="org.sakaiproject.assignment2.tool.producers.PermissionsProducer">

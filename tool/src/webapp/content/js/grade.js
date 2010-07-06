@@ -104,23 +104,11 @@ asnn2gradeview.isGradingChanged = function()
     for ( var name in FCKeditorAPI.Instances )
     {
         var oEditor = FCKeditorAPI.Instances[ name ];
-        oEditor.UpdateLinkedField();
-    }
-    
-    // Check all feedback and feedback notes for all versions.
-    jQuery("textarea").each(function() {
-        var that = jQuery(this);
-        origname = that.attr('name');
-        fossilname = origname + "-fossil";
-        var currentFeedbackText = asnn2gradeview.trimHtmlInput(that.val(), false);
-        var previousFeedbackText = asnn2gradeview.trimHtmlInput(jQuery("input[name='"+fossilname+"']").val(), true);
-        if (currentFeedbackText == null && previousFeedbackText != null
-                || currentFeedbackText != null && previousFeedbackText == null
-                || currentFeedbackText != previousFeedbackText)
-        {
+        if (oEditor.IsDirty()) {
             gradingChanged = true;
         }
-    });
+    }
+    
     
     var attachments = {};
     jQuery("input[name$='attachments-input']").each(function() {
@@ -162,9 +150,7 @@ asnn2gradeview.isGradingChanged = function()
         currentGradePoints=asnn2gradeview.trimHtmlInput(currentGradePoints,false);
         var previousGradePoints = $("input[name='page-replace\:\:grade_input-fossil']").val();
         previousGradePoints = asnn2gradeview.trimHtmlInput(previousGradePoints,true);
-        if (currentGradePoints == null && previousGradePoints != null
-                || currentGradePoints != null && previousGradePoints == null
-                || currentGradePoints != previousGradePoints)
+        if (currentGradePoints !== previousGradePoints)
         {
             gradingChanged = true;
         }
@@ -175,9 +161,7 @@ asnn2gradeview.isGradingChanged = function()
             currentGradeComment=asnn2gradeview.trimHtmlInput(currentGradeComment,false);
             var previousGradeComment = $("input[name='page-replace\:\:grade_comment_input-fossil']").val();
             previousGradeComment = asnn2gradeview.trimHtmlInput(previousGradeComment,true);
-            if (currentGradeComment == null && previousGradeComment != null
-                    || currentGradeComment != null && previousGradeComment == null
-                    || currentGradeComment != previousGradeComment)
+            if (currentGradeComment !== previousGradeComment)
             {
                 gradingChanged = true;
             }

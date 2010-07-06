@@ -126,6 +126,44 @@ public class AssignmentConstants {
      * Submissions will be non-electronic
      */
     public final static int SUBMIT_NON_ELECTRONIC = 3;
+    
+    // Model Answer Types
+    /**
+     * Never
+     */
+    public final static int MODEL_NEVER = 0;
+    /**
+     * Immediately
+     */
+    public final static int MODEL_IMMEDIATELY = 1;
+    /**
+     * After student submits assignment
+     */
+    public final static int MODEL_AFTER_STUDENT_SUBMITS = 2;
+    /**
+     * After feedback is released to student
+     */
+    public final static int MODEL_AFTER_FEEDBACK_RELEASED = 3;
+    /**
+     * After due date has passed
+     */
+    public final static int MODEL_AFTER_DUE_DATE = 4;
+    /**
+     * After accept until date has passed
+     */
+    public final static int MODEL_AFTER_ACCEPT_DATE = 5;
+    /**
+     * Constant for checking if the user is an instructor
+     */
+    public final static String MODEL_ANSWER_IS_INSTRUCTOR = "isInstructor";
+    /**
+     * Constant for checking if the user is on a preview screen
+     */
+    public final static String MODEL_ANSWER_IS_PREVIEW = "isPreview";
+    /**
+     * Assignment submission object
+     */
+    public final static String ASSIGNMENT_SUBMISSION = "assignmentSubmission";
 
     // Assignment status
     /**

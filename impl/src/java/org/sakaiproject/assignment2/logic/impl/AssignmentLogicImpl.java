@@ -54,7 +54,9 @@ import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
 import org.sakaiproject.assignment2.logic.utils.ComparatorsUtils;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
+import org.sakaiproject.assignment2.model.AssignmentAttachmentBase;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
+import org.sakaiproject.assignment2.model.ModelAnswerAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
@@ -264,6 +266,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         Set<AssignmentAttachment> attachToDelete = new HashSet<AssignmentAttachment>();
+        Set<ModelAnswerAttachment> modelAnswerAttachToDelete = new HashSet<ModelAnswerAttachment>();
         Set<AssignmentGroup> groupsToDelete = new HashSet<AssignmentGroup>();
 
         if (isNewAssignment) {
@@ -284,7 +287,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             assignment.setModifiedBy(currentUserId);
             assignment.setModifiedDate(new Date());
 
-            attachToDelete = identifyAttachmentsToDelete(existingAssignment, assignment);
+            attachToDelete = identifyAttachmentsToDelete(existingAssignment.getAttachmentSet(), assignment.getAttachmentSet());
+            modelAnswerAttachToDelete = identifyAttachmentsToDelete(existingAssignment.getModelAnswerAttachmentSet(), 
+                    assignment.getModelAnswerAttachmentSet());
             groupsToDelete = identifyGroupsToDelete(existingAssignment, assignment);
         }
 
@@ -295,18 +300,64 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 groupSet = assignment.getAssignmentGroupSet();
             }
 
-            Set<AssignmentAttachment> attachToCreate = identifyAttachmentsToCreate(existingAssignment, assignment);
+            Set<AssignmentAttachment> attachToCreate = identifyAttachmentsToCreate(
+                    existingAssignment == null ? null : existingAssignment.getAttachmentSet(), 
+                    assignment == null ? null : assignment.getAttachmentSet());
+            
+            Set<ModelAnswerAttachment> modelAnswerAttachToCreate = identifyAttachmentsToCreate(
+                    existingAssignment == null ? null : existingAssignment.getModelAnswerAttachmentSet(), 
+                    assignment == null ? null : assignment.getModelAnswerAttachmentSet());
 
             // make sure the assignment has been set for the attachments and groups
-            populateAssignmentForAttachmentAndGroupSets(attachToCreate, groupSet, assignment);
+            populateAssignmentForAttachmentAndGroupSets(modelAnswerAttachToCreate, 
+                    attachToCreate, groupSet, assignment);
 
             // ensure that these objects are ready for saving
-            validateAttachmentsAndGroups(attachToCreate, groupSet);
+            validateAttachmentsAndGroups(modelAnswerAttachToCreate, attachToCreate, groupSet);
 
+            // TODO ASNN-530 Where is this really happening and why doesn't the null
+            // error occur with regular attachments? 
+            /*
+            if (assignment.getModelAnswerAttachmentSet() == null) {
+                assignment.setModelAnswerAttachmentSet(new HashSet<ModelAnswerAttachment>());
+            }
+            if (assignment.getAttachmentSet() == null) {
+                assignment.setAttachmentSet(new HashSet<AssignmentAttachment>());
+            }
+            if (assignment.getAssignmentGroupSet() == null) {
+                assignment.setAssignmentGroupSet(new HashSet<AssignmentGroup>());
+            }
+            */
             Set<Assignment2> assignSet = new HashSet<Assignment2>();
             assignSet.add(assignment);
 
+            
             // to avoid the WARN: Nothing to update messages...
+            List<Set> setsToSave = new ArrayList<Set>();
+            
+            if (!attachToCreate.isEmpty()) {
+                setsToSave.add(attachToCreate);
+            }
+            if (!groupSet.isEmpty()) {
+                setsToSave.add(groupSet);
+            }
+            if (!modelAnswerAttachToCreate.isEmpty()) {
+                setsToSave.add(modelAnswerAttachToCreate);
+            }
+            
+            if (setsToSave.size() > 0) {
+                Set[] toSave = new Set[setsToSave.size()+1];
+                toSave[0] = assignSet;
+                for (int i = 1; i <= setsToSave.size(); i++) {
+                    toSave[i] = setsToSave.get(i-1);
+                }
+                dao.saveMixedSet(toSave);
+            }
+            else {
+                dao.save(assignment);
+            }
+            
+            /*
             if (!attachToCreate.isEmpty() && !groupSet.isEmpty()) {
                 dao.saveMixedSet(new Set[] {assignSet, attachToCreate, groupSet});
             } else if (!attachToCreate.isEmpty()) {
@@ -316,6 +367,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             } else {
                 dao.save(assignment);
             }
+            */
 
             if (log.isDebugEnabled()) {
                 if (isNewAssignment) {
@@ -327,8 +379,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
             if (!isNewAssignment) {
                 if ((attachToDelete != null && !attachToDelete.isEmpty()) ||
-                        (groupsToDelete != null && !groupsToDelete.isEmpty())) {
-                    dao.deleteMixedSet(new Set[] {attachToDelete, groupsToDelete});
+                        (groupsToDelete != null && !groupsToDelete.isEmpty()) ||
+                        (modelAnswerAttachToDelete != null && !modelAnswerAttachToDelete.isEmpty())) {
+                    dao.deleteMixedSet(new Set[] {attachToDelete, groupsToDelete, modelAnswerAttachToDelete});
                     if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
                 }
             }
@@ -601,7 +654,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         return AssignmentConstants.STATUS_OPEN;	
     }
 
-    private void populateAssignmentForAttachmentAndGroupSets(Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet, Assignment2 assign) {
+    private void populateAssignmentForAttachmentAndGroupSets(Set<ModelAnswerAttachment> modelAnswerAttachmentSet, Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet, Assignment2 assign) {
+        if (modelAnswerAttachmentSet != null && !modelAnswerAttachmentSet.isEmpty()) {
+            for (ModelAnswerAttachment attach : modelAnswerAttachmentSet) {
+                if (attach != null) {
+                    attach.setAssignment(assign);
+                }
+            }
+        }
         if (attachSet != null && !attachSet.isEmpty()) {
             for (AssignmentAttachment attach : attachSet) {
                 if (attach != null) {
@@ -618,20 +678,23 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
     }
 
-    private Set<AssignmentAttachment> identifyAttachmentsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
-        Set<AssignmentAttachment> attachToRemove = new HashSet<AssignmentAttachment>();
+    private Set identifyAttachmentsToDelete(Set existingAttachments, Set updatedAttachments) {
+        Set attachToRemove = new HashSet();
 
         // make a set of attachment references in case the id wasn't populated
         // properly
         Set<String> updatedAttachSetRefs = new HashSet<String>();
-        if (updatedAssign != null && updatedAssign.getAttachmentSet() != null) {
-            for (AssignmentAttachment attach : updatedAssign.getAttachmentSet()) {
+        if (updatedAttachments != null) {
+            for (Object next : updatedAttachments) {
+                AssignmentAttachmentBase attach = (AssignmentAttachmentBase) next;
                 updatedAttachSetRefs.add(attach.getAttachmentReference());
             }
         }
 
-        if (updatedAssign != null && existingAssign != null && existingAssign.getAttachmentSet() != null) {
-            for (AssignmentAttachment attach : existingAssign.getAttachmentSet()) {
+        if (updatedAttachments != null && existingAttachments != null) {
+            for (Object next : existingAttachments) {
+            //for (AssignmentAttachment attach : existingAssign.getAttachmentSet()) {
+                AssignmentAttachmentBase attach = (AssignmentAttachmentBase) next;
                 if (attach != null) {
                     if (!updatedAttachSetRefs.contains(attach.getAttachmentReference())) {
                         // we need to delete this attachment
@@ -653,24 +716,24 @@ public class AssignmentLogicImpl implements AssignmentLogic{
      * already an attachment in the given existingAssignment attachment set with the same
      * attachmentReference as each attachment in the updatedAssignment. 
      */
-    private Set<AssignmentAttachment> identifyAttachmentsToCreate(
-            Assignment2 existingAssignment, Assignment2 updatedAssignment)
+    private Set identifyAttachmentsToCreate(
+            Set existingAttachments, Set updatedAttachments)
             {
-        Set<AssignmentAttachment> attachToCreate = new HashSet<AssignmentAttachment>();
+        Set attachToCreate = new HashSet();
 
         // make a set of attachment references in case the id wasn't populated
         // properly
         Set<String> existingAttachSetRefs = new HashSet<String>();
-        if (existingAssignment != null &&
-                existingAssignment.getAttachmentSet() != null) {
-            for (AssignmentAttachment attach : existingAssignment.getAttachmentSet()) {
+        if (existingAttachments != null) {
+            for (Object next : existingAttachments) {
+                AssignmentAttachmentBase attach = (AssignmentAttachmentBase) next;
                 existingAttachSetRefs.add(attach.getAttachmentReference());
             }
         }
 
-        if (updatedAssignment != null && 
-                updatedAssignment.getAttachmentSet() != null) {
-            for (AssignmentAttachment attach : updatedAssignment.getAttachmentSet()) {
+        if (updatedAttachments != null) {
+            for (Object next : updatedAttachments) {
+                AssignmentAttachmentBase attach = (AssignmentAttachmentBase) next; 
                 if (attach != null) {
                     if (!existingAttachSetRefs.contains(attach.getAttachmentReference())) {
                         attachToCreate.add(attach);
@@ -680,7 +743,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         }
 
         return attachToCreate;
-            }
+    }
 
     private Set<AssignmentGroup> identifyGroupsToDelete(Assignment2 existingAssign, Assignment2 updatedAssign) {
         Set<AssignmentGroup> groupsToRemove = new HashSet<AssignmentGroup>();
@@ -882,7 +945,19 @@ public class AssignmentLogicImpl implements AssignmentLogic{
      * @param groupSet
      * @throws IllegalArgumentException if any group or attachment is invalid
      */
-    private void validateAttachmentsAndGroups(Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet) {
+    private void validateAttachmentsAndGroups(Set<ModelAnswerAttachment> modelAnswerAttachSet, Set<AssignmentAttachment> attachSet, Set<AssignmentGroup> groupSet) {
+        
+        if (modelAnswerAttachSet != null) {
+            for (ModelAnswerAttachment attach : modelAnswerAttachSet) {
+                if (!attach.isAttachmentValid()) {
+                    throw new IllegalArgumentException("At least one attachment associated " +
+                            "with the model view answer data is missing necessary data. Check to see " +
+                    "if your attachmentReference is populated.");
+                }
+            }
+
+        }
+        
         // ensure that the necessary data was populated for the attachments
         if (attachSet != null) {
             for (AssignmentAttachment attach : attachSet) {

@@ -390,7 +390,10 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", 
                 assignment.getAssignmentAttachmentRefs());
         attachmentInput.mustapply = true;
-        attachmentInputEvolver.evolveAttachment(attachmentInput, null);
+        
+        String elementId = "reg_attachments";
+        
+        attachmentInputEvolver.evolveAttachment(attachmentInput, elementId);
 
         UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
         if (assignment.getAssignmentAttachmentRefs() != null && assignment.getAssignmentAttachmentRefs().length > 0) {
@@ -400,7 +403,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInternalLink addAttachLink = UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
                 new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
                         Boolean.TRUE, 500, 700, OTPKey));
-        addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(null)));
+        addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)));
 
         /********
          * Require Submissions
@@ -589,6 +592,57 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         //Notifications
         UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
+        
+        // Supplemental Information - Model Answer
+        UIBoundBoolean.make(form, "modelAnswerEnabled", assignment2OTP + ".modelAnswerEnabled");
+        UIOutput model_container = UIOutput.make(form, "model_answer_container");
+        Boolean model_answer_checked = assignment.isModelAnswerEnabled();
+        if (!model_answer_checked){
+            model_container.decorators = display_none_list;
+        }
+        //Rich Text Input
+        UIInput modelAnswerText = UIInput.make(form, "modelAnswerText:", assignment2OTP + ".modelAnswerText");
+        modelAnswerText.mustapply = Boolean.FALSE;
+        richTextEvolver.evolveTextInput(modelAnswerText);
+        
+        //Model Answer Types
+        String[] model_type_values = new String[] {
+                String.valueOf(AssignmentConstants.MODEL_NEVER),
+                String.valueOf(AssignmentConstants.MODEL_IMMEDIATELY),
+                String.valueOf(AssignmentConstants.MODEL_AFTER_STUDENT_SUBMITS),
+                String.valueOf(AssignmentConstants.MODEL_AFTER_FEEDBACK_RELEASED),
+                String.valueOf(AssignmentConstants.MODEL_AFTER_DUE_DATE),
+                String.valueOf(AssignmentConstants.MODEL_AFTER_ACCEPT_DATE)
+        };
+        String[] model_type_labels = new String[] {
+                "assignment2.model_type." + String.valueOf(AssignmentConstants.MODEL_NEVER),
+                "assignment2.model_type." + String.valueOf(AssignmentConstants.MODEL_IMMEDIATELY),
+                "assignment2.model_type." + String.valueOf(AssignmentConstants.MODEL_AFTER_STUDENT_SUBMITS),
+                "assignment2.model_type." + String.valueOf(AssignmentConstants.MODEL_AFTER_FEEDBACK_RELEASED),
+                "assignment2.model_type." + String.valueOf(AssignmentConstants.MODEL_AFTER_DUE_DATE),
+                "assignment2.model_type." + String.valueOf(AssignmentConstants.MODEL_AFTER_ACCEPT_DATE)
+        };
+        UISelect.make(form, "modelAnswerDisplayRule", model_type_values,
+                model_type_labels, assignment2OTP + ".modelAnswerDisplayRule").setMessageKeys();
+        
+        // Model Answer Attachments
+        UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAnswerAttachmentRefs", 
+                assignment.getModelAnswerAttachmentRefs());
+        modelAttachmentInput.mustapply = true;
+        
+        String modelElementId = "model_attachment";
+        
+        attachmentInputEvolver.evolveAttachment(modelAttachmentInput, modelElementId);
+
+        UIOutput modelNoAttach = UIOutput.make(form, "model_no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
+        if (assignment.getModelAnswerAttachmentRefs() != null && assignment.getModelAnswerAttachmentRefs().length > 0) {
+            modelNoAttach.decorate(new UIFreeAttributeDecorator("style", "display:none;"));
+        }
+
+        UIInternalLink modelAddAttachLink = UIInternalLink.make(form, "model_add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
+                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                        Boolean.TRUE, 500, 700, OTPKey));
+        modelAddAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(modelElementId)));
 
         //Post Buttons
         UICommand postAssign = UICommand.make(form, "post_assignment", UIMessage.make("assignment2.assignment_add.post"), "AssignmentAuthoringBean.processActionPost");

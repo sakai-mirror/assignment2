@@ -36,6 +36,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentAttachment;
 import org.sakaiproject.assignment2.model.FeedbackAttachment;
+import org.sakaiproject.assignment2.model.ModelAnswerAttachment;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.beans.SessionCache;
@@ -102,6 +103,27 @@ public class AttachmentListRenderer {
             }
         }
         makeAttachment(tofill, divID, currentViewID, attRefPropertiesMap, optionalParams);
+    }
+    
+    /**
+     * Use this for rendering attachments from an Assignment2 assignment
+     * object. 
+     * 
+     * @param tofill
+     * @param divID
+     * @param currentViewID
+     * @param aaSet
+     * @param optionalParams optional extra information that might be useful for rendering the assignment info.
+     * ie, you may need extended privileges for viewing the attachments so you could pass that info here
+     */
+    public void makeAttachmentFromModelAssignmentAttachmentSet(UIContainer tofill, String divID, String currentViewID, Set<ModelAnswerAttachment> maaSet, Map<String, Object> optionalParams) {
+        Map<String, Map> mattRefPropertiesMap = new HashMap<String, Map>();
+        if (maaSet != null){
+            for (ModelAnswerAttachment maa : maaSet) {
+                mattRefPropertiesMap.put(maa.getAttachmentReference(), maa.getProperties());
+            }
+        }
+        makeAttachment(tofill, divID, currentViewID, mattRefPropertiesMap, optionalParams);
     }
     
     /**

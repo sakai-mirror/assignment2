@@ -47,6 +47,14 @@ h2 span.highlight {
     margin-left:5px;
 }
 
+.listHier tr.uploadHighlight {
+	background-color: lightyellow;
+}
+
+.listHier tr:hover.uploadHighlight {
+	background-color: lightyellow;
+}
+
 /* override the sakai "gray" with black */
 h4 {
     color: #000;
