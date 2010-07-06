@@ -766,11 +766,11 @@ var asnn2 = asnn2 || {};
         }
     };
     
-    asnn2.modelAnswerIntegrity = function() {
-
+    asnn2.modelAnswerIntegrity = function(checkTrigger) {
         var require_submissions = jQuery("input[name='page-replace\:\:require_submissions']").get(0).checked;
         var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0).checked;
         var accept_date = jQuery("input[name='page-replace\:\:require_accept_until']").get(0).checked;
+        var modelAnswerEnabled = jQuery("input[name='page-replace\:\:modelAnswerEnabled']").get(0).checked;
         var madr = jQuery("select[name='page-replace\:\:modelAnswerDisplayRule-selection']");
 
         if (!asnn2.modelDispSubOpts) {                          
@@ -780,6 +780,10 @@ var asnn2 = asnn2 || {};
             }
         }
 
+        // grab the current value of the dropdown before we remove the options
+        var madrVal = madr.val();
+        
+        // remove all options from the dropdown before we repopulate it
         madr.children().remove();                               
 
         var addMadrOptions = function() {                       
@@ -821,30 +825,63 @@ var asnn2 = asnn2 || {};
         else if (require_submissions && due_date && accept_date) {
             //alert("RDA");
             addMadrOptions(0,1,2,3,4,5);
-        }   
-
-        /*
-            if (require_submissions) {
+        }
+        // set the dropdown to the previous value after repopulating the dropdown
+        madr.val(madrVal);
+        // display warning if the previous option is no longer valid
+        var modelAlert = jQuery("#model_alert");
+        var modelWarningSubmissionText = jQuery("#page-replace\\:\\:model_warning_submission");
+        var modelWarningDueDateText = jQuery("#page-replace\\:\\:model_warning_due_date");
+        var modelWarningAcceptUntilText = jQuery("#page-replace\\:\\:model_warning_accept_until");
+        if (modelAnswerEnabled && madr.val()!==madrVal)
+        {
+            if (checkTrigger==="init")
+            {
+                modelAlert.removeClass("messageConfirmation");
+                modelWarningSubmissionText.hide();
+                modelWarningDueDateText.hide();
+                modelWarningAcceptUntilText.hide();
+                modelAlert.removeClass("messageContentPadding");
             }
-            else {
-                var madr = jQuery("select[name='page-replace\:\:modelAnswerDisplayRule-selection']");
-                var madrValue = madr.val();
-                var modelAlert = jQuery("#model_alert");
-                var modelWarningText = jQuery("#page-replace\\:\\:model_warning");
-                // probably a better way to do this than hard coding values
-                if (madrValue!="0" && madrValue!="1")
-                {
-                    // display warning text, auto-select 'Immediately', and remove other options
-                    modelAlert.addClass("messageConfirmation");
-                    modelWarningText.show();
-                    modelAlert.addClass("messageContentPadding");
-                    madr.val('1');
-
-                    // appending code used later
-                    //madr.append('<option value="option5">option5</option>');
-                }
+            else if (checkTrigger==="require_submissions")
+            {
+                modelAlert.addClass("messageConfirmation");
+                modelWarningSubmissionText.show();
+                modelWarningDueDateText.hide();
+                modelWarningAcceptUntilText.hide();
+                modelAlert.addClass("messageContentPadding");
+                // Set to 'Immediately'
+                madr.val('1');
             }
-         */
+            else if (checkTrigger==="due_date")
+            {
+                modelAlert.addClass("messageConfirmation");
+                modelWarningSubmissionText.hide();
+                modelWarningDueDateText.show();
+                modelWarningAcceptUntilText.hide();
+                modelAlert.addClass("messageContentPadding");
+                // Set to 'Never'
+                madr.val('0');
+            }
+            else if (checkTrigger==="accept_until")
+            {
+                modelAlert.addClass("messageConfirmation");
+                modelWarningSubmissionText.hide();
+                modelWarningDueDateText.hide();
+                modelWarningAcceptUntilText.show();
+                modelAlert.addClass("messageContentPadding");
+                // Set to 'Never'
+                madr.val('0');
+            }
+        }
+        else
+        {
+            modelAlert.removeClass("messageConfirmation");
+            modelWarningSubmissionText.hide();
+            modelWarningDueDateText.hide();
+            modelWarningAcceptUntilText.hide();
+            modelAlert.removeClass("messageContentPadding");
+        }
     }
 
     /**

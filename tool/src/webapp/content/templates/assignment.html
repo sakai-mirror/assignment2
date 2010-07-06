@@ -128,8 +128,14 @@
                             <select rsf:id="modelAnswerDisplayRule"></select>
                             <p rsf:id="message-for:modelAnswerDisplayRule"></p>
                             <div id="model_alert">
-                                <span style="display:none;" class="messageContent" rsf:id="model_warning" id="model_warning">
-                                If this assignment will be graded, select an existing Gradebook item or create a new one. Otherwise, select 'This assignment is not graded'.!!!!!!!!!!!!!!!
+                                <span style="display:none;" class="messageContent" rsf:id="model_warning_submission" id="model_warning_submission">
+                                Submissions are no longer required.  Please verify the option selected for you.!!!!!!!!
+                                </span>
+                                <span style="display:none;" class="messageContent" rsf:id="model_warning_due_date" id="model_warning_due_date">
+                                Due date has been removed.  Please verify the option selected for you.!!!!!!!!
+                                </span>
+                                <span style="display:none;" class="messageContent" rsf:id="model_warning_accept_until" id="model_warning_accept_until">
+                                Accept until date has been removed.  Please verify the option selected for you.!!!!!!!!
                                 </span>
                             </div>
                         </li>
@@ -432,7 +438,7 @@ jQuery(document).ready(function(){
     jQuery(due_date).click(function(){
         asnn2.showHideByCheckbox(this, due_date_container);
         asnn2editpage.tii_dueDateOptions();
-        asnn2.modelAnswerIntegrity();
+        asnn2.modelAnswerIntegrity("due_date");
     });
 
     asnn2.showHideByCheckbox(due_date, due_date_container);
@@ -442,7 +448,7 @@ jQuery(document).ready(function(){
     var accept_until = jQuery("input[name='page-replace\:\:require_accept_until']").get(0);
     jQuery(accept_until).click(function(){
         asnn2.showHideByCheckbox(this, accept_until_container);
-        asnn2.modelAnswerIntegrity();
+        asnn2.modelAnswerIntegrity("accept_until");
     });
 
 	asnn2.showHideByCheckbox(accept_until, accept_until_container);
@@ -452,7 +458,7 @@ jQuery(document).ready(function(){
     var acceptuntil = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
         jQuery("input[name='page-replace\:\:require_submissions']").click(function(){
                 asnn2.showHideSiblings(this.parentNode.parentNode, this.checked);
-                asnn2.modelAnswerIntegrity();
+                asnn2.modelAnswerIntegrity("require_submissions");
 
         // if this assignment does not require submission, hide the TII display
         if (tii_content) {
@@ -515,7 +521,7 @@ jQuery(document).ready(function(){
     }
 
     asnn2.showHideGradeSettingError();
-    asnn2.modelAnswerIntegrity();
+    asnn2.modelAnswerIntegrity("init");
 });
 //]]>
 </script>
