@@ -103,7 +103,7 @@ public class AsnnInstructionsRenderer implements BasicProducer {
                     if (optionalParams!=null && optionalParams.containsKey(AssignmentConstants.ASSIGNMENT_SUBMISSION))
                     {
                         AssignmentSubmission assignmentSubmission = (AssignmentSubmission) optionalParams.get(AssignmentConstants.ASSIGNMENT_SUBMISSION);
-                        if (assignmentSubmission.getCurrentSubmissionVersion()!=null)
+                        if (assignmentSubmission.getCurrentSubmissionVersion().isSubmitted())
                         {
                             modelAnswerEnabled = true;
                         }
