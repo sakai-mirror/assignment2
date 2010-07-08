@@ -23,6 +23,9 @@
         NUM_SUB_ALLOWED number(10,0) not null,
         CONTENT_REVIEW_ENABLED number(1,0),
         CONTENT_REVIEW_REF varchar2(255),
+        MODEL_ANSWER_ENABLED number(1,0),
+        MODEL_ANSWER_TEXT clob,
+        MODEL_ANSWER_DISPLAY_RULE number(10,0),
         CREATOR varchar2(99) not null,
         CREATE_DATE date not null,
         MODIFIED_BY varchar2(99),
@@ -33,6 +36,7 @@
 
     create table A2_ASSIGN_ATTACH_T (
         ASSIGN_ATTACH_ID number(19,0) not null,
+        ASSIGN_ATTACH_TYPE varchar2(1) not null,
         VERSION number(10,0) not null,
         ASSIGNMENT_ID number(19,0) not null,
         ATTACHMENT_REFERENCE varchar2(255) not null,
@@ -104,6 +108,8 @@
 
     create index A2_ASSIGN_ATTACH_ASSIGN_I on A2_ASSIGN_ATTACH_T (ASSIGNMENT_ID);
 
+    create index ASSIGN_ATTACH_TYPE_I on A2_ASSIGN_ATTACH_T (ASSIGN_ATTACH_TYPE);
+
     alter table A2_ASSIGN_ATTACH_T 
         add constraint FKFF1065FC175E3454 
         foreign key (ASSIGNMENT_ID) 
@@ -116,9 +122,9 @@
         foreign key (ASSIGNMENT_ID) 
         references A2_ASSIGNMENT_T;
 
-    create index SUB_ATTACH_TYPE_I on A2_SUBMISSION_ATTACH_T (SUB_ATTACH_TYPE);
-
     create index A2_SUB_ATTACH_VERSION_I on A2_SUBMISSION_ATTACH_T (SUBMISSION_VERSION_ID);
+
+    create index SUB_ATTACH_TYPE_I on A2_SUBMISSION_ATTACH_T (SUB_ATTACH_TYPE);
 
     alter table A2_SUBMISSION_ATTACH_T 
         add constraint FK3FF3D33F49CF92D6 
@@ -136,9 +142,9 @@
 
     create index A2_SUB_VERSION_SUBMITTED_NUM on A2_SUBMISSION_VERSION_T (SUBMITTED_VERSION_NUMBER);
 
-    create index A2_SUB_VERSION_SUB_DATE_I on A2_SUBMISSION_VERSION_T (SUBMITTED_DATE);
-
     create index A2_SUB_VERSION_SUB_I on A2_SUBMISSION_VERSION_T (SUBMISSION_ID);
+
+    create index A2_SUB_VERSION_SUB_DATE_I on A2_SUBMISSION_VERSION_T (SUBMITTED_DATE);
 
     alter table A2_SUBMISSION_VERSION_T 
         add constraint FK873450C88ABCB1A5 
