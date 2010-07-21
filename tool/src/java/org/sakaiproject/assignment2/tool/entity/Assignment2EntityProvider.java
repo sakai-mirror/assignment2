@@ -433,16 +433,22 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
                     boolean canManage = userPerms.get(AssignmentConstants.PERMISSION_MANAGE_SUBMISSIONS);
 
                     if (!canEdit && !canDelete && !canManage) {
-                        assign.setProperties(null);
-                        assign.setAcceptUntilDate(null);
+                    	removeNonInstProperties(assign);
                     }
                 } else {
-
-                    assign.setProperties(null);
-                    assign.setAcceptUntilDate(null);
+                	removeNonInstProperties(assign);
                 }
             }
         }
+    }
+    
+    private void removeNonInstProperties(Assignment2 assign) {
+    	assign.setProperties(null);
+        assign.setAcceptUntilDate(null);
+        assign.setModelAnswerAttachmentRefs(new String[] {});
+        assign.setModelAnswerDisplayRule(0);
+        assign.setModelAnswerEnabled(false);
+        assign.setModelAnswerText("");
     }
 
 }
