@@ -37,6 +37,7 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.util.Validator;
 
 /**
  * This is the implementation for logic which interacts with ContentHostingService
