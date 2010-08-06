@@ -385,6 +385,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                     if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
                 }
             }
+            
+            if (isNewAssignment) {
+            	// ASNN-29
+            	System.out.println("ASNN-29 Event: Adding New Assignment");
+            }
+            else {
+            	System.out.println("ASNN-29 Event: Editing Existing Assignment");
+            }
         } catch (HibernateOptimisticLockingFailureException holfe) {
             if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId());
             throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId(), holfe);
@@ -503,6 +511,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             dao.update(assignment);
             if(log.isDebugEnabled()) log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
 
+            // ASNN-29 
+            System.out.println("ASNN-29 Event: Deleting Assignment");
+            
             // now remove the announcement, if applicable
             if (announcementIdToDelete != null) {
                 try {

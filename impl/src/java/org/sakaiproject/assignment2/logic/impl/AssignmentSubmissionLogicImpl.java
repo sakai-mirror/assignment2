@@ -314,6 +314,9 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             submission.setCompleted(true);
             submission.setModifiedBy(currentUserId);
             submission.setModifiedDate(currentTime);
+
+            // ASNN-29 
+            System.out.println("ASNN-29 Event: Student Submitted an Assignment");
         }
 
         // identify any attachments that were deleted or need to be created
