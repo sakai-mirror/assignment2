@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>sakai-assignment2-base</artifactId>
-		<groupId>org.sakaiproject</groupId>
+		<artifactId>assignment2</artifactId>
+		<groupId>org.sakaiproject.assignment2</groupId>
 		<version>2.8-SNAPSHOT</version>
 	</parent>
 	<name>Sakai Assignment2 Impl</name>
