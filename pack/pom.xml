@@ -37,7 +37,6 @@
          <groupId>org.sakaiproject.assignment2</groupId>
          <artifactId>sakai-assignment2-impl</artifactId>
          <scope>runtime</scope>
-         <version>${sakai.version}</version>
       </dependency>
   </dependencies>
 </project>
