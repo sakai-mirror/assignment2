@@ -364,4 +364,39 @@ public class AssignmentConstants {
     public static final String TII_API_PARAM_INSTITUTION_CHECK = "institution_check";
     public static final String TII_API_PARAM_S_VIEW_REPORT = "s_view_report";
 
+    /*
+     * Assignment 2 Event Codes Below
+     *
+     */
+    
+    /**
+     * This event is to be triggered when an Instructor type user authors and 
+     * saves a new assignment.
+     */
+    public static final String EVENT_ASSIGN_CREATE = "assignment2.assignment.create";
+    
+    /**
+     * This event is to be triggered when an Instructor type user edits the 
+     * information for an existing assignment.
+     */
+    public static final String EVENT_ASSIGN_UPDATE = "assignment2.assignment.update";
+    
+    /** 
+     * This event is to be triggered when an Instructor deletes an assignment.
+     */
+    public static final String EVENT_ASSIGN_DELETE = "assignment2.assignment.delete";
+    
+    /**
+     * This event is to be triggered when a Student user saves a draft of their submission.
+     */
+    public static final String EVENT_SUB_SAVEDRAFT = "assignment2.submission.savedraft";
+    
+    /**
+     * This event is to be triggered when a Student user submits an assignment.
+     */
+    public static final String EVENT_SUB_SUBMIT = "assignment2.submission.submit";
+    
+    
+    //public static final String EVENT_SUB_GRADE = "assignment2.submission.grade";
+    //public static final String EVENT_SUB_RETURN = "assignment2.submission.return";
 }

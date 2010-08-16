@@ -15,6 +15,16 @@
             </bean>
         </property>
     </bean>
+    
+    <!-- test out running some tests from spring -->
+    <!-- 
+   <bean class="org.sakaiproject.testrunner.util.TestExecutor">
+      <property name="testClassname" 
+         value="org.sakaiproject.assignment2.tests.IntegrationTest" />
+      <property name="testType" value="testrunner.integration" />
+      <property name="testDelaySeconds" value="0" />
+   </bean>
+   -->
 
 	<!--   
 		<bean id="messageRenderer" class="org.sakaiproject.assignment2.tool.beans.Assignments2MessageRenderer">

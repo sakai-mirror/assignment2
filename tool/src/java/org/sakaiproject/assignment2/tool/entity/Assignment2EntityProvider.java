@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestAware;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestStorable;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.Statisticable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
@@ -50,7 +52,7 @@ import sun.util.logging.resources.logging;
  *
  */
 public class Assignment2EntityProvider extends AbstractEntityProvider implements
-CoreEntityProvider, RESTful, RequestStorable, RequestAware {
+CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
 
     // Dependency
@@ -449,6 +451,24 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         assign.setModelAnswerDisplayRule(0);
         assign.setModelAnswerEnabled(false);
         assign.setModelAnswerText("");
+    }
+
+    @Override
+    public String getAssociatedToolId() {
+        return "sakai.assignment2";
+    }
+
+    @Override
+    public String[] getEventKeys() {
+        return new String[] { AssignmentConstants.EVENT_ASSIGN_CREATE,
+            AssignmentConstants.EVENT_ASSIGN_DELETE, AssignmentConstants.EVENT_ASSIGN_UPDATE,
+            AssignmentConstants.EVENT_SUB_SAVEDRAFT, AssignmentConstants.EVENT_SUB_SUBMIT };
+    }
+
+    @Override
+    public Map<String, String> getEventNames(Locale locale) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
@@ -97,6 +98,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic)
     {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    private ExternalEventLogic externalEventLogic;
+    public void setExternalEventLogic(ExternalEventLogic externalEventLogic) {
+        this.externalEventLogic = externalEventLogic;
     }
 
     public void init(){
@@ -365,6 +371,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         "sub attachments deleted for updated version " + 
                         version.getId() + " by user " + currentUserId);
             }
+            
+            // Event Logging
+            if (version.isDraft()) { //TODO What should the reference really be here?
+                externalEventLogic.postEvent(AssignmentConstants.EVENT_SUB_SAVEDRAFT, assignment.getReference());
+            }
+            else {
+                externalEventLogic.postEvent(AssignmentConstants.EVENT_SUB_SUBMIT, assignment.getReference());
+            }
+                
         } catch (HibernateOptimisticLockingFailureException holfe) {
             if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
             throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), holfe);

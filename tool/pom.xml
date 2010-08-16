@@ -37,7 +37,17 @@
     <version>1.1</version>
     <type>jar</type>
   </dependency>
-  
+  <dependency>
+    <groupId>org.sakaiproject.testrunner</groupId>
+    <artifactId>sakai-testexecutor</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </dependency>
+  <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>3.8.1</version>
+         <scope>provided</scope>
+      </dependency>
 	  <!-- Assignment2 dependencies -->
 		<dependency>
 			<groupId>org.sakaiproject.assignment2</groupId>

@@ -7,6 +7,7 @@
 	<classpathentry kind="src" path="tool/src/java"/>
 	<classpathentry kind="src" path="integration-test/src/test/java"/>
 	<classpathentry kind="src" path="bundle"/>
+	<classpathentry kind="src" path="tool/src/webapp"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
@@ -40,5 +41,21 @@
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/test-harness/1.2.0-SNAPSHOT/test-harness-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.2.0-SNAPSHOT/sakai-kernel-util-1.2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-taggable-api/2.8-SNAPSHOT/sakai-taggable-api-2.8-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/sgithens/.m2/repository/org/sakaiproject/entitybroker/entitybroker-utils/1.4.0-SNAPSHOT/entitybroker-utils-1.4.0-SNAPSHOT.jar">
+		<attributes>
+			<attribute name="maven.groupId" value="org.sakaiproject.entitybroker"/>
+			<attribute name="maven.artifactId" value="entitybroker-utils"/>
+			<attribute name="maven.version" value="1.4.0-SNAPSHOT"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/sgithens/.m2/repository/org/azeckoski/reflectutils/0.9.14/reflectutils-0.9.14.jar">
+		<attributes>
+			<attribute name="maven.groupId" value="org.azeckoski"/>
+			<attribute name="maven.artifactId" value="reflectutils"/>
+			<attribute name="maven.version" value="0.9.14"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
