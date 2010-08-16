@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>sakai-edu-tool</artifactId>
+    <groupId>org.sakaiproject.purepoms</groupId>
     <version>2.8-SNAPSHOT</version>
     <relativePath>../master/pom.xml</relativePath>
   </parent>
   <name>Assignment2</name>
-  <groupId>org.sakaiproject</groupId>
-  <artifactId>sakai-assignment2-base</artifactId>
+  <groupId>org.sakaiproject.assignment2</groupId>
+  <artifactId>assignment2</artifactId>
   <version>2.8-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
@@ -17,6 +19,7 @@
     <module>impl</module>
     <module>pack</module>
     <module>tool</module>
+    <module>assembly</module>
   </modules>
   
   <properties>
@@ -40,6 +43,59 @@
 				</artifactId>
 				<version>2.8-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.contentreview</groupId>
+				<artifactId>contentreview-model-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.contentreview</groupId>
+				<artifactId>contentreview-service-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<!--  we need these pending their indification -->
+			<dependency>
+				<groupId>org.sakaiproject.common</groupId>
+				<artifactId>archive-api</artifactId>
+				<version>(1.0,2.0]</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.scheduler</groupId>
+				<artifactId>scheduler-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.entitybroker</groupId>
+				<artifactId>entitybroker-utils</artifactId>
+				<version>1.4.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject</groupId>
+				<artifactId>sakai-announcement-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject</groupId>
+				<artifactId>sakai-message-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject</groupId>
+				<artifactId>sakai-calendar-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject</groupId>
+				<artifactId>sakai-assignment-api</artifactId>
+				<version>2.8-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+			<groupId>org.sakaiproject</groupId>
+			<artifactId>sakai-taggable-api</artifactId>
+			<version>2.8-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		</dependencies>
 	</dependencyManagement>
     
