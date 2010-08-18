@@ -44,6 +44,8 @@ import org.sakaiproject.site.api.Group;
 
 import sun.util.logging.resources.logging;
 
+import org.springframework.context.MessageSource;
+
 
 /**
  * Entity Provider for Assn2 assignments.
@@ -109,6 +111,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     private ExternalContentReviewLogic contentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    /**
+     * This is necessary because the Statisticable interface gives us a Locale
+     * to use so we shouldn't just use the default.  MessageLocator doesn't
+     * include any methods that take a locale.
+     */
+    private MessageSource messageSource;
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
     }
 
     public static String PREFIX = "assignment2";
@@ -457,18 +469,38 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     public String getAssociatedToolId() {
         return "sakai.assignment2";
     }
+    
+    /**
+     * Return the events we want tracked in Site Stats. We have this method 
+     * because there is a chance that we may have more internal events in the
+     * future that we don't want to show up as an option in Site Stats.
+     * 
+     * Or this may need to be configured on an installation by installation
+     * deployment in the future.
+     * 
+     * @return
+     */
+    public String[] getSiteStatsEvents() {
+        return new String[] { AssignmentConstants.EVENT_ASSIGN_CREATE,
+                AssignmentConstants.EVENT_ASSIGN_DELETE, AssignmentConstants.EVENT_ASSIGN_UPDATE,
+                AssignmentConstants.EVENT_SUB_SAVEDRAFT, AssignmentConstants.EVENT_SUB_SUBMIT,
+                AssignmentConstants.EVENT_SUB_GRADE_RELEASE_FEEDBACK };
+    }
 
     @Override
     public String[] getEventKeys() {
-        return new String[] { AssignmentConstants.EVENT_ASSIGN_CREATE,
-            AssignmentConstants.EVENT_ASSIGN_DELETE, AssignmentConstants.EVENT_ASSIGN_UPDATE,
-            AssignmentConstants.EVENT_SUB_SAVEDRAFT, AssignmentConstants.EVENT_SUB_SUBMIT };
+        return getSiteStatsEvents();
     }
 
     @Override
     public Map<String, String> getEventNames(Locale locale) {
-        // TODO Auto-generated method stub
-        return null;
+        Map<String,String> eventNames = new HashMap<String,String>();
+        
+        for (String eventCode: getSiteStatsEvents()) {
+            eventNames.put(eventCode, messageSource.getMessage(eventCode, new Object[] {}, locale));
+        }
+        
+        return eventNames;
     }
 
 }

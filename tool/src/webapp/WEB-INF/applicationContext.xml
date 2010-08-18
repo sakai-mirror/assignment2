@@ -24,8 +24,7 @@
       <property name="testType" value="testrunner.integration" />
       <property name="testDelaySeconds" value="0" />
    </bean>
-   -->
-
+-->
 	<!--   
 		<bean id="messageRenderer" class="org.sakaiproject.assignment2.tool.beans.Assignments2MessageRenderer">
 		<property name="messageLocator">
@@ -102,6 +101,7 @@
         <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
         <property name="externalTaggableLogic" ref="org.sakaiproject.assignment2.logic.ExternalTaggableLogic" />
+        <property name="messageSource" ref="messageSource" />
     </bean>
 
 	<!--  causes every variable to post, even if it hasn't changed since page render -->

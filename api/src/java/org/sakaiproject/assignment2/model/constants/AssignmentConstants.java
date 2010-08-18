@@ -373,30 +373,41 @@ public class AssignmentConstants {
      * This event is to be triggered when an Instructor type user authors and 
      * saves a new assignment.
      */
-    public static final String EVENT_ASSIGN_CREATE = "assignment2.assignment.create";
+    public static final String EVENT_ASSIGN_CREATE = "assignment2.event.assignment.create";
     
     /**
      * This event is to be triggered when an Instructor type user edits the 
      * information for an existing assignment.
      */
-    public static final String EVENT_ASSIGN_UPDATE = "assignment2.assignment.update";
+    public static final String EVENT_ASSIGN_UPDATE = "assignment2.event.assignment.update";
     
     /** 
      * This event is to be triggered when an Instructor deletes an assignment.
      */
-    public static final String EVENT_ASSIGN_DELETE = "assignment2.assignment.delete";
+    public static final String EVENT_ASSIGN_DELETE = "assignment2.event.assignment.delete";
     
     /**
      * This event is to be triggered when a Student user saves a draft of their submission.
      */
-    public static final String EVENT_SUB_SAVEDRAFT = "assignment2.submission.savedraft";
+    public static final String EVENT_SUB_SAVEDRAFT = "assignment2.event.submission.savedraft";
     
     /**
      * This event is to be triggered when a Student user submits an assignment.
      */
-    public static final String EVENT_SUB_SUBMIT = "assignment2.submission.submit";
+    public static final String EVENT_SUB_SUBMIT = "assignment2.event.submission.submit";
     
+    public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.event.submission.saveGradeAndFeedback";
     
-    //public static final String EVENT_SUB_GRADE = "assignment2.submission.grade";
-    //public static final String EVENT_SUB_RETURN = "assignment2.submission.return";
+    public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.event.submission.saveAndReleaseGradeAndFeedback";
+    
+    public static final String EVENT_SUB_RELEASE_ALL_FEEDBACK = "assignment2.event.submission.releaseAllFeedback";
+    
+    public static final String EVENT_SUB_RETRACT_ALL_FEEDBACK = "assignment2.event.submission.retractAllFeedback";
+    
+    public static final String EVENT_SUB_RELEASE_ALL_GRADES = "assignment2.event.submission.releaseAllGrades";
+    
+    public static final String EVENT_SUB_RETRACT_ALL_GRADES = "assignment2.event.submission.retractAllGrades";
+    
+    public static final String EVENT_SUB_
+    
 }

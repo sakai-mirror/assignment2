@@ -1062,6 +1062,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                                 version.setModifiedDate(now);
 
                                 versionsToUpdate.add(version);
+                                
                             }
                         }
                     }

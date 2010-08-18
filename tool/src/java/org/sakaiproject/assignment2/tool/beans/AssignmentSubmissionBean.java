@@ -29,10 +29,12 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.util.FormattedText;
 
@@ -85,6 +87,11 @@ public class AssignmentSubmissionBean {
     private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    private ExternalEventLogic eventLogic;
+    public void setExternalEventLogic(ExternalEventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 
     private Map<String, AssignmentSubmission> OTPMap;
@@ -298,6 +305,23 @@ public class AssignmentSubmissionBean {
             gradebookLogic.saveGradeAndCommentForStudent(assignment.getContextId(), 
                     assignment.getGradebookItemId(), assignmentSubmission.getUserId(), grade, gradeComment);
         }
+        
+        /*
+         * ASNN-29 This appears to be the best spot to trigger our Event for
+         * save/grade/release.  While idealy it would be best to do this in the
+         * service layer, if we do that above it's going to be called multiple
+         * times as we loop through each version. And for each save of the GUI
+         * page (which may have multiple feed versions), we really only want one
+         * event to be triggered and to show up in Site Stats.
+         * 
+         * Also we call the gradebookLogic separately here. It would be best to 
+         * have this whole bit of logic above move to the service layer some day. 
+         * 
+         * TODO FIXME
+         */
+        eventLogic.postEvent(AssignmentConstants.EVENT_SUB_GRADE_RELEASE_FEEDBACK, 
+                assignment.getReference());
+        
         
         messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
         return submitOption;
