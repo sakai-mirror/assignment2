@@ -478,6 +478,7 @@
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
     <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
     <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+	    <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
 	</bean>
 	
 	<bean id="MarkTodoBean" class="org.sakaiproject.assignment2.tool.commands.MarkTodoCommand">

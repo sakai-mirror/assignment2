@@ -1008,6 +1008,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         if (assignmentId == null) {
             throw new IllegalArgumentException("null assignmentId passed to releaseAllFeedbackForAssignment");
         }
+        
+        boolean operateOnAllStudents = false;
+        if (students == null) {
+            operateOnAllStudents = true;
+        }
 
         String currUserId = externalLogic.getCurrentUserId();
         Date now = new Date();
@@ -1084,6 +1089,30 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         "failure occurred while attempting to update submission versions for assignment " + assignmentId, sose);
             }
         }
+        
+        /*
+         * ASNN-29 If the students parameter to this function is null, that
+         * means we are going to release or retract the feedback for *ALL* 
+         * students. 
+         * 
+         * When this happens we want to trigger an event.  Mostly this is so 
+         * there is an event in Site Stats that shows up when the instructor
+         * clicks Release/Retract All Feedback.
+         */
+        if (operateOnAllStudents && release == true) {
+            externalEventLogic.postEvent(
+                    AssignmentConstants.EVENT_RELEASE_ALL_FEEDBACK, 
+                    assignment.getReference());
+        }
+        else if (operateOnAllStudents && release == false) {
+            externalEventLogic.postEvent(
+                    AssignmentConstants.EVENT_RETRACT_ALL_FEEDBACK, 
+                    assignment.getReference());
+        }
+        else {
+            log.debug("Releasing/retracting only some of the students");
+        }
+        
     }
 
     public void releaseOrRetractAllFeedbackForSubmission(Long submissionId, boolean release) {

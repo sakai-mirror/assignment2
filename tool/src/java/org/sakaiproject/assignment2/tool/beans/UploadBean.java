@@ -33,6 +33,7 @@ import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.UploadException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic;
@@ -40,6 +41,7 @@ import org.sakaiproject.assignment2.logic.UploadGradesLogic;
 import org.sakaiproject.assignment2.logic.UploadAllLogic.UploadInfo;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.UploadAllOptions;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.springframework.web.multipart.MultipartFile;
@@ -96,6 +98,11 @@ public class UploadBean
     private AssignmentPermissionLogic permissionLogic;
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
+    }
+    
+    private ExternalEventLogic eventLogic;
+    public void setExternalEventLogic(ExternalEventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 
     public void setMultipartMap(Map<String, MultipartFile> uploads)
@@ -260,7 +267,22 @@ public class UploadBean
                     new Object[] {}, TargettedMessage.SEVERITY_INFO));
         }
 
-        return WorkFlowResult.UPLOADALL_CSV_CONFIRM_AND_SAVE;
+        // ASNN-29 This is the final bit for uploading a CSV, one event should go here.
+        triggerUploadEvent(assignmentLogic.getAssignmentById(uploadOptions.assignmentId));
+        return WorkFlowResult.UPLOADALL_CSV_CONFIRM_AND_SAVE;   
+    }
+    
+    /**
+     * Private utility method to trigger a Sakai Event for Uploading grades.
+     * 
+     * @param assign The assignment reference this is occuring on.
+     */
+    private void triggerUploadEvent(Assignment2 assign) {
+        assert assign != null;
+        
+        eventLogic.postEvent(AssignmentConstants.EVENT_UPLOAD_FEEDBACK_AND_GRADES, 
+                assign.getReference());
+        
     }
 
     private WorkFlowResult processUploadAll(MultipartFile uploadedFile, Assignment2 assign)
@@ -293,7 +315,9 @@ public class UploadBean
             }
         }
 
-        return WorkFlowResult.UPLOAD_SUCCESS;
+        // ASNN-29 This is the end and it uploads all the grades here for zip
+        triggerUploadEvent(assign);
+        return WorkFlowResult.UPLOAD_SUCCESS;  
     }
 
     /**

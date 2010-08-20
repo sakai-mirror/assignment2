@@ -469,34 +469,17 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     public String getAssociatedToolId() {
         return "sakai.assignment2";
     }
-    
-    /**
-     * Return the events we want tracked in Site Stats. We have this method 
-     * because there is a chance that we may have more internal events in the
-     * future that we don't want to show up as an option in Site Stats.
-     * 
-     * Or this may need to be configured on an installation by installation
-     * deployment in the future.
-     * 
-     * @return
-     */
-    public String[] getSiteStatsEvents() {
-        return new String[] { AssignmentConstants.EVENT_ASSIGN_CREATE,
-                AssignmentConstants.EVENT_ASSIGN_DELETE, AssignmentConstants.EVENT_ASSIGN_UPDATE,
-                AssignmentConstants.EVENT_SUB_SAVEDRAFT, AssignmentConstants.EVENT_SUB_SUBMIT,
-                AssignmentConstants.EVENT_SUB_GRADE_RELEASE_FEEDBACK };
-    }
 
     @Override
     public String[] getEventKeys() {
-        return getSiteStatsEvents();
+        return AssignmentConstants.getEventCodes();
     }
-
+        
     @Override
     public Map<String, String> getEventNames(Locale locale) {
         Map<String,String> eventNames = new HashMap<String,String>();
         
-        for (String eventCode: getSiteStatsEvents()) {
+        for (String eventCode: AssignmentConstants.getEventCodes()) {
             eventNames.put(eventCode, messageSource.getMessage(eventCode, new Object[] {}, locale));
         }
         

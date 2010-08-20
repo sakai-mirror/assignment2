@@ -396,18 +396,41 @@ public class AssignmentConstants {
      */
     public static final String EVENT_SUB_SUBMIT = "assignment2.event.submission.submit";
     
+    // Done
     public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.event.submission.saveGradeAndFeedback";
     
+    // Done
     public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.event.submission.saveAndReleaseGradeAndFeedback";
     
-    public static final String EVENT_SUB_RELEASE_ALL_FEEDBACK = "assignment2.event.submission.releaseAllFeedback";
+    // Done
+    public static final String EVENT_RELEASE_ALL_FEEDBACK = "assignment2.event.releaseAllFeedback";
     
-    public static final String EVENT_SUB_RETRACT_ALL_FEEDBACK = "assignment2.event.submission.retractAllFeedback";
+    // Done
+    public static final String EVENT_RETRACT_ALL_FEEDBACK = "assignment2.event.retractAllFeedback";
     
-    public static final String EVENT_SUB_RELEASE_ALL_GRADES = "assignment2.event.submission.releaseAllGrades";
+    // Done
+    public static final String EVENT_RELEASE_ALL_GRADES = "assignment2.event.releaseAllGrades";
     
-    public static final String EVENT_SUB_RETRACT_ALL_GRADES = "assignment2.event.submission.retractAllGrades";
+    // Done
+    public static final String EVENT_RETRACT_ALL_GRADES = "assignment2.event.retractAllGrades";
     
-    public static final String EVENT_SUB_
+    // Done
+    public static final String EVENT_UPLOAD_FEEDBACK_AND_GRADES = "assignment2.event.uploadFeedbackAndGrades";
     
+    public static String[] getEventCodes() {
+        return new String [] {
+                EVENT_ASSIGN_CREATE,
+                EVENT_ASSIGN_UPDATE,
+                EVENT_ASSIGN_DELETE,
+                EVENT_SUB_SAVEDRAFT,
+                EVENT_SUB_SUBMIT,
+                EVENT_SUB_SAVE_GRADE_AND_FEEDBACK,
+                EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK,
+                EVENT_RELEASE_ALL_FEEDBACK,
+                EVENT_RETRACT_ALL_FEEDBACK,
+                EVENT_RELEASE_ALL_GRADES,
+                EVENT_RETRACT_ALL_GRADES,
+                EVENT_UPLOAD_FEEDBACK_AND_GRADES
+        };
+    }
 }

@@ -25,6 +25,7 @@
    		<property name="gradebookService" ref="org_sakaiproject_service_gradebook_GradebookService" />
    		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
+      <property name="eventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl" init-method="init">

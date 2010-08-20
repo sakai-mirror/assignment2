@@ -308,19 +308,18 @@ public class AssignmentSubmissionBean {
         
         /*
          * ASNN-29 This appears to be the best spot to trigger our Event for
-         * save/grade/release.  While idealy it would be best to do this in the
-         * service layer, if we do that above it's going to be called multiple
-         * times as we loop through each version. And for each save of the GUI
-         * page (which may have multiple feed versions), we really only want one
-         * event to be triggered and to show up in Site Stats.
-         * 
-         * Also we call the gradebookLogic separately here. It would be best to 
-         * have this whole bit of logic above move to the service layer some day. 
-         * 
-         * TODO FIXME
+         * Saving feedback and grades.
          */
-        eventLogic.postEvent(AssignmentConstants.EVENT_SUB_GRADE_RELEASE_FEEDBACK, 
+        if (this.releaseFeedback != null && this.releaseFeedback.equals(Boolean.TRUE)) {
+            eventLogic.postEvent(
+                AssignmentConstants.EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK, 
                 assignment.getReference());
+        }
+        else {
+            eventLogic.postEvent(
+                    AssignmentConstants.EVENT_SUB_SAVE_GRADE_AND_FEEDBACK, 
+                    assignment.getReference());
+        }
         
         
         messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
