@@ -1151,6 +1151,7 @@ var asnn2editpage = asnn2editpage || {};
         acceptBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_accept_before_open");
         acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
         checkAgainstMsg = jQuery("#page-replace\\:\\:assignment_check_against");
+        checkAgainstMsg2 = jQuery("#page-replace\\:\\:assignment_check_against2");
         
         /*titleMsg.hide();
             nogbMsg.hide();
@@ -1228,6 +1229,7 @@ var asnn2editpage = asnn2editpage || {};
           } else {
             valid = false;
             checkAgainstMsg.show();
+            checkAgainstMsg2.show();
           }
         }
 
