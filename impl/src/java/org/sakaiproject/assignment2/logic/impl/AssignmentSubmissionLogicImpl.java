@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
@@ -97,6 +98,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic)
     {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    private ExternalEventLogic externalEventLogic;
+    public void setExternalEventLogic(ExternalEventLogic externalEventLogic) {
+        this.externalEventLogic = externalEventLogic;
     }
 
     public void init(){
@@ -314,6 +320,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
             submission.setCompleted(true);
             submission.setModifiedBy(currentUserId);
             submission.setModifiedDate(currentTime);
+
         }
 
         // identify any attachments that were deleted or need to be created
@@ -362,6 +369,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         "sub attachments deleted for updated version " + 
                         version.getId() + " by user " + currentUserId);
             }
+            
+            // ASNN-29 Event Logging
+            if (version.isDraft()) { //TODO ASNN-698 What should the reference really be here?
+                externalEventLogic.postEvent(AssignmentConstants.EVENT_SUB_SAVEDRAFT, assignment.getReference());
+            }
+            else {
+                externalEventLogic.postEvent(AssignmentConstants.EVENT_SUB_SUBMIT, assignment.getReference());
+            }
+                
         } catch (HibernateOptimisticLockingFailureException holfe) {
             if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update submission version" + version.getId());
             throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update submission version" + version.getId(), holfe);
@@ -990,6 +1006,11 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         if (assignmentId == null) {
             throw new IllegalArgumentException("null assignmentId passed to releaseAllFeedbackForAssignment");
         }
+        
+        boolean operateOnAllStudents = false;
+        if (students == null) {
+            operateOnAllStudents = true;
+        }
 
         String currUserId = externalLogic.getCurrentUserId();
         Date now = new Date();
@@ -1044,6 +1065,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                                 version.setModifiedDate(now);
 
                                 versionsToUpdate.add(version);
+                                
                             }
                         }
                     }
@@ -1065,6 +1087,30 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         "failure occurred while attempting to update submission versions for assignment " + assignmentId, sose);
             }
         }
+        
+        /*
+         * ASNN-29 If the students parameter to this function is null, that
+         * means we are going to release or retract the feedback for *ALL* 
+         * students. 
+         * 
+         * When this happens we want to trigger an event.  Mostly this is so 
+         * there is an event in Site Stats that shows up when the instructor
+         * clicks Release/Retract All Feedback.
+         */
+        if (operateOnAllStudents && release == true) {
+            externalEventLogic.postEvent(
+                    AssignmentConstants.EVENT_RELEASE_ALL_FEEDBACK, 
+                    assignment.getReference());
+        }
+        else if (operateOnAllStudents && release == false) {
+            externalEventLogic.postEvent(
+                    AssignmentConstants.EVENT_RETRACT_ALL_FEEDBACK, 
+                    assignment.getReference());
+        }
+        else {
+            log.debug("Releasing/retracting only some of the students");
+        }
+        
     }
 
     public void releaseOrRetractAllFeedbackForSubmission(Long submissionId, boolean release) {

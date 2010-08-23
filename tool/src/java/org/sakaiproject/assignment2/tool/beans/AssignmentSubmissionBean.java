@@ -29,10 +29,12 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.util.FormattedText;
 
@@ -85,6 +87,11 @@ public class AssignmentSubmissionBean {
     private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    private ExternalEventLogic eventLogic;
+    public void setExternalEventLogic(ExternalEventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 
     private Map<String, AssignmentSubmission> OTPMap;
@@ -298,6 +305,22 @@ public class AssignmentSubmissionBean {
             gradebookLogic.saveGradeAndCommentForStudent(assignment.getContextId(), 
                     assignment.getGradebookItemId(), assignmentSubmission.getUserId(), grade, gradeComment);
         }
+        
+        /*
+         * ASNN-29 This appears to be the best spot to trigger our Event for
+         * Saving feedback and grades.
+         */
+        if (this.releaseFeedback != null && this.releaseFeedback.equals(Boolean.TRUE)) {
+            eventLogic.postEvent(
+                AssignmentConstants.EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK, 
+                assignment.getReference());
+        }
+        else {
+            eventLogic.postEvent(
+                    AssignmentConstants.EVENT_SUB_SAVE_GRADE_AND_FEEDBACK, 
+                    assignment.getReference());
+        }
+        
         
         messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
         return submitOption;

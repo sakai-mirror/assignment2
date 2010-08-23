@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestAware;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestStorable;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.Statisticable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.entityprovider.extension.RequestStorage;
@@ -42,6 +44,8 @@ import org.sakaiproject.site.api.Group;
 
 import sun.util.logging.resources.logging;
 
+import org.springframework.context.MessageSource;
+
 
 /**
  * Entity Provider for Assn2 assignments.
@@ -50,7 +54,7 @@ import sun.util.logging.resources.logging;
  *
  */
 public class Assignment2EntityProvider extends AbstractEntityProvider implements
-CoreEntityProvider, RESTful, RequestStorable, RequestAware {
+CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     private static Log log = LogFactory.getLog(Assignment2EntityProvider.class);
 
     // Dependency
@@ -107,6 +111,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
     private ExternalContentReviewLogic contentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
+    }
+    
+    /**
+     * This is necessary because the Statisticable interface gives us a Locale
+     * to use so we shouldn't just use the default.  MessageLocator doesn't
+     * include any methods that take a locale.
+     */
+    private MessageSource messageSource;
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
     }
 
     public static String PREFIX = "assignment2";
@@ -449,6 +463,27 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware {
         assign.setModelAnswerDisplayRule(0);
         assign.setModelAnswerEnabled(false);
         assign.setModelAnswerText("");
+    }
+
+    @Override
+    public String getAssociatedToolId() {
+        return "sakai.assignment2";
+    }
+
+    @Override
+    public String[] getEventKeys() {
+        return AssignmentConstants.getEventCodes();
+    }
+        
+    @Override
+    public Map<String, String> getEventNames(Locale locale) {
+        Map<String,String> eventNames = new HashMap<String,String>();
+        
+        for (String eventCode: AssignmentConstants.getEventCodes()) {
+            eventNames.put(eventCode, messageSource.getMessage(eventCode, new Object[] {}, locale));
+        }
+        
+        return eventNames;
     }
 
 }
