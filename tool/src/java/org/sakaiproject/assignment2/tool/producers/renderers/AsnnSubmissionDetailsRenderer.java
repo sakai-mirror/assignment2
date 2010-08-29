@@ -189,20 +189,32 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
                     }
                 }
 
-                // if submission is closed and there is only one submission, we replace the
-                // due date text with "Submitted Jan 3, 2009 5:23 PM" info. If there are
-                // multiple submissions, this timestamp appears in the version history display
-                // so is not necessary here
+                // if submission is closed and there is at least one submission, we replace the
+                // due date text with "Submitted Jan 3, 2009 5:23 PM" info or "Last Submitted..." if there are multiple
+                // submissions.
                 List<AssignmentSubmissionVersion> history = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-                if (history != null && history.size() == 1) {
+                
+                if (history != null && history.size() > 0) {
                     AssignmentSubmissionVersion version = history.get(0);
                     if (version.getSubmittedDate() != null) {
                         if (studentDueDate != null && version.getSubmittedDate().after(studentDueDate)) {
-                            dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info.late", 
-                                    new Object[]{df.format(version.getSubmittedDate())});
+                            // the text displayed differs slightly depending on if there are multiple
+                            // submissions
+                            if (history.size() == 1) {
+                                dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info.late", 
+                                        new Object[]{df.format(version.getSubmittedDate())});
+                            } else {
+                                dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info.late.multiple", 
+                                        new Object[]{df.format(version.getSubmittedDate())});
+                            }
                         } else {
-                            dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info", 
-                                    new Object[]{df.format(version.getSubmittedDate())});
+                            if (history.size() == 1) {
+                                dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info", 
+                                        new Object[]{df.format(version.getSubmittedDate())});
+                            } else {
+                                dueDateText = messageLocator.getMessage("assignment2.student-submit.submitted_info.multiple", 
+                                        new Object[]{df.format(version.getSubmittedDate())});
+                            }
                         }
                     }
                 }
