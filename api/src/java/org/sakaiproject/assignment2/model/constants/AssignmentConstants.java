@@ -373,49 +373,49 @@ public class AssignmentConstants {
      * This event is to be triggered when an Instructor type user authors and 
      * saves a new assignment.
      */
-    public static final String EVENT_ASSIGN_CREATE = "assignment2.event.assignment.create";
+    public static final String EVENT_ASSIGN_CREATE = "assignment2.assignment.create";
     
     /**
      * This event is to be triggered when an Instructor type user edits the 
      * information for an existing assignment.
      */
-    public static final String EVENT_ASSIGN_UPDATE = "assignment2.event.assignment.update";
+    public static final String EVENT_ASSIGN_UPDATE = "assignment2.assignment.update";
     
     /** 
      * This event is to be triggered when an Instructor deletes an assignment.
      */
-    public static final String EVENT_ASSIGN_DELETE = "assignment2.event.assignment.delete";
+    public static final String EVENT_ASSIGN_DELETE = "assignment2.assignment.delete";
     
     /**
      * This event is to be triggered when a Student user saves a draft of their submission.
      */
-    public static final String EVENT_SUB_SAVEDRAFT = "assignment2.event.submission.savedraft";
+    public static final String EVENT_SUB_SAVEDRAFT = "assignment2.submission.savedraft";
     
     /**
      * This event is to be triggered when a Student user submits an assignment.
      */
-    public static final String EVENT_SUB_SUBMIT = "assignment2.event.submission.submit";
+    public static final String EVENT_SUB_SUBMIT = "assignment2.submission.submit";
     
     // Done
-    public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.event.submission.saveGradeAndFeedback";
+    public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.submission.saveGradeAndFeedback";
     
     // Done
-    public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.event.submission.saveAndReleaseGradeAndFeedback";
+    public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.submission.saveAndReleaseGradeAndFeedback";
     
     // Done
-    public static final String EVENT_RELEASE_ALL_FEEDBACK = "assignment2.event.releaseAllFeedback";
+    public static final String EVENT_RELEASE_ALL_FEEDBACK = "assignment2.releaseAllFeedback";
     
     // Done
-    public static final String EVENT_RETRACT_ALL_FEEDBACK = "assignment2.event.retractAllFeedback";
+    public static final String EVENT_RETRACT_ALL_FEEDBACK = "assignment2.retractAllFeedback";
     
     // Done
-    public static final String EVENT_RELEASE_ALL_GRADES = "assignment2.event.releaseAllGrades";
+    public static final String EVENT_RELEASE_ALL_GRADES = "assignment2.releaseAllGrades";
     
     // Done
-    public static final String EVENT_RETRACT_ALL_GRADES = "assignment2.event.retractAllGrades";
+    public static final String EVENT_RETRACT_ALL_GRADES = "assignment2.retractAllGrades";
     
     // Done
-    public static final String EVENT_UPLOAD_FEEDBACK_AND_GRADES = "assignment2.event.uploadFeedbackAndGrades";
+    public static final String EVENT_UPLOAD_FEEDBACK_AND_GRADES = "assignment2.uploadFeedbackAndGrades";
     
     public static String[] getEventCodes() {
         return new String [] {
