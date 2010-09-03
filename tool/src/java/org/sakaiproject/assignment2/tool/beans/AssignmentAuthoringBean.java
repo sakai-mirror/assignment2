@@ -35,6 +35,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.NoErrorTargettedMessage;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -42,7 +43,6 @@ import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
-import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 /**
@@ -127,12 +127,12 @@ public class AssignmentAuthoringBean {
                 notificationBean.notifyStudentsOfNewAssignment(assignment);
             }catch (IdUnusedException e)
             {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                        new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.unexpected",
+                        new Object[] {e.getLocalizedMessage()}, NoErrorTargettedMessage.SEVERITY_ERROR));
             }catch (UserNotDefinedException e)
             {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
-                        new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.unexpected",
+                        new Object[] {e.getLocalizedMessage()}, NoErrorTargettedMessage.SEVERITY_ERROR));
             }
         }
         return result;
@@ -221,7 +221,7 @@ public class AssignmentAuthoringBean {
         }
     
         if (options.getRestrictedToGroups() != null && options.getRestrictedToGroups().equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
-            messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
+            messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_post.no_groups"));
             errorFound = true;
         } 
 
@@ -258,30 +258,25 @@ public class AssignmentAuthoringBean {
                 logic.saveAssignment(assignment);
 
             } catch (ContentReviewException cre) {
-                messages.addMessage(new TargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
+                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_ERROR));
             }
             
 
             //set Messages
             if (draft) {
-                messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_save_draft",
+                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
             } 
             else if (options.getOtpkey().startsWith(EntityBeanLocator.NEW_PREFIX)) {
-                messages.addMessage(new TargettedMessage("assignment2.assignment_post",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_post",
+                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
             }
             else {
-                messages.addMessage(new TargettedMessage("assignment2.assignment_save",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_save",
+                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
             }
         } else {
-            //if (draft) {
-            //messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
-            //} else {
-            //messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
-            //}
             return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
         }
         return WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
@@ -349,20 +344,23 @@ public class AssignmentAuthoringBean {
     private boolean cleanUpAssignment(Assignment2 assignment) {
         boolean textValid = true;
         if (assignment != null) {
-            StringBuilder alertMsg = new StringBuilder();
             if (assignment.getInstructions() != null) {
+                StringBuilder alertMsg = new StringBuilder();
                 assignment.setInstructions(FormattedText.
                         processFormattedText(assignment.getInstructions(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new TargettedMessage("assignment2.error.assignment_instructions", new Object[] {alertMsg.toString()}));
+                    messages.addMessage(new NoErrorTargettedMessage("assignment2.error.assignment_instructions", 
+                            new Object[] {alertMsg.toString()}, NoErrorTargettedMessage.SEVERITY_ERROR));
                     textValid = false;
                 }
             }
             if (assignment.getModelAnswerText() != null) {
+                StringBuilder alertMsg = new StringBuilder();
                 assignment.setModelAnswerText(FormattedText.
                         processFormattedText(assignment.getModelAnswerText(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new TargettedMessage("assignment2.error.model_answer_text", new Object[] {alertMsg.toString()}));
+                    messages.addMessage(new NoErrorTargettedMessage("assignment2.error.model_answer_text", 
+                            new Object[] {alertMsg.toString()}, NoErrorTargettedMessage.SEVERITY_ERROR));
                     textValid = false;
                 }
             }

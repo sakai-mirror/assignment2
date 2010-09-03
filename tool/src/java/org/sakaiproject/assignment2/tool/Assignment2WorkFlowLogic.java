@@ -158,6 +158,7 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             result.propagateBeans = ARIResult.FLOW_END;
             break;
         case STUDENT_SUBMISSION_FAILURE:
+            result.propagateBeans = ARIResult.FLOW_FASTSTART;
             break;
         case STUDENT_RESUBMIT:
             result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false, false, true);

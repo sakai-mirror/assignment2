@@ -9,11 +9,11 @@ import org.sakaiproject.assignment2.logic.ScheduledNotification;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
+import org.sakaiproject.assignment2.tool.NoErrorTargettedMessage;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
-import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 
@@ -87,8 +87,8 @@ public class StudentSubmissionBean {
         
         //check whether honor pledge was added if required
         if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
-            messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
-                    new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+            messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.honor_pledge_required",
+                    new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_ERROR));
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }else {
 
@@ -105,11 +105,11 @@ public class StudentSubmissionBean {
                 // add a sucess message.  the message will change depending on 
                 // if this submission is late or not
                 if (assignment.getDueDate() != null && assignment.getDueDate().before(new Date())) {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted.late",
-                            new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                    messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.info.submission_submitted.late",
+                            new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
                 } else {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_submitted",
-                            new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+                    messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.info.submission_submitted",
+                            new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
                 }
 
                 // Send out notifications
@@ -120,8 +120,8 @@ public class StudentSubmissionBean {
                 // students always get a notification
                 scheduledNotification.notifyStudentThatSubmissionWasAccepted(newSubmission);
             } else {
-                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_save_draft",
-                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.submission_save_draft",
+                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_ERROR));
                 return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
             }
         }
@@ -182,11 +182,11 @@ public class StudentSubmissionBean {
             submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
                     assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
                     asv.getSubmissionAttachSet(), true);
-            messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
-                    new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
+            messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.info.submission_save_draft",
+                    new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
         } catch (SubmissionClosedException sce) {
-            messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submission_closed",
-                    new Object[] {}, TargettedMessage.SEVERITY_ERROR));
+            messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.submission_closed",
+                    new Object[] {}, NoErrorTargettedMessage.SEVERITY_ERROR));
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }
 
@@ -217,7 +217,7 @@ public class StudentSubmissionBean {
                 version.setSubmittedText(FormattedText.
                         processFormattedText(version.getSubmittedText(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new TargettedMessage("assignment2.student-submit.error.submitted_text", new Object[] {alertMsg.toString()}));
+                    messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.submitted_text", new Object[] {alertMsg.toString()}));
                     textValid = false;
                 }
             }
