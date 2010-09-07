@@ -261,7 +261,9 @@ var asnn2util = asnn2util || {};
             resizable: false,
             width: dialogWidth,
             modal: true,
-            position: [dialogXOption,dialogYOption],
+            // ASNN-712 Browsers aren't giving the same widths across
+            // scenerios, setting to a constant padding.
+            position: [20,dialogYOption],
             overlay: {
                 opacity: 0.5,
                 background: "#eee"
