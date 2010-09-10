@@ -265,7 +265,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 if (resubmit)
                 {
                     AssignmentSubmissionVersion previousVersion = assignmentSubmission.getCurrentSubmissionVersion();
-                    text.setValue(previousVersion.getSubmittedText());
+                    text.setValue(previousVersion.getSubmittedText() == null ? "" : previousVersion.getSubmittedText());
                 }
                 text.mustapply = Boolean.TRUE;
                 richTextEvolver.evolveTextInput(text);
