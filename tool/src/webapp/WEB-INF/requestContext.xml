@@ -5,17 +5,8 @@
 
 <beans>
 
-    <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />
+   <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />
 
-   <!--  Request Filtering for Permissions for DefaultView -->
-   <!-- 
-   <bean id="defaultViewParameters" factory-bean="Assignment2DefaultViewParameters" factory-method="getViewParameters" />
-   <bean id="Assignment2DefaultViewParameters" 
-		class="org.sakaiproject.assignment2.tool.params.Assignment2DefaultViewParameters">
-		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-		<property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-   </bean>
--->
    <!-- rich text evolver bean def -->
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
