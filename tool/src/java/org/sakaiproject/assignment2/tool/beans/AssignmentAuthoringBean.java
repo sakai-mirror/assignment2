@@ -35,7 +35,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.NoErrorTargettedMessage;
+import org.sakaiproject.assignment2.tool.ErrorOptionalTargettedMessageList;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -43,6 +43,7 @@ import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
 import uk.org.ponder.messageutil.MessageLocator;
+import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 /**
@@ -76,8 +77,8 @@ public class AssignmentAuthoringBean {
     }
 
     // Request Scope Dependency
-    private TargettedMessageList messages;
-    public void setMessages(TargettedMessageList messages) {
+    private ErrorOptionalTargettedMessageList messages;
+    public void setMessages(ErrorOptionalTargettedMessageList messages) {
         this.messages = messages;
     }
 
@@ -127,17 +128,26 @@ public class AssignmentAuthoringBean {
                 notificationBean.notifyStudentsOfNewAssignment(assignment);
             }catch (IdUnusedException e)
             {
-                messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.unexpected",
-                        new Object[] {e.getLocalizedMessage()}, NoErrorTargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+                        new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
             }catch (UserNotDefinedException e)
             {
-                messages.addMessage(new NoErrorTargettedMessage("assignment2.student-submit.error.unexpected",
-                        new Object[] {e.getLocalizedMessage()}, NoErrorTargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new TargettedMessage("assignment2.student-submit.error.unexpected",
+                        new Object[] {e.getLocalizedMessage()}, TargettedMessage.SEVERITY_ERROR));
             }
         }
         return result;
     }
 
+    private boolean areMessagesErrorFree() {
+        if (messages.isOriginalError()) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
     private WorkFlowResult internalProcessPost(Assignment2 assignment, Boolean draft){
         Boolean errorFound = false;
 
@@ -221,7 +231,7 @@ public class AssignmentAuthoringBean {
         }
     
         if (options.getRestrictedToGroups() != null && options.getRestrictedToGroups().equals(Boolean.TRUE.toString()) && newGroups.size() < 1){
-            messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_post.no_groups"));
+            messages.addMessage(new TargettedMessage("assignment2.assignment_post.no_groups"));
             errorFound = true;
         } 
 
@@ -248,6 +258,13 @@ public class AssignmentAuthoringBean {
             newGroups.removeAll(remGroups);
         }
         assignment.setAssignmentGroupSet(newGroups);
+        
+        // Check the targetted messages list for hard errors from other 
+        // components or evolvers such as the date widget.
+        //System.out.println("About to check the targetted messages!");
+        if (!areMessagesErrorFree()) {
+            errorFound = true;
+        }
 
         //start the validator
         Assignment2Validator validator = new Assignment2Validator();
@@ -258,23 +275,23 @@ public class AssignmentAuthoringBean {
                 logic.saveAssignment(assignment);
 
             } catch (ContentReviewException cre) {
-                messages.addMessage(new NoErrorTargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
-                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_ERROR));
+                messages.addMessage(new TargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
             }
             
 
             //set Messages
             if (draft) {
-                messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_save_draft",
-                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
+                messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             } 
             else if (options.getOtpkey().startsWith(EntityBeanLocator.NEW_PREFIX)) {
-                messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_post",
-                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
+                messages.addMessage(new TargettedMessage("assignment2.assignment_post",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             }
             else {
-                messages.addMessage(new NoErrorTargettedMessage("assignment2.assignment_save",
-                        new Object[] { assignment.getTitle() }, NoErrorTargettedMessage.SEVERITY_INFO));
+                messages.addMessage(new TargettedMessage("assignment2.assignment_save",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             }
         } else {
             return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
@@ -296,6 +313,10 @@ public class AssignmentAuthoringBean {
         
         // check for malicious tags before rendering the preview
         if (!cleanUpAssignment(assignment)) {
+            return WorkFlowResult.INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT;
+        }
+        
+        if (!areMessagesErrorFree()) {
             return WorkFlowResult.INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT;
         }
         
@@ -349,8 +370,8 @@ public class AssignmentAuthoringBean {
                 assignment.setInstructions(FormattedText.
                         processFormattedText(assignment.getInstructions(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new NoErrorTargettedMessage("assignment2.error.assignment_instructions", 
-                            new Object[] {alertMsg.toString()}, NoErrorTargettedMessage.SEVERITY_ERROR));
+                    messages.addMessage(new TargettedMessage("assignment2.error.assignment_instructions", 
+                            new Object[] {alertMsg.toString()}, TargettedMessage.SEVERITY_ERROR));
                     textValid = false;
                 }
             }
@@ -359,8 +380,8 @@ public class AssignmentAuthoringBean {
                 assignment.setModelAnswerText(FormattedText.
                         processFormattedText(assignment.getModelAnswerText(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new NoErrorTargettedMessage("assignment2.error.model_answer_text", 
-                            new Object[] {alertMsg.toString()}, NoErrorTargettedMessage.SEVERITY_ERROR));
+                    messages.addMessage(new TargettedMessage("assignment2.error.model_answer_text", 
+                            new Object[] {alertMsg.toString()}, TargettedMessage.SEVERITY_ERROR));
                     textValid = false;
                 }
             }

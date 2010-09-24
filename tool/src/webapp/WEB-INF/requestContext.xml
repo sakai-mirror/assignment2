@@ -4,6 +4,11 @@
 
 
 <beans>
+    <!-- A list of the targetted messages accumulated during this request cycle. -->
+    <bean id="targettedMessageList"
+    class="org.sakaiproject.assignment2.tool.ErrorOptionalTargettedMessageList">
+        <property name="viewParameters" ref="viewParameters" />
+    </bean>
 
    <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />
 
