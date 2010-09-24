@@ -465,17 +465,14 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         assign.setModelAnswerText("");
     }
 
-    @Override
     public String getAssociatedToolId() {
         return "sakai.assignment2";
     }
 
-    @Override
     public String[] getEventKeys() {
         return AssignmentConstants.getEventCodes();
     }
-        
-    @Override
+
     public Map<String, String> getEventNames(Locale locale) {
         Map<String,String> eventNames = new HashMap<String,String>();
         
