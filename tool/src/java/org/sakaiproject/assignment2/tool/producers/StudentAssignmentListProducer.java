@@ -39,7 +39,6 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.StudentAction;
-import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.params.AssignmentListSortViewParams;
 import org.sakaiproject.assignment2.tool.params.SimpleAssignmentViewParams;
 import org.sakaiproject.assignment2.tool.params.StudentSubmissionParams;
@@ -83,7 +82,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     private AssignmentSubmissionLogic submissionLogic;
     private Locale locale;
-    private AssignmentSubmissionBean submissionBean;
     private ExternalGradebookLogic externalGradebookLogic;
     private ExternalLogic externalLogic;
     private MessageLocator messageLocator;
@@ -96,7 +94,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
     public static final String BULLET_UP_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_up.png";
     public static final String BULLET_DOWN_IMG_SRC = "/sakai-assignment2-tool/content/images/bullet_arrow_down.png";
     public static final String ATTACH_IMG_SRC = "/sakai-assignment2-tool/content/images/attach.png";
-
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
 
@@ -194,7 +191,7 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
                 UIMessage.make(row, "assignment-deleted", "assignment2.student-assignment-list.assignment-deleted");
             }
 
-            StudentAction availStudentAction = submissionBean.determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
+            StudentAction availStudentAction = determineStudentAction(assignmentSubmission.getUserId(), assignment.getId());
 
             AssignmentSubmissionVersion latestSubmission = assignmentSubmission.retrieveMostRecentSubmission();
 
@@ -323,6 +320,38 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
         //javascript to add sort tables parsers:
         UIVerbatim.make(tofill, "sortTableParsers", "asnn2.setupStdntListTableParsers();");
     }
+    
+    public StudentAction determineStudentAction(String studentId, Long assignmentId) {
+        boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
+                studentId, assignmentId);
+
+        int numSubmittedVersions = submissionLogic.getNumSubmittedVersions(studentId, assignmentId);
+
+        StudentAction action = StudentAction.VIEW_DETAILS;
+
+        // 1. View Details and Submit
+        if (isOpenForSubmission && numSubmittedVersions < 1) {
+            action = StudentAction.VIEW_AND_SUBMIT;
+        }
+        // 3. Resubmit
+        else if (isOpenForSubmission && numSubmittedVersions >= 1) {
+            action = StudentAction.VIEW_AND_RESUBMIT;
+        }
+        // 4a View Submission
+        else if (numSubmittedVersions == 1) {
+            action = StudentAction.VIEW_SUB;
+        }
+        // 4b View Submissions
+        else if (numSubmittedVersions > 1) {
+            action = StudentAction.VIEW_ALL_SUB;
+        }
+        // 2 View Details
+        else {
+            action = StudentAction.VIEW_DETAILS;
+        }
+
+        return action;
+    }
 
     public ViewParameters getViewParameters() {
         return new AssignmentListSortViewParams();
@@ -334,10 +363,6 @@ public class StudentAssignmentListProducer implements ViewComponentProducer, Vie
 
     public void setLocale(Locale locale) {
         this.locale = locale;
-    }
-
-    public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
-        this.submissionBean = submissionBean;
     }
 
     public void setExternalGradebookLogic(

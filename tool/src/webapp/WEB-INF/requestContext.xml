@@ -284,7 +284,6 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="messageLocator" ref="messageLocator" />

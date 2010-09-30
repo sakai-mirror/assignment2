@@ -344,36 +344,4 @@ public class AssignmentSubmissionBean {
         return CANCEL;
     }
 
-    public StudentAction determineStudentAction(String studentId, Long assignmentId) {
-        boolean isOpenForSubmission = submissionLogic.isSubmissionOpenForStudentForAssignment(
-                studentId, assignmentId);
-
-        int numSubmittedVersions = submissionLogic.getNumSubmittedVersions(studentId, assignmentId);
-
-        StudentAction action = StudentAction.VIEW_DETAILS;
-
-        // 1. View Details and Submit
-        if (isOpenForSubmission && numSubmittedVersions < 1) {
-            action = StudentAction.VIEW_AND_SUBMIT;
-        }
-        // 3. Resubmit
-        else if (isOpenForSubmission && numSubmittedVersions >= 1) {
-            action = StudentAction.VIEW_AND_RESUBMIT;
-        }
-        // 4a View Submission
-        else if (numSubmittedVersions == 1) {
-            action = StudentAction.VIEW_SUB;
-        }
-        // 4b View Submissions
-        else if (numSubmittedVersions > 1) {
-            action = StudentAction.VIEW_ALL_SUB;
-        }
-        // 2 View Details
-        else {
-            action = StudentAction.VIEW_DETAILS;
-        }
-
-        return action;
-    }
-
 }
