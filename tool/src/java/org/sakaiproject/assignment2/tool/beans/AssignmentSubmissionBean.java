@@ -42,8 +42,8 @@ import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 /**
- * This bean is for binding the Assignment Submissions for various pages and
- * acting on them.
+ * This bean is for action methods being used from the Instructor Grade and
+ * Feedback page.
  * 
  * @author sgithens
  *
