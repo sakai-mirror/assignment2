@@ -35,7 +35,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.StudentAction;
 import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -324,20 +323,6 @@ public class AssignmentSubmissionBean {
         
         messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
         return submitOption;
-    }
-
-    public String processActionGradePreview(){
-        for (String key : OTPMap.keySet()){
-            AssignmentSubmission assignmentSubmission = OTPMap.get(key);
-            Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
-            assignmentSubmission.setAssignment(assignment);
-            // previewAssignmentSubmissionBean.setAssignmentSubmission(assignmentSubmission);
-        }
-        for (String key : asvOTPMap.keySet()){
-            AssignmentSubmissionVersion asv = asvOTPMap.get(key);
-            // previewAssignmentSubmissionBean.setAssignmentSubmissionVersion(asv);
-        }
-        return PREVIEW;
     }
 
     public String processActionCancel() {
