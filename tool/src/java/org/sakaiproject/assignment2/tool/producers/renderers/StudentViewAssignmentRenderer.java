@@ -35,8 +35,6 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-import org.sakaiproject.assignment2.tool.StudentAction;
-import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
 import org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer;
 import org.sakaiproject.user.api.User;
 
@@ -134,12 +132,6 @@ public class StudentViewAssignmentRenderer {
     private User currentUser;
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-    }
-
-    // Dependency
-    private AssignmentSubmissionBean submissionBean;
-    public void setAssignmentSubmissionBean(AssignmentSubmissionBean submissionBean) {
-        this.submissionBean = submissionBean;
     }
 
     /**

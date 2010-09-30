@@ -157,7 +157,6 @@
       <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>
       <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
-      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="asnnDetailsRenderer" ref="AsnnDetailsRenderer"></property>
       <property name="gradeDetailsRenderer" ref="GradeDetailsRenderer"></property>
       <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
