@@ -35,6 +35,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.util.FormattedText;
 
 import uk.org.ponder.beanutil.entity.EntityBeanLocator;
@@ -49,18 +50,6 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  *
  */
 public class GradeAndFeedbackSubmissionBean {
-
-    public static final String SUBMIT = "submit";
-    public static final String SUBMIT_PREV = "submit_prev";
-    public static final String SUBMIT_NEXT = "submit_next";
-    public static final String RELEASE_PREV = "release_prev";
-    public static final String RELEASE_NEXT = "release_next";
-    public static final String SUBMIT_RETURNTOLIST = "submit_returnToList";
-    public static final String RELEASE_RETURNTOLIST = "release_returnToList";
-    public static final String PREVIEW = "preview";
-    public static final String CANCEL = "cancel";
-    public static final String SAVE_AND_EDIT_PREFIX = "SAVE_FEEDBACK_AND_EDIT_VERSION_";
-    private static final String FAILURE = "failure";
 
     public Map<String, Boolean> selectedIds = new HashMap<String, Boolean>();
     public Long assignmentId;
@@ -138,7 +127,7 @@ public class GradeAndFeedbackSubmissionBean {
 
     /**
      * This property is used primarily with the 
-     * {@link AssignmentSubmissionBean.processActionGradeSubmitAndEditAnotherVersion}
+     * {@link GradeAndFeedbackSubmissionBean.processActionGradeSubmitAndEditAnotherVersion}
      * to set the next version to edit.
      */
     private Long nextVersionIdToEdit;
@@ -162,14 +151,16 @@ public class GradeAndFeedbackSubmissionBean {
      * INSTRUCTOR FUNCTIONS
      */
 
-    public String processActionSaveAndReleaseFeedbackForSubmission(){
+    public WorkFlowResult processActionSaveAndReleaseFeedbackForSubmission(){
         this.releaseFeedback = true;
         return processActionGradeSubmit();
     }
     
-    public String processActionGradeSubmitOption()
+    public WorkFlowResult processActionGradeSubmitOption()
     {
-        if (RELEASE_NEXT.equals(submitOption) || RELEASE_PREV.equals(submitOption) || RELEASE_RETURNTOLIST.equals(submitOption))
+        if (WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_NEXT.equals(submitOption) 
+          || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_PREV.equals(submitOption) 
+          || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_RETURNTOLIST.equals(submitOption))
         {
             return processActionSaveAndReleaseFeedbackForSubmission();
         }
@@ -199,18 +190,19 @@ public class GradeAndFeedbackSubmissionBean {
      * 
      * @return
      */
-    public String processActionGradeSubmitAndEditAnotherVersion() {
-        String saveResult = processActionGradeSubmit();
-        if (FAILURE.equals(saveResult)) {
-            return FAILURE;
+    public WorkFlowResult processActionGradeSubmitAndEditAnotherVersion() {
+        WorkFlowResult saveResult = processActionGradeSubmit();
+        if (WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE.equals(saveResult)) {
+            return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
         }
-
-        return SAVE_AND_EDIT_PREFIX + getNextVersionIdToEdit();
+        WorkFlowResult togo = WorkFlowResult.INSTRUCTOR_FEEDBACK_SAVE_AND_EDIT_PREFIX;
+        togo.setNextSubVersion(getNextVersionIdToEdit());
+        return togo;
     }
 
-    public String processActionGradeSubmit(){
+    public WorkFlowResult processActionGradeSubmit(){
         if (assignmentId == null || userId == null){
-            return FAILURE;
+            return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
         }
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
         AssignmentSubmission assignmentSubmission = new AssignmentSubmission(assignment, userId);
@@ -238,7 +230,7 @@ public class GradeAndFeedbackSubmissionBean {
                 }
                 
                 messages.addMessage(new TargettedMessage(errorMessageRef, new Object[] {}, TargettedMessage.SEVERITY_ERROR));
-                return FAILURE;
+                return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
             }
         }
 
@@ -269,7 +261,7 @@ public class GradeAndFeedbackSubmissionBean {
                 if (alertMsg != null && alertMsg.length() > 0) {
                     messages.addMessage(new TargettedMessage("assignment2.assignment_grade.error.feedback_notes", 
                             new Object[] {alertMsg.toString()}));
-                    return FAILURE;
+                    return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
                 }
             }
             if (asv.getAnnotatedText() != null) {
@@ -280,7 +272,7 @@ public class GradeAndFeedbackSubmissionBean {
                 if (alertMsg != null && alertMsg.length() > 0) {
                     messages.addMessage(new TargettedMessage("assignment2.assignment_grade.error.annotated_text", 
                             new Object[] {alertMsg.toString()}));
-                    return FAILURE;
+                    return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
                 }
             }
 
@@ -322,11 +314,11 @@ public class GradeAndFeedbackSubmissionBean {
         
         
         messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
-        return submitOption;
+        return WorkFlowResult.valueOf(submitOption);
     }
 
-    public String processActionCancel() {
-        return CANCEL;
+    public WorkFlowResult processActionCancel() {
+        return WorkFlowResult.INSTRUCTOR_FEEDBACK_CANCEL;
     }
 
 }
