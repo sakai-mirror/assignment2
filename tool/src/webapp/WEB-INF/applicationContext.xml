@@ -135,7 +135,7 @@
 		via incoming request URL -->
 	<bean parent="requestAddressibleParent">
 		<property name="value"
-			value="AssignmentAuthoringOptionsFlowBean, AssignmentAuthoringBean, AssignmentAuthoringFlowBean, StudentSubmissionBean,RemoveAssignmentCommand,StudentSubmissionVersionFlowBean,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,AssignmentSubmission,AssignmentSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,UploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction,ReorderAssignmentsAction,ImportAssignmentsAction,CommonNavigationBean" />
+			value="AssignmentAuthoringOptionsFlowBean, AssignmentAuthoringBean, AssignmentAuthoringFlowBean, StudentSubmissionBean,RemoveAssignmentCommand,StudentSubmissionVersionFlowBean,GradeAllRemainingAction,MarkFeedbackAsReadAction,Assignment2,AssignmentSubmission,GradeAndFeedbackSubmissionBean,FilePickerBean,AssignmentSubmissionVersion,UploadBean,MarkTodoBean,ReleaseGradesAction,ReleaseFeedbackAction,ReorderAssignmentsAction,ImportAssignmentsAction,CommonNavigationBean" />
 	</bean>
 
 	<!-- Override the default style of user messages -->
@@ -174,7 +174,7 @@
 	  <!-- The beans which will be preserved across a flow via simple instance
 			copying -->
 	<bean parent="copyPreservingParent">
-		<!-- <property name="value" value="UploadBean, Assignment2, AssignmentSubmissionVersion, AssignmentSubmissionBean, AssignmentSubmission"/> -->
+		<!-- <property name="value" value="UploadBean, Assignment2, AssignmentSubmissionVersion, GradeAndFeedbackSubmissionBean, AssignmentSubmission"/> -->
 	    <!-- Ugh, UploadBean still has request scope references as well. -->
 	    <property name="value" value="UploadBean, StudentSubmissionVersionFlowBean, AssignmentAuthoringFlowBean, AssignmentAuthoringOptionsFlowBean"/>
 	</bean>

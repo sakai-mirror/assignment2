@@ -42,7 +42,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
-import org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean;
+import org.sakaiproject.assignment2.tool.beans.GradeAndFeedbackSubmissionBean;
 import org.sakaiproject.assignment2.tool.beans.SessionCache;
 import org.sakaiproject.assignment2.tool.params.FilePickerHelperViewParams;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
@@ -140,12 +140,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
     private FormatAwareDateInputEvolver dateEvolver;
     public void setDateEvolver(FormatAwareDateInputEvolver dateEvolver) {
         this.dateEvolver = dateEvolver;
-    }
-
-    private AssignmentSubmissionBean assignmentSubmissionBean;
-    public void setAssignmentSubmissionBean(AssignmentSubmissionBean assignmentSubmissionBean)
-    {
-    	this.assignmentSubmissionBean = assignmentSubmissionBean;
     }
     
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
@@ -422,7 +416,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             // future, but with the permissions restructure, there is now no need for it
             boolean readOnly = false;
             if (!readOnly) {
-                UIBoundBoolean.make(form, "override_settings", "#{AssignmentSubmissionBean.overrideResubmissionSettings}", is_override);
+                UIBoundBoolean.make(form, "override_settings", "#{GradeAndFeedbackSubmissionBean.overrideResubmissionSettings}", is_override);
 
                 UIOutput.make(form, "resubmit_change");
 
@@ -470,7 +464,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                         UIMessage.make(tofill, "original_due_date", "assignment2.assignment_grade.original_due_date", new Object[] {df2.format(dueDate)});
                     }
 
-                    UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{AssignmentSubmissionBean.resubmitUntil}", is_require_accept_until);
+                    UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "#{GradeAndFeedbackSubmissionBean.resubmitUntil}", is_require_accept_until);
                     require.mustapply = true;
 
                     UIInput acceptUntilDateField = UIInput.make(form, "accept_until:", asOTP + ".resubmitCloseDate");
@@ -524,15 +518,15 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             
         }        
 
-        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.assignmentId}", assignmentId));
-        form.parameters.add(new UIELBinding("#{AssignmentSubmissionBean.userId}", userId));
+        form.parameters.add(new UIELBinding("#{GradeAndFeedbackSubmissionBean.assignmentId}", assignmentId));
+        form.parameters.add(new UIELBinding("#{GradeAndFeedbackSubmissionBean.userId}", userId));
         // hidden field for group id
-        UIInput.make(form, "submitOption", "#{AssignmentSubmissionBean.submitOption}", AssignmentSubmissionBean.SUBMIT);
+        UIInput.make(form, "submitOption", "#{GradeAndFeedbackSubmissionBean.submitOption}", GradeAndFeedbackSubmissionBean.SUBMIT);
         
         UICommand.make(form, "release_feedback", UIMessage.make("assignment2.assignment_grade.release_feedback"),
-            "#{AssignmentSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
-        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{AssignmentSubmissionBean.processActionGradeSubmitOption}");
-        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{AssignmentSubmissionBean.processActionCancel}");
+            "#{GradeAndFeedbackSubmissionBean.processActionSaveAndReleaseFeedbackForSubmission}");
+        UICommand.make(form, "submit", UIMessage.make("assignment2.assignment_grade.submit"), "#{GradeAndFeedbackSubmissionBean.processActionGradeSubmitOption}");
+        UICommand.make(form, "cancel", UIMessage.make("assignment2.assignment_grade.cancel"), "#{GradeAndFeedbackSubmissionBean.processActionCancel}");
 
     }
     
@@ -692,12 +686,12 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         if (inputAppender != null) {
             UIOutput.make(tofill, "grade_input_appender", inputAppender);
         }
-        UIInput gradeInput = UIInput.make(form, "grade_input", "#{AssignmentSubmissionBean.grade}", grade);
+        UIInput gradeInput = UIInput.make(form, "grade_input", "#{GradeAndFeedbackSubmissionBean.grade}", grade);
         if (readOnly) {
             gradeInput.decorate(new UIFreeAttributeDecorator("disabled", "disabled"));
         }
 
-        UIInput commentInput = UIInput.make(form, "grade_comment_input", "#{AssignmentSubmissionBean.gradeComment}", gradeComment);
+        UIInput commentInput = UIInput.make(form, "grade_comment_input", "#{GradeAndFeedbackSubmissionBean.gradeComment}", gradeComment);
         if (readOnly) {
             commentInput.decorate(new UIFreeAttributeDecorator("disabled", "disabled"));
         }
@@ -780,9 +774,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 FragmentSubmissionGradePreviewProducer.VIEW_ID)));
         nav.add(new NavigationCase("cancel", new ViewSubmissionsViewParams(
                 ViewSubmissionsProducer.VIEW_ID)));
-        nav.add(new NavigationCase(AssignmentSubmissionBean.SUBMIT_RETURNTOLIST, new ViewSubmissionsViewParams(
+        nav.add(new NavigationCase(GradeAndFeedbackSubmissionBean.SUBMIT_RETURNTOLIST, new ViewSubmissionsViewParams(
                 ViewSubmissionsProducer.VIEW_ID)));
-        nav.add(new NavigationCase(AssignmentSubmissionBean.RELEASE_RETURNTOLIST, new ViewSubmissionsViewParams(
+        nav.add(new NavigationCase(GradeAndFeedbackSubmissionBean.RELEASE_RETURNTOLIST, new ViewSubmissionsViewParams(
                 ViewSubmissionsProducer.VIEW_ID)));
         return nav;
     }
@@ -793,9 +787,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         
         if (actionReturn instanceof String 
                 && actionReturn != null
-                && ((String)actionReturn).startsWith(AssignmentSubmissionBean.SAVE_AND_EDIT_PREFIX)) {
+                && ((String)actionReturn).startsWith(GradeAndFeedbackSubmissionBean.SAVE_AND_EDIT_PREFIX)) {
             String editNextVersion = (String) actionReturn;
-            editNextVersion = editNextVersion.substring(AssignmentSubmissionBean.SAVE_AND_EDIT_PREFIX.length());
+            editNextVersion = editNextVersion.substring(GradeAndFeedbackSubmissionBean.SAVE_AND_EDIT_PREFIX.length());
             GradeViewParams nextParams = (GradeViewParams) incoming.copy();
             nextParams.versionId = Long.parseLong(editNextVersion);
             result.resultingView = nextParams;
@@ -805,7 +799,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
             outgoing.assignmentId = in.assignmentId;
             outgoing.pageIndex = in.viewSubPageIndex;
         } else if (result.resultingView instanceof GradeViewParams) {
-            if (AssignmentSubmissionBean.SUBMIT_RETURNTOLIST.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_RETURNTOLIST.equals(actionReturn))
+            if (GradeAndFeedbackSubmissionBean.SUBMIT_RETURNTOLIST.equals(actionReturn) || GradeAndFeedbackSubmissionBean.RELEASE_RETURNTOLIST.equals(actionReturn))
             {
                 // return to the list view
                 ViewSubmissionsViewParams outgoing = new ViewSubmissionsViewParams();
@@ -818,11 +812,11 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 GradeViewParams outgoing = (GradeViewParams) result.resultingView;
                 GradeViewParams in = (GradeViewParams) incoming;
                 outgoing.assignmentId = in.assignmentId;
-                if (AssignmentSubmissionBean.SUBMIT_PREV.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_PREV.equals(actionReturn))
+                if (GradeAndFeedbackSubmissionBean.SUBMIT_PREV.equals(actionReturn) || GradeAndFeedbackSubmissionBean.RELEASE_PREV.equals(actionReturn))
                 {
                     outgoing.userId = getNavigationSubmissionUserId("prev", in.userId, outgoing.assignmentId, placementId);
                 }
-                else if (AssignmentSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || AssignmentSubmissionBean.RELEASE_NEXT.equals(actionReturn))
+                else if (GradeAndFeedbackSubmissionBean.SUBMIT_NEXT.equals(actionReturn) || GradeAndFeedbackSubmissionBean.RELEASE_NEXT.equals(actionReturn))
                 {
                     outgoing.userId = getNavigationSubmissionUserId("next", in.userId, outgoing.assignmentId, placementId);
                 }

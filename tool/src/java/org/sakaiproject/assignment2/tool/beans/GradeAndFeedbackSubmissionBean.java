@@ -48,7 +48,7 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  * @author sgithens
  *
  */
-public class AssignmentSubmissionBean {
+public class GradeAndFeedbackSubmissionBean {
 
     public static final String SUBMIT = "submit";
     public static final String SUBMIT_PREV = "submit_prev";
