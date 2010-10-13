@@ -363,6 +363,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             } else if (errorCode.equals(ContentReviewItem.REPORT_ERROR_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_RETRY_CODE");
             } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_NO_RETRY_CODE)) {
+                // Look up actual error from ContentReview
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_NO_RETRY_CODE");
             } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_CODE");
@@ -385,27 +386,12 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             return;
         }
         
-        Method getAsnnMethod = null;
-        
-        try {
-            getAsnnMethod = this.contentReview.getClass().getMethod("getAssignment", 
-                    java.lang.String.class, java.lang.String.class);
-        } catch (SecurityException e) {
-            log.error(e); 
-            return;
-        } catch (NoSuchMethodException e) {
-            log.error(e);
-            return;
-        } 
-        
         Map asnnmap = new HashMap();
         try {
-            asnnmap = (Map) getAsnnMethod.invoke(contentReview, assign.getContextId(),
-                    assign.getContentReviewRef());
-        } catch (InvocationTargetException e) {
-            log.error(e);
-            log.error(e.getCause());
+            asnnmap = contentReview.getAssignment(assign.getContextId(), assign.getContentReviewRef());
         } catch (Exception e) {
+            // TODO I believe we were catching all exceptions to make sure this
+            // never ever stops us from loading an assignment.
             log.error(e);
         }
         
@@ -453,18 +439,6 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     }
 
     public void createAssignment(Assignment2 assign) {
-        Method createAsnnMethod = null;
-        try {
-            createAsnnMethod = this.contentReview.getClass().getMethod("createAssignment",
-                    java.lang.String.class, java.lang.String.class, java.util.Map.class);
-        } catch (SecurityException e) {
-            log.error(e);
-            return;
-        } catch (NoSuchMethodException e) {
-            log.error(e);
-            return;
-        }
-        
         Map opts = new HashMap();
         
         String[] tiioptKeys = new String[] { "submit_papers_to", "report_gen_speed",
@@ -502,13 +476,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         try {
-            createAsnnMethod.invoke(contentReview, assign.getContextId(), 
+            contentReview.createAssignment(assign.getContextId(), 
                     this.getTaskId(assign), opts);
-        } catch (InvocationTargetException e) {
-            String errormsg = "Error creating assignment for context: " + assign.getContextId()
-            + " with taskId: " + this.getTaskId(assign);
-            log.error(errormsg, e.getCause());
-            throw new ContentReviewException(errormsg, e.getCause());
         } catch (Exception e) {
             throw new ContentReviewException("Unknown exception trying to save TII Exception", e);
         }
