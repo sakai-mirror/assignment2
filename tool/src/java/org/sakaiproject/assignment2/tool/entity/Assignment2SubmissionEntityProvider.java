@@ -1,5 +1,6 @@
 package org.sakaiproject.assignment2.tool.entity;
 
+import java.text.Collator;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -449,7 +450,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                             return ((Boolean)m1.get(orderByComp)).compareTo(((Boolean)m2.get(orderByComp)));
                         }
                         else {
-                            return m1.get(orderByComp).toString().compareTo(m2.get(orderByComp).toString());
+                            return Collator.getInstance().compare(m1.get(orderByComp).toString(), m2.get(orderByComp).toString());
                         }
                     }});
             }
