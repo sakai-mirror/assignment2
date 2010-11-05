@@ -32,6 +32,7 @@ import org.sakaiproject.assignment2.tool.beans.SubmissionTableViewState;
 import org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder;
 import org.sakaiproject.assignment2.tool.params.GradeViewParams;
 import org.sakaiproject.assignment2.tool.producers.GradeProducer;
+import org.sakaiproject.contentreview.model.ContentReviewItem;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
@@ -276,7 +277,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
 
         for (AssignmentSubmission as : submissions) {
             Map submap = new HashMap();
-            submap.put("studentName", studentIdSortNameMap.get(as.getUserId()));
+            submap.put("studentName", studentIdSortNameMap.get(as.getUserId())); 
             submap.put("studentId", as.getUserId());
 
             // submission info columns are not displayed for non-electronic assignments
@@ -338,11 +339,11 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                     String reviewMultipleInfo = assignmentBundleLogic.getString("assignment2.content_review.multiple_reports");
                     
                     for (SubmissionAttachment attach : submittedAttachSet) {
-                        if (attach.getProperties() != null) {
-                            String status = (String)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_STATUS);
-                            if (status != null && !status.equals(AssignmentConstants.REVIEW_STATUS_NONE)) {
+                        if (attach.getContentReviewInfo() != null) {
+                            if (attach.getContentReviewInfo().getContentReviewItem().getStatus() != null && 
+                                attach.getContentReviewInfo().getContentReviewItem().getStatus() != ContentReviewItem.NOT_SUBMITTED_CODE) {
                                 reviewedAttach.add(attach);
-                            }
+                            }       
                         }
                     }
                     
@@ -353,30 +354,36 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                         // we need to either display an error indicator
                         // or a score
                         SubmissionAttachment attach = reviewedAttach.get(0);
-                        Map properties = attach.getProperties();
-                        String status = (String)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_STATUS);
-                        if (status.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
-                            submap.put("reviewError", true);
-                            Long statusErrorCode = (Long)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_ERROR_CODE);
-                            String errorMsg = contentReviewLogic.getErrorMessage(statusErrorCode);
-                            submap.put("reviewErrorMsg", errorMsg);
-                        } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
-                            String score = (String)properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY);
-                            String link = (String)properties.get(AssignmentConstants.PROP_REVIEW_URL);
+                        
+                        Long status = attach.getContentReviewInfo().getContentReviewItem().getStatus();
+                        
+                        if (ContentReviewItem.SUBMITTED_REPORT_AVAILABLE_CODE.equals(
+                                attach.getContentReviewInfo().getContentReviewItem().getStatus())) {
+                            String score = attach.getContentReviewInfo().getScoreDisplay(); /* (String)properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY); */
+                            String link = attach.getContentReviewInfo().getReviewUrl(); /* (String)properties.get(AssignmentConstants.PROP_REVIEW_URL); */
                             submap.put("reviewScore", score);
                             submap.put("reviewScoreLink", link);
                             submap.put("reviewError", false);
                             submap.put("reviewPending", false);
                             submap.put("reviewScoreLinkInfo", reportLinkInfo);
                             
-                            Integer scoreAsNum = (Integer)properties.get(AssignmentConstants.PROP_REVIEW_SCORE);
+                            Integer scoreAsNum = attach.getContentReviewInfo().getContentReviewItem().getReviewScore(); /* (Integer)properties.get(AssignmentConstants.PROP_REVIEW_SCORE); */
                             String styleClass = DisplayUtil.getCssClassForReviewScore(scoreAsNum);
                             submap.put("reviewScoreClass", styleClass);
-                        } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {
+                        }
+                        else if (ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE.equals(
+                                attach.getContentReviewInfo().getContentReviewItem().getStatus())) {
                             submap.put("reviewPending", true);
                             submap.put("reviewError", false);
                             submap.put("reviewScore", reviewPendingScoreDisplay);
                             submap.put("reviewPendingText", reviewPendingInfo);
+                        } 
+                        else {
+                            submap.put("reviewError", true);
+                            Integer statusErrorCode = attach.getContentReviewInfo().getContentReviewItem().getErrorCode(); /* (Long)attach.getProperties().get(AssignmentConstants.PROP_REVIEW_ERROR_CODE); */
+                            Long statusCode = attach.getContentReviewInfo().getContentReviewItem().getStatus();
+                            String errorMsg = contentReviewLogic.getErrorMessage(statusCode, statusErrorCode);
+                            submap.put("reviewErrorMsg", errorMsg);
                         }
                     } 
                 }

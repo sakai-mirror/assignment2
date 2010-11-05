@@ -110,7 +110,7 @@ public interface ExternalContentReviewLogic {
      * @return given the code from the {@link AssignmentConstants#PROP_REVIEW_ERROR_CODE} property,
      * returns an internationalized error message representing the error textually
      */
-    public String getErrorMessage(Long errorCode);
+    public String getErrorMessage(Long status, Integer errorCode);
     
     public String getTaskId(Assignment2 assign);
     

@@ -24,8 +24,10 @@ package org.sakaiproject.assignment2.tool.producers.renderers;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
+import org.sakaiproject.assignment2.model.Assignment2ContentReviewInfo;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.DisplayUtil;
+import org.sakaiproject.contentreview.model.ContentReviewItem;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -48,42 +50,51 @@ public class ReviewStatusRenderer {
     private MessageLocator messageLocator;
 
     public void makeReviewStatusIndicator(UIContainer tofill, String divID, Map properties){
-
+       
         UIJointContainer joint = new UIJointContainer(tofill, divID, "review_report_info:");
 
         if (properties != null && !properties.isEmpty()) {
             
             // we may need to display plagiarism checking results
-            if (properties.containsKey(AssignmentConstants.PROP_REVIEW_STATUS)) {
+            if (properties.containsKey(AssignmentConstants.PROP_REVIEW_INFO)) {
+                Assignment2ContentReviewInfo reviewInfo = 
+                    (Assignment2ContentReviewInfo) properties.get(AssignmentConstants.PROP_REVIEW_INFO);
+                
                 UIOutput.make(joint, "review_report_info");
-                String status = (String)properties.get(AssignmentConstants.PROP_REVIEW_STATUS);
-                if (status.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
-                    String errorText = contentReviewLogic.getErrorMessage((Long)properties.get(AssignmentConstants.PROP_REVIEW_ERROR_CODE));
-                    UIOutput errorDisplay = UIOutput.make(joint, "review_error");
-                    DecoratorList errorDisplayDecorators = new DecoratorList();
-                    errorDisplayDecorators.add(new UITooltipDecorator(errorText));
-                    errorDisplay.decorators = errorDisplayDecorators;
-                } else if (status.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
+                
+                Long status = reviewInfo.getContentReviewItem().getStatus();
+                
+                if (ContentReviewItem.SUBMITTED_REPORT_AVAILABLE_CODE.equals(status)) {
                     // create the container
                     UIOutput.make(joint, "review_report_status");
                     
-                    Integer scoreAsNum = (Integer)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE));
+                    Integer scoreAsNum = reviewInfo.getContentReviewItem().getReviewScore();
                     String statusCssClass = DisplayUtil.getCssClassForReviewScore(scoreAsNum);
                     
-                    String scoreAsString = (String)(properties.get(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY));
+                    String scoreAsString = reviewInfo.getScoreDisplay();
                     
                     // create the link
-                    UILink reportLink = UILink.make(joint, "review_report_link", scoreAsString, (String)properties.get(AssignmentConstants.PROP_REVIEW_URL));
+                    UILink reportLink = UILink.make(joint, "review_report_link", scoreAsString, reviewInfo.getReviewUrl());
                     DecoratorList reportLinkDecorators = new DecoratorList();
                     reportLinkDecorators.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.report_link")));
                     reportLinkDecorators.add(new UIFreeAttributeDecorator("class", statusCssClass));
                     reportLink.decorators = reportLinkDecorators;
                     
-                } else if (status.equals(AssignmentConstants.REVIEW_STATUS_PENDING)) {                 
+                } 
+                else if (ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE.equals(status)) {
                     UIOutput pendingDisplay = UIOutput.make(joint, "review_pending", messageLocator.getMessage("assignment2.content_review.pending.display"));
                     DecoratorList pendingDeco = new DecoratorList();
                     pendingDeco.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.pending.info")));
                     pendingDisplay.decorators = pendingDeco;
+                }
+                else { 
+                    String errorText = contentReviewLogic.getErrorMessage(
+                    		reviewInfo.getContentReviewItem().getStatus(),
+                    		reviewInfo.getContentReviewItem().getErrorCode());
+                    UIOutput errorDisplay = UIOutput.make(joint, "review_error");
+                    DecoratorList errorDisplayDecorators = new DecoratorList();
+                    errorDisplayDecorators.add(new UITooltipDecorator(errorText));
+                    errorDisplay.decorators = errorDisplayDecorators;
                 }
             }
         }

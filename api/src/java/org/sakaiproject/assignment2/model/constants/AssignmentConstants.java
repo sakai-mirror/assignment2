@@ -239,53 +239,8 @@ public class AssignmentConstants {
      * the view id for the view of a student's submission details in the assignment2 tool
      */
     public static final String TOOL_VIEW_SUBMISSION = "view-submission";
-    
-    // Properties for ContentReviewService integration
-    /**
-     * The score received upon review for display. String
-     */
-    public final static String PROP_REVIEW_SCORE_DISPLAY = "review_score_display";
-    
-    /**
-     * The numeric (Integer) representation of the review score
-     */
-    public final static String PROP_REVIEW_SCORE = "review_score";
-    /**
-     * The url to the report constructed for the user for the review
-     */
-    public final static String PROP_REVIEW_URL = "review_url";
-    
-    /**
-     * The actual code defined by the ContentReviewService representing the
-     * error (Long). Only exists if {@link #PROP_REVIEW_STATUS} is {@link #REVIEW_STATUS_ERROR}.
-     */
-    public final static String PROP_REVIEW_ERROR_CODE = "review_error_code";
-    /**
-     * Indicates the status of the review: {@link #REVIEW_STATUS_ERROR},
-     * {@link #REVIEW_STATUS_NONE}, {@link #REVIEW_STATUS_SUCCESS}, {@link #REVIEW_STATUS_PENDING}
-     */
-    public final static String PROP_REVIEW_STATUS = "review_status";
-    
-    // These are the possible status values for PROP_REVIEW_STATUS
-    /**
-     * There was an error submitting the item for review
-     */
-    public final static String REVIEW_STATUS_ERROR = "review_error";
-    
-    /**
-     * The item has not been submitted for review
-     */
-    public final static String REVIEW_STATUS_NONE = "review_not_submitted";
-    
-    /**
-     * The item has been submitted but review has not taken place yet
-     */
-    public final static String REVIEW_STATUS_PENDING = "review_pending";
-    
-    /**
-     * The item was successfully reviewed
-     */
-    public final static String REVIEW_STATUS_SUCCESS = "review_success";
+   
+    public static final String PROP_REVIEW_INFO = "content_review_info";
     
     /* These properties are specific to content review implementation using Turnitin */
     
