@@ -320,6 +320,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             {
                 honorPledge.decorate(new UIFreeAttributeDecorator("disabled","true"));
             }
+            UIVerbatim.make(form, "honor_pledge_text", UIMessage.make("assignment2.student-submit.honor_pledge_text"));;
         }
         
         // display plagiarism check warning
