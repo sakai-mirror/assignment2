@@ -31,6 +31,13 @@
 		</repository>
 	</repositories>
 	<dependencies>
+    <dependency>
+      <groupId>uk.org.ponder</groupId>
+      <artifactId>ponderutilcore</artifactId>
+      <version>1.2.4B-IU</version>
+      <type>jar</type>
+    </dependency>
+
 		<!-- Daisy Diff -->
 		<dependency>
 			<groupId>org.outerj.daisy</groupId>
