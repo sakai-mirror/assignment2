@@ -271,6 +271,12 @@ asnn2.setupSortLinks = function() {
         newdata.sort(function (arec,brec) {
           var a = arec[sortby];
           var b = brec[sortby];
+          // make the title sort case insensitive
+          if (sortby === 'title') {
+              a = a.toLowerCase();
+              b = b.toLowerCase();
+          }
+
           return a === b? 0 : ( a > b? -asnn2.pageState.sortDir : asnn2.pageState.sortDir);
         });
 

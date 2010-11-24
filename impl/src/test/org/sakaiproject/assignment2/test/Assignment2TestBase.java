@@ -31,6 +31,7 @@ import org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalContentReviewLogicImpl;
 import org.sakaiproject.assignment2.logic.impl.ExternalGradebookLogicImpl;
 import org.sakaiproject.assignment2.logic.test.stubs.AssignmentAuthzLogicStub;
+import org.sakaiproject.assignment2.logic.test.stubs.ExternalEventLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.ExternalLogicStub;
 import org.sakaiproject.assignment2.logic.test.stubs.GradebookServiceStub;
 import org.sakaiproject.assignment2.service.impl.Assignment2ServiceImpl;
@@ -63,6 +64,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
     protected ExternalLogicStub externalLogic;
     protected Assignment2ServiceImpl assignment2Service;
     protected AssignmentAuthzLogicStub authz;
+    protected ExternalEventLogicStub eventLogic;
 
     protected void onSetUpBeforeTransaction() throws Exception {
 
@@ -91,6 +93,8 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         
         authz = new AssignmentAuthzLogicStub();
         authz.setExternalLogic(externalLogic);
+        
+        eventLogic = new ExternalEventLogicStub();
 
         gradebookService = new GradebookServiceStub();
         gradebookService.setExternalLogic(externalLogic);
@@ -117,6 +121,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         assignmentLogic.setPermissionLogic(permissionLogic);
         assignmentLogic.setAssignmentBundleLogic(bundleLogic);
         assignmentLogic.setExternalContentReviewLogic(contentReviewLogic);
+        assignmentLogic.setExternalEventLogic(eventLogic);
 
 
         submissionLogic = new AssignmentSubmissionLogicImpl();
@@ -125,6 +130,7 @@ public abstract class Assignment2TestBase extends AbstractTransactionalSpringCon
         submissionLogic.setExternalLogic(externalLogic);
         submissionLogic.setPermissionLogic(permissionLogic);
         submissionLogic.setAssignmentLogic(assignmentLogic);
+        submissionLogic.setExternalEventLogic(eventLogic);
 
         assignment2Service = new Assignment2ServiceImpl();
         assignment2Service.setAssignmentLogic(assignmentLogic);

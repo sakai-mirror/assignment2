@@ -67,7 +67,7 @@ asnn2gradeview.saveGradingDialog = function(direction, contUrl) {
         asnn2util.closeDialog(saveGradingDialog);
         var formSubmit = document.getElementById("page-replace::submit");
         var option = document.getElementById("page-replace::submitOption");
-        option.value="submit_" + direction;
+        option.value="INSTRUCTOR_FEEDBACK_SUBMIT_" + direction;
         formSubmit.click();
     });
     
@@ -75,7 +75,7 @@ asnn2gradeview.saveGradingDialog = function(direction, contUrl) {
         asnn2util.closeDialog(saveGradingDialog);
         var formSubmit = document.getElementById("page-replace::submit");
         var option = document.getElementById("page-replace::submitOption");
-        option.value="release_" + direction;
+        option.value="INSTRUCTOR_FEEDBACK_RELEASE_" + direction;
         formSubmit.click();
     });
 

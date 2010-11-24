@@ -35,6 +35,7 @@ import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.assignment2.tool.ErrorOptionalTargettedMessageList;
 import org.sakaiproject.assignment2.tool.WorkFlowResult;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -76,8 +77,8 @@ public class AssignmentAuthoringBean {
     }
 
     // Request Scope Dependency
-    private TargettedMessageList messages;
-    public void setMessages(TargettedMessageList messages) {
+    private ErrorOptionalTargettedMessageList messages;
+    public void setMessages(ErrorOptionalTargettedMessageList messages) {
         this.messages = messages;
     }
 
@@ -138,6 +139,15 @@ public class AssignmentAuthoringBean {
         return result;
     }
 
+    private boolean areMessagesErrorFree() {
+        if (messages.isOriginalError()) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
     private WorkFlowResult internalProcessPost(Assignment2 assignment, Boolean draft){
         Boolean errorFound = false;
 
@@ -248,6 +258,13 @@ public class AssignmentAuthoringBean {
             newGroups.removeAll(remGroups);
         }
         assignment.setAssignmentGroupSet(newGroups);
+        
+        // Check the targetted messages list for hard errors from other 
+        // components or evolvers such as the date widget.
+        //System.out.println("About to check the targetted messages!");
+        if (!areMessagesErrorFree()) {
+            errorFound = true;
+        }
 
         //start the validator
         Assignment2Validator validator = new Assignment2Validator();
@@ -277,11 +294,6 @@ public class AssignmentAuthoringBean {
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
             }
         } else {
-            //if (draft) {
-            //messages.addMessage(new TargettedMessage("assignment2.assignment_save_draft_error"));
-            //} else {
-            //messages.addMessage(new TargettedMessage("assignment2.assignment_post_error"));
-            //}
             return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
         }
         return WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
@@ -301,6 +313,10 @@ public class AssignmentAuthoringBean {
         
         // check for malicious tags before rendering the preview
         if (!cleanUpAssignment(assignment)) {
+            return WorkFlowResult.INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT;
+        }
+        
+        if (!areMessagesErrorFree()) {
             return WorkFlowResult.INSTRUCTOR_CONTINUE_EDITING_ASSIGNMENT;
         }
         
@@ -349,20 +365,23 @@ public class AssignmentAuthoringBean {
     private boolean cleanUpAssignment(Assignment2 assignment) {
         boolean textValid = true;
         if (assignment != null) {
-            StringBuilder alertMsg = new StringBuilder();
             if (assignment.getInstructions() != null) {
+                StringBuilder alertMsg = new StringBuilder();
                 assignment.setInstructions(FormattedText.
                         processFormattedText(assignment.getInstructions(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new TargettedMessage("assignment2.error.assignment_instructions", new Object[] {alertMsg.toString()}));
+                    messages.addMessage(new TargettedMessage("assignment2.error.assignment_instructions", 
+                            new Object[] {alertMsg.toString()}, TargettedMessage.SEVERITY_ERROR));
                     textValid = false;
                 }
             }
             if (assignment.getModelAnswerText() != null) {
+                StringBuilder alertMsg = new StringBuilder();
                 assignment.setModelAnswerText(FormattedText.
                         processFormattedText(assignment.getModelAnswerText(), alertMsg, true, true));
                 if (alertMsg != null && alertMsg.length() > 0) {
-                    messages.addMessage(new TargettedMessage("assignment2.error.model_answer_text", new Object[] {alertMsg.toString()}));
+                    messages.addMessage(new TargettedMessage("assignment2.error.model_answer_text", 
+                            new Object[] {alertMsg.toString()}, TargettedMessage.SEVERITY_ERROR));
                     textValid = false;
                 }
             }

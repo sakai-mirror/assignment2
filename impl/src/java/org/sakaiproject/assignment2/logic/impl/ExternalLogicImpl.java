@@ -427,7 +427,9 @@ public class ExternalLogicImpl implements ExternalLogic {
             List<User> users = userDirectoryService.getUsers(userIds);
             if (users != null) {
                 for (User user : users) {
-                    userIdSortNameMap.put(user.getId(), user.getSortName());
+                	//TODO Should paren formatting be i18n-ized?
+                    userIdSortNameMap.put(user.getId(), user.getSortName() 
+                    		+ " ( " + user.getEid() + " )");
                 }
             }
         }

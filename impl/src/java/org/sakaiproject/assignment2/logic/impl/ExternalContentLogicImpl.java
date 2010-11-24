@@ -37,6 +37,7 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.util.Validator;
 
 /**
  * This is the implementation for logic which interacts with ContentHostingService
@@ -146,8 +147,8 @@ public class ExternalContentLogicImpl implements ExternalContentLogic {
             try {
                 ContentResource oldAttachment = contentHosting.getResource(attachmentReference);
                 String toolTitle = externalLogic.getToolTitle();
-                String name = oldAttachment.getProperties().getProperty(
-                        ResourceProperties.PROP_DISPLAY_NAME);
+                String name = Validator.escapeResourceName(oldAttachment.getProperties().getProperty(
+                        ResourceProperties.PROP_DISPLAY_NAME));
                 String type = oldAttachment.getContentType();
                 byte[] content = oldAttachment.getContent();
                 ResourceProperties properties = oldAttachment.getProperties();

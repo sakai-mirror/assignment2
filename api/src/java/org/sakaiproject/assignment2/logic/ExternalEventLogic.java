@@ -8,14 +8,6 @@ package org.sakaiproject.assignment2.logic;
  */
 public interface ExternalEventLogic {
 
-
-    public static final String EVENT_ASSIGN_CREATE = "assignment2.assignment.create";
-    public static final String EVENT_ASSIGN_UPDATE = "assignment2.assignment.update";
-    public static final String EVENT_ASSIGN_DELETE = "assignment2.assignment.delete";
-    public static final String EVENT_SUB_SUBMIT = "assignment2.submission.submit";
-    public static final String EVENT_SUB_GRADE = "assignment2.submission.grade";
-    public static final String EVENT_SUB_RETURN = "assignment2.submission.return";
-
     /**
      * Post a sakai event
      * @param message

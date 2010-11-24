@@ -203,39 +203,39 @@ var asnn2util = asnn2util || {};
      */
     asnn2util.openDialog = function(dialogObj) {
 
-        // http://bytes.com/groups/javascript/90412-distance-between-element-top-page
-        getPageCoords = function (element) {
-          var coords = { x: 0, y: 0};
-          while (element) {
-            coords.x += element.offsetLeft;
-            coords.y += element.offsetTop;
-            element = element.offsetParent;
-          }
-          return coords;
-       }
+         // http://bytes.com/groups/javascript/90412-distance-between-element-top-page
+         getPageCoords = function (element) {
+           var coords = { x: 0, y: 0};
+           while (element) {
+             coords.x += element.offsetLeft;
+             coords.y += element.offsetTop;
+             element = element.offsetParent;
+           }
+           return coords;
+        }
 
-       // The following assumes we are in an iframe.
-       // It actually works out ok, but should do more testing when we're opened in our
-       // own window.
-       var viewableWindowHeight =  parent.document.documentElement.clientHeight;
-       var scrollTop = parent.document.documentElement.scrollTop;
-       var totalDistToDialog = scrollTop + ( viewableWindowHeight / 2 );
+        // The following assumes we are in an iframe.
+        // It actually works out ok, but should do more testing when we're opened in our
+        // own window.
+        var viewableWindowHeight =  parent.document.documentElement.clientHeight;
+        var scrollTop = parent.document.documentElement.scrollTop;
+        var totalDistToDialog = scrollTop + ( viewableWindowHeight / 2 );
 
-       var iframeOffsetTop =  getPageCoords(jQuery("#" + iframeId,parent.document)[0]).y;
+        var iframeOffsetTop =  getPageCoords(jQuery("#" + iframeId,parent.document)[0]).y;
 
-       var dialogCenterX = totalDistToDialog - iframeOffsetTop;
+        var dialogCenterX = totalDistToDialog - iframeOffsetTop;
 
-       var dialogWidth = 520;
-       var dialogHeight = 400;
+        var dialogWidth = 520;
+        var dialogHeight = 400;
 
-       var iframeWidth = document.documentElement.clientHeight;
+        var iframeWidth = document.documentElement.clientHeight;
 
-       var dialogXOption = ( iframeWidth / 2 ) - ( dialogWidth / 2 );
+        var dialogXOption = ( iframeWidth / 2 ) - ( dialogWidth / 2 );
 
-       var dialogYOption = dialogCenterX - 50; //( dialogHeight / 2 );
+        var dialogYOption = dialogCenterX - 50; //( dialogHeight / 2 );
 
 /*
-       alert("viewableWindowHeight: " + viewableWindowHeight + "\n"
+        alert("viewableWindowHeight: " + viewableWindowHeight + "\n"
 + "\n scrollTop: " + scrollTop 
 + "\n totalDistToDialog: " + totalDistToDialog 
 + "\n iframeOffsetTop: " + iframeOffsetTop 
@@ -247,29 +247,31 @@ var asnn2util = asnn2util || {};
 + "\n dialogYOption: " + dialogYOption);
 */
 
-       // Sometimes the iframes don't report the correct width until some DOM manipulation 
-       // occurs and this always needs to be positive.
-       if (dialogXOption < 0) {
-           dialogXOption = 0;
-       }
+        // Sometimes the iframes don't report the correct width until some DOM manipulation 
+        // occurs and this always needs to be positive.
+        if (dialogXOption < 0) {
+            dialogXOption = 0;
+        }
+ 
+        if (dialogYOption < 0) {
+            dialogYOption = 0;
+        }
 
-       if (dialogYOption < 0) {
-           dialogYOption = 0;
-       }
-
-       dialogOptions = {
-           resizable: false,
-           width: dialogWidth,
-           modal: true,
-           position: [dialogXOption,dialogYOption],
-           overlay: {
-               opacity: 0.5,
-               background: "#eee"
-           }
-       };
-       asnn2util.turnOnPortalOverlay();
-       dialogObj.dialog(dialogOptions).show();
-   };
+        dialogOptions = {
+            resizable: false,
+            width: dialogWidth,
+            modal: true,
+            // ASNN-712 Browsers aren't giving the same widths across
+            // scenerios, setting to a constant padding.
+            position: [20,dialogYOption],
+            overlay: {
+                opacity: 0.5,
+                background: "#eee"
+            }
+        };
+        asnn2util.turnOnPortalOverlay();
+        dialogObj.dialog(dialogOptions).show();
+    };
 
     /**
      * This will close dialog that was opened with asnn2util.openDialog.
@@ -444,7 +446,7 @@ var asnn2 = asnn2 || {};
         if (new_title) {
             escaped_title = escape(new_title);
         }
-
+        
         // we also want to add the due date, if populated
         var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
         var curr_req_due_date = require_due_date.checked;
@@ -458,7 +460,7 @@ var asnn2 = asnn2 || {};
 
         jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
     }
-
+    
     /**
      * This method will take in a date as string (most likely from the date picker input)
      * that is in the PUC_DATE_FORMAT, parse it into pieces and figure out the
@@ -1151,6 +1153,7 @@ var asnn2editpage = asnn2editpage || {};
         acceptBeforeOpenMsg = jQuery("#page-replace\\:\\:assignment_accept_before_open");
         acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
         checkAgainstMsg = jQuery("#page-replace\\:\\:assignment_check_against");
+        checkAgainstMsg2 = jQuery("#page-replace\\:\\:assignment_check_against2");
         
         /*titleMsg.hide();
             nogbMsg.hide();
@@ -1228,6 +1231,7 @@ var asnn2editpage = asnn2editpage || {};
           } else {
             valid = false;
             checkAgainstMsg.show();
+            checkAgainstMsg2.show();
           }
         }
 

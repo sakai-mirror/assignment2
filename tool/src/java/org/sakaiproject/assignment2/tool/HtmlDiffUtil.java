@@ -48,6 +48,14 @@ public class HtmlDiffUtil {
      * @return
      */
     public String diffHtml(String source, String annotated) {
+        // change nulls to the empty string to avoid NPEs down the road
+        if (source == null) {
+            source = "";
+        }
+        if (annotated == null) {
+            annotated = "";
+        }
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
         SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory

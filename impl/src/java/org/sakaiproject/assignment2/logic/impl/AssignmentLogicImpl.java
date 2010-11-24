@@ -47,6 +47,7 @@ import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic;
 import org.sakaiproject.assignment2.logic.ExternalCalendarLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
@@ -130,6 +131,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     private ExternalContentReviewLogic externalContentReviewLogic;
     public void setExternalContentReviewLogic(ExternalContentReviewLogic externalContentReviewLogic) {
         this.externalContentReviewLogic = externalContentReviewLogic;
+    }
+    
+    private ExternalEventLogic externalEventLogic;
+    public void setExternalEventLogic(ExternalEventLogic externalEventLogic) {
+        this.externalEventLogic = externalEventLogic;
     }
 
     public void init(){
@@ -385,6 +391,15 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                     if(log.isDebugEnabled())log.debug("Attachments and/or groups removed for updated assignment " + assignment.getId());
                 }
             }
+            
+            if (isNewAssignment) {
+            	// ASNN-29
+            	externalEventLogic.postEvent(AssignmentConstants.EVENT_ASSIGN_CREATE, assignment.getReference());
+            }
+            else {
+                externalEventLogic.postEvent(AssignmentConstants.EVENT_ASSIGN_UPDATE, assignment.getReference());
+            }
+            
         } catch (HibernateOptimisticLockingFailureException holfe) {
             if(log.isInfoEnabled()) log.info("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId());
             throw new StaleObjectModificationException("An optimistic locking failure occurred while attempting to update assignment with id: " + assignment.getId(), holfe);
@@ -503,6 +518,9 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             dao.update(assignment);
             if(log.isDebugEnabled()) log.debug("Deleted assignment: " + assignment.getTitle() + " with id " + assignment.getId());
 
+            // ASNN-29 
+            externalEventLogic.postEvent(AssignmentConstants.EVENT_ASSIGN_DELETE, assignment.getReference());
+            
             // now remove the announcement, if applicable
             if (announcementIdToDelete != null) {
                 try {

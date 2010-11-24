@@ -206,7 +206,10 @@ public class AsnnInstructionsRenderer implements BasicProducer {
         
         if (modelAnswerEnabled)
         {
-            UIVerbatim.make(joint, "modelAnswerText", assignment.getModelAnswerText());
+        	//ASNN-704 this can be empty in which case RSF renders the template text
+        	if (assignment.getModelAnswerText() != null) {
+        		UIVerbatim.make(joint, "modelAnswerText", assignment.getModelAnswerText());
+        	}
             if (assignment.getModelAnswerAttachmentSet() != null && !assignment.getModelAnswerAttachmentSet().isEmpty()) {
                 UIOutput.make(joint, "modelAnswerAttachmentsFieldset");
                 attachmentListRenderer.makeAttachmentFromModelAssignmentAttachmentSet(tofill, "model_answer_assign_attach_list:", viewParameters.viewID, 

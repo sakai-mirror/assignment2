@@ -25,6 +25,7 @@
    		<property name="gradebookService" ref="org_sakaiproject_service_gradebook_GradebookService" />
    		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="assignmentAuthzLogic" ref="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" />
+      <property name="eventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ExternalAnnouncementLogic" class="org.sakaiproject.assignment2.logic.impl.ExternalAnnouncementLogicImpl" init-method="init">
@@ -59,6 +60,7 @@
       <property name="assignmentActivityProducer" ref="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer" />
       <property name="entityProviderManager" ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+      <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">
@@ -75,6 +77,7 @@
       <property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
       <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+      <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.ImportExportLogic" class="org.sakaiproject.assignment2.logic.impl.ImportExportLogicImpl" init-method="init">

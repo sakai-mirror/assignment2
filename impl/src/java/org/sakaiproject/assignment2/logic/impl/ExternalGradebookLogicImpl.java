@@ -35,6 +35,7 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.logic.AssignmentAuthzLogic;
+import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
@@ -79,6 +80,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     private AssignmentAuthzLogic authzLogic;
     public void setAssignmentAuthzLogic(AssignmentAuthzLogic authzLogic) {
         this.authzLogic = authzLogic;
+    }
+    
+    private ExternalEventLogic eventLogic;
+    public void setEventLogic(ExternalEventLogic eventLogic) {
+        this.eventLogic = eventLogic;
     }
 
     public void createGradebookDataIfNecessary(String contextId) {
@@ -681,6 +687,22 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         } catch (AssessmentNotFoundException anfe) {
             throw new GradebookItemNotFoundException(
                     "No gradebook item exists with the given id " + gradebookItemId, anfe);
+        }
+        
+        /* 
+         * ASNN-29 We are triggering an event that will correspond to retracting
+         * or releasing all grades when an Instructor clicks that link or 
+         * other similar actions/scripts.
+         * 
+         * TODO FIXME ASNN-699 There doesn't seem to be a way to get an Assignment at this
+         * point, we'll have to think about what to actually pass in as a reference
+         * and how to get that.
+         */
+        if (release) {
+            eventLogic.postEvent(AssignmentConstants.EVENT_RELEASE_ALL_GRADES, null);
+        }
+        else {
+            eventLogic.postEvent(AssignmentConstants.EVENT_RETRACT_ALL_GRADES, null);
         }
     }
 

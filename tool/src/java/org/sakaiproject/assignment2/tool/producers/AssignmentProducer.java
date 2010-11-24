@@ -46,6 +46,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -550,14 +552,23 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
          * If a user has all group privileges, we display all site groups. Otherwise,
          * we only display groups the user is a member of
          */
-        Collection<Group> groups;
-        if (permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId)) {
-            groups = externalLogic.getSiteGroups(currentContextId);
-        } else {
-            groups = externalLogic.getUserMemberships(currUserId, currentContextId);
-        }
-
+        List<Group> groups = new ArrayList<Group>();
         List<String> groupIdList = new ArrayList<String>();
+        
+        if (permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId)) {
+            groups.addAll(externalLogic.getSiteGroups(currentContextId));
+        } else {
+            groups.addAll(externalLogic.getUserMemberships(currUserId, currentContextId));
+        }
+        
+        Collections.sort(groups, new Comparator<Group>() {
+            public int compare(Group o1, Group o2) {
+                String title1 = o1.getTitle() == null? "" : o1.getTitle();
+                String title2 = o2.getTitle() == null? "" : o2.getTitle();
+                return title1.compareTo(title2);
+            };
+        });
+        
         if (groups.size() > 0) {
             UIOutput.make(form, "access-selection-area");
             List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();

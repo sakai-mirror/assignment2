@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
+import org.sakaiproject.assignment2.model.Assignment2ContentReviewInfo;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.component.api.ServerConfigurationService;
@@ -133,7 +134,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
 
         try
         {
-            reviewItems = contentReview.getReportList(assign.getContextId(), getTaskId(assign));
+            reviewItems = contentReview.getAllContentReviewItems(assign.getContextId(), getTaskId(assign));
         }
         catch (QueueException e)
         {
@@ -263,52 +264,26 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         if (reviewItem != null && attach != null) {
             Map properties = attach.getProperties() != null ? attach.getProperties() : new HashMap();
 
-            String reviewStatus = determineReviewStatus(reviewItem.getStatus());
-            properties.put(AssignmentConstants.PROP_REVIEW_STATUS, reviewStatus);
-
-            if (reviewStatus != null) {
-                if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_SUCCESS)) {
-                    if (reviewItem.getReviewScore() != null) {
-                        properties.put(AssignmentConstants.PROP_REVIEW_SCORE_DISPLAY, reviewItem.getReviewScore() + "%");
-                        properties.put(AssignmentConstants.PROP_REVIEW_SCORE, reviewItem.getReviewScore());
-                    }
-                    
-                    // now retrieve the report url if status shows it exists
-                    String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
-                    if (reportUrl != null) {
-                        properties.put(AssignmentConstants.PROP_REVIEW_URL, reportUrl);
-                    }
-                } else if (reviewStatus.equals(AssignmentConstants.REVIEW_STATUS_ERROR)) {
-                    properties.put(AssignmentConstants.PROP_REVIEW_ERROR_CODE, reviewItem.getStatus());
+            Assignment2ContentReviewInfo reviewInfo = new Assignment2ContentReviewInfo();
+            reviewInfo.setContentReviewItem(reviewItem);
+            attach.setContentReviewInfo(reviewInfo);
+            
+            if (reviewItem.getStatus() != null) {
+                if (reviewItem.getStatus().equals(ContentReviewItem.SUBMITTED_REPORT_AVAILABLE_CODE)) {
+                    reviewInfo.setScoreDisplay(reviewItem.getReviewScore() + "%");
+                } 
+                
+                // now retrieve the report url if status shows it exists
+                String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
+                if (reportUrl != null) {
+                    reviewInfo.setReviewUrl(reportUrl);
                 }
             }
-
+            
+            properties.put(AssignmentConstants.PROP_REVIEW_INFO, reviewInfo);
             attach.setProperties(properties);
+            
         }
-    }
-    
-    /**
-     * 
-     * @param contentReviewStatus
-     * @return given the status returned by the ContentReviewService, translates
-     * this into an assignment2 status 
-     */
-    private String determineReviewStatus(Long contentReviewStatus) {
-        String reviewStatus;
-
-        if (contentReviewStatus == null) {
-            reviewStatus = AssignmentConstants.REVIEW_STATUS_NONE;
-        } else if (contentReviewStatus.equals(ContentReviewItem.NOT_SUBMITTED_CODE)) {
-            reviewStatus = AssignmentConstants.REVIEW_STATUS_NONE;
-        } else if (contentReviewStatus.equals(ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE)) {
-            reviewStatus = AssignmentConstants.REVIEW_STATUS_PENDING;
-        } else if (contentReviewStatus.equals(ContentReviewItem.SUBMITTED_REPORT_AVAILABLE_CODE)) {
-            reviewStatus = AssignmentConstants.REVIEW_STATUS_SUCCESS;
-        } else {
-            reviewStatus = AssignmentConstants.REVIEW_STATUS_ERROR;
-        }
-
-        return reviewStatus;
     }
     
     public String getReportUrl(String attachmentReference, boolean instructorView) {
@@ -355,20 +330,24 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         return reportUrl;
     }
     
-    public String getErrorMessage(Long errorCode) {
-        String errorMessage = null;
-        if (errorCode != null) {
-            if (errorCode.equals(ContentReviewItem.REPORT_ERROR_NO_RETRY_CODE)) {
+    public String getErrorMessage(Long status, Integer errorCode) {
+        String errorMessage = null; 
+        
+        if (status != null) {
+            if (status.equals(ContentReviewItem.REPORT_ERROR_NO_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_NO_RETRY_CODE");
-            } else if (errorCode.equals(ContentReviewItem.REPORT_ERROR_RETRY_CODE)) {
+            } else if (status.equals(ContentReviewItem.REPORT_ERROR_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_RETRY_CODE");
-            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_NO_RETRY_CODE)) {
-                errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_NO_RETRY_CODE");
-            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_CODE)) {
+            } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_NO_RETRY_CODE)) {
+                // Look up actual error from ContentReview
+            	// TODO what happens if there is no translation for this code?
+                errorMessage = contentReview.getLocalizedStatusMessage(errorCode.toString());
+            	//errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_NO_RETRY_CODE");
+            } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_CODE");
-            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_EXCEEDED)) {
+            } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_EXCEEDED)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_EXCEEDED_CODE");
-            } else if (errorCode.equals(ContentReviewItem.SUBMISSION_ERROR_USER_DETAILS_CODE)) {
+            } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_USER_DETAILS_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_USER_DETAILS_CODE");
             }
         }
@@ -378,6 +357,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         return errorMessage;
+        
     }
     
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
@@ -385,27 +365,12 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             return;
         }
         
-        Method getAsnnMethod = null;
-        
-        try {
-            getAsnnMethod = this.contentReview.getClass().getMethod("getAssignment", 
-                    java.lang.String.class, java.lang.String.class);
-        } catch (SecurityException e) {
-            log.error(e); 
-            return;
-        } catch (NoSuchMethodException e) {
-            log.error(e);
-            return;
-        } 
-        
         Map asnnmap = new HashMap();
         try {
-            asnnmap = (Map) getAsnnMethod.invoke(contentReview, assign.getContextId(),
-                    assign.getContentReviewRef());
-        } catch (InvocationTargetException e) {
-            log.error(e);
-            log.error(e.getCause());
+            asnnmap = contentReview.getAssignment(assign.getContextId(), assign.getContentReviewRef());
         } catch (Exception e) {
+            // TODO I believe we were catching all exceptions to make sure this
+            // never ever stops us from loading an assignment.
             log.error(e);
         }
         
@@ -453,18 +418,6 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     }
 
     public void createAssignment(Assignment2 assign) {
-        Method createAsnnMethod = null;
-        try {
-            createAsnnMethod = this.contentReview.getClass().getMethod("createAssignment",
-                    java.lang.String.class, java.lang.String.class, java.util.Map.class);
-        } catch (SecurityException e) {
-            log.error(e);
-            return;
-        } catch (NoSuchMethodException e) {
-            log.error(e);
-            return;
-        }
-        
         Map opts = new HashMap();
         
         String[] tiioptKeys = new String[] { "submit_papers_to", "report_gen_speed",
@@ -502,13 +455,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         try {
-            createAsnnMethod.invoke(contentReview, assign.getContextId(), 
+            contentReview.createAssignment(assign.getContextId(), 
                     this.getTaskId(assign), opts);
-        } catch (InvocationTargetException e) {
-            String errormsg = "Error creating assignment for context: " + assign.getContextId()
-            + " with taskId: " + this.getTaskId(assign);
-            log.error(errormsg, e.getCause());
-            throw new ContentReviewException(errormsg, e.getCause());
         } catch (Exception e) {
             throw new ContentReviewException("Unknown exception trying to save TII Exception", e);
         }

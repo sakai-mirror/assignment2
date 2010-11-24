@@ -239,53 +239,8 @@ public class AssignmentConstants {
      * the view id for the view of a student's submission details in the assignment2 tool
      */
     public static final String TOOL_VIEW_SUBMISSION = "view-submission";
-    
-    // Properties for ContentReviewService integration
-    /**
-     * The score received upon review for display. String
-     */
-    public final static String PROP_REVIEW_SCORE_DISPLAY = "review_score_display";
-    
-    /**
-     * The numeric (Integer) representation of the review score
-     */
-    public final static String PROP_REVIEW_SCORE = "review_score";
-    /**
-     * The url to the report constructed for the user for the review
-     */
-    public final static String PROP_REVIEW_URL = "review_url";
-    
-    /**
-     * The actual code defined by the ContentReviewService representing the
-     * error (Long). Only exists if {@link #PROP_REVIEW_STATUS} is {@link #REVIEW_STATUS_ERROR}.
-     */
-    public final static String PROP_REVIEW_ERROR_CODE = "review_error_code";
-    /**
-     * Indicates the status of the review: {@link #REVIEW_STATUS_ERROR},
-     * {@link #REVIEW_STATUS_NONE}, {@link #REVIEW_STATUS_SUCCESS}, {@link #REVIEW_STATUS_PENDING}
-     */
-    public final static String PROP_REVIEW_STATUS = "review_status";
-    
-    // These are the possible status values for PROP_REVIEW_STATUS
-    /**
-     * There was an error submitting the item for review
-     */
-    public final static String REVIEW_STATUS_ERROR = "review_error";
-    
-    /**
-     * The item has not been submitted for review
-     */
-    public final static String REVIEW_STATUS_NONE = "review_not_submitted";
-    
-    /**
-     * The item has been submitted but review has not taken place yet
-     */
-    public final static String REVIEW_STATUS_PENDING = "review_pending";
-    
-    /**
-     * The item was successfully reviewed
-     */
-    public final static String REVIEW_STATUS_SUCCESS = "review_success";
+   
+    public static final String PROP_REVIEW_INFO = "content_review_info";
     
     /* These properties are specific to content review implementation using Turnitin */
     
@@ -364,4 +319,73 @@ public class AssignmentConstants {
     public static final String TII_API_PARAM_INSTITUTION_CHECK = "institution_check";
     public static final String TII_API_PARAM_S_VIEW_REPORT = "s_view_report";
 
+    /*
+     * Assignment 2 Event Codes Below
+     *
+     */
+    
+    /**
+     * This event is to be triggered when an Instructor type user authors and 
+     * saves a new assignment.
+     */
+    public static final String EVENT_ASSIGN_CREATE = "assignment2.assignment.create";
+    
+    /**
+     * This event is to be triggered when an Instructor type user edits the 
+     * information for an existing assignment.
+     */
+    public static final String EVENT_ASSIGN_UPDATE = "assignment2.assignment.update";
+    
+    /** 
+     * This event is to be triggered when an Instructor deletes an assignment.
+     */
+    public static final String EVENT_ASSIGN_DELETE = "assignment2.assignment.delete";
+    
+    /**
+     * This event is to be triggered when a Student user saves a draft of their submission.
+     */
+    public static final String EVENT_SUB_SAVEDRAFT = "assignment2.submission.savedraft";
+    
+    /**
+     * This event is to be triggered when a Student user submits an assignment.
+     */
+    public static final String EVENT_SUB_SUBMIT = "assignment2.submission.submit";
+    
+    // Done
+    public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.submission.saveGradeAndFeedback";
+    
+    // Done
+    public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.submission.saveAndReleaseGradeAndFeedback";
+    
+    // Done
+    public static final String EVENT_RELEASE_ALL_FEEDBACK = "assignment2.releaseAllFeedback";
+    
+    // Done
+    public static final String EVENT_RETRACT_ALL_FEEDBACK = "assignment2.retractAllFeedback";
+    
+    // Done
+    public static final String EVENT_RELEASE_ALL_GRADES = "assignment2.releaseAllGrades";
+    
+    // Done
+    public static final String EVENT_RETRACT_ALL_GRADES = "assignment2.retractAllGrades";
+    
+    // Done
+    public static final String EVENT_UPLOAD_FEEDBACK_AND_GRADES = "assignment2.uploadFeedbackAndGrades";
+    
+    public static String[] getEventCodes() {
+        return new String [] {
+                EVENT_ASSIGN_CREATE,
+                EVENT_ASSIGN_UPDATE,
+                EVENT_ASSIGN_DELETE,
+                EVENT_SUB_SAVEDRAFT,
+                EVENT_SUB_SUBMIT,
+                EVENT_SUB_SAVE_GRADE_AND_FEEDBACK,
+                EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK,
+                EVENT_RELEASE_ALL_FEEDBACK,
+                EVENT_RETRACT_ALL_FEEDBACK,
+                EVENT_RELEASE_ALL_GRADES,
+                EVENT_RETRACT_ALL_GRADES,
+                EVENT_UPLOAD_FEEDBACK_AND_GRADES
+        };
+    }
 }

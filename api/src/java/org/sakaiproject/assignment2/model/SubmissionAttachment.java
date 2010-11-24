@@ -28,6 +28,16 @@ package org.sakaiproject.assignment2.model;
  * @author <a href="mailto:wagnermr@iupui.edu">michelle wagner</a>
  */
 public class SubmissionAttachment extends SubmissionAttachmentBase {
+    
+    
+    /**
+     * This is a runtime calculated property that is not persisted in the 
+     * attachments DB table. In the various logic modules it can optionally be
+     * set to include ContentReview information for this attachment. If this 
+     * property is null it means that this submission attachment has not been
+     * checked, or that the information is not available.
+     */
+    private Assignment2ContentReviewInfo contentReviewInfo;
 
     public SubmissionAttachment() {
 
@@ -36,6 +46,14 @@ public class SubmissionAttachment extends SubmissionAttachmentBase {
     public SubmissionAttachment(AssignmentSubmissionVersion submissionVersion, String attachmentReference) {
         this.submissionVersion = submissionVersion;
         this.attachmentReference = attachmentReference;
+    }
+    
+    public Assignment2ContentReviewInfo getContentReviewInfo() {
+        return contentReviewInfo;
+    }
+    
+    public void setContentReviewInfo(Assignment2ContentReviewInfo contentReviewInfo) {
+        this.contentReviewInfo = contentReviewInfo;
     }
 
 }

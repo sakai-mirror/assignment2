@@ -4,18 +4,14 @@
 
 
 <beans>
+    <!-- A list of the targetted messages accumulated during this request cycle. -->
+    <bean id="targettedMessageList"
+    class="org.sakaiproject.assignment2.tool.ErrorOptionalTargettedMessageList">
+        <property name="viewParameters" ref="viewParameters" />
+    </bean>
 
-    <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />
+   <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />
 
-   <!--  Request Filtering for Permissions for DefaultView -->
-   <!-- 
-   <bean id="defaultViewParameters" factory-bean="Assignment2DefaultViewParameters" factory-method="getViewParameters" />
-   <bean id="Assignment2DefaultViewParameters" 
-		class="org.sakaiproject.assignment2.tool.params.Assignment2DefaultViewParameters">
-		<property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
-		<property name="permissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
-   </bean>
--->
    <!-- rich text evolver bean def -->
    <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
@@ -161,7 +157,6 @@
       <property name="asnnSubmissionHistoryRenderer" ref="AsnnSubmissionHistoryRenderer"></property>
       <property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer"></property>
       <property name="currentUser" ref="sakai-User"></property>
-      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="asnnDetailsRenderer" ref="AsnnDetailsRenderer"></property>
       <property name="gradeDetailsRenderer" ref="GradeDetailsRenderer"></property>
       <property name="asnnTagsRenderer" ref="AsnnTagsRenderer"></property>
@@ -289,7 +284,6 @@
    <bean class="org.sakaiproject.assignment2.tool.producers.StudentAssignmentListProducer">
       <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
       <property name="locale" ref="requestLocale" />
-      <property name="assignmentSubmissionBean" ref="AssignmentSubmissionBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
       <property name="messageLocator" ref="messageLocator" />
@@ -427,7 +421,7 @@
 	  <property name="notificationBean" ref="notificationBean" />
    </bean>
    
-   <bean id="AssignmentSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentSubmissionBean">
+   <bean id="GradeAndFeedbackSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.GradeAndFeedbackSubmissionBean">
    	  <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
    	  <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
@@ -435,6 +429,7 @@
    	  <property name="asvEntityBeanLocator" ref="AssignmentSubmissionVersion" />
       <property name="notificationBean" ref="notificationBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+      <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
    </bean>
    
    <!-- For Students completing a submission. -->
@@ -476,6 +471,7 @@
 		<property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
     <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
     <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+	    <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
 	</bean>
 	
 	<bean id="MarkTodoBean" class="org.sakaiproject.assignment2.tool.commands.MarkTodoCommand">

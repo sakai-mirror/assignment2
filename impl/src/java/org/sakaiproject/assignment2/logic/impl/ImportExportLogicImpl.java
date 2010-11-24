@@ -361,6 +361,13 @@ public class ImportExportLogicImpl implements ImportExportLogic {
             	continue;
             }
             
+            String assignmentDeleted = oProperties.getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
+            // make sure this assignment wasn't deleted
+            if (assignmentDeleted != null && "true".equalsIgnoreCase(assignmentDeleted)) {
+                log.debug("Skipping assignment from original tool because it was deleted");
+                continue;
+            }
+            
             AssignmentDefinition newAssnDef = new AssignmentDefinition();
 
             Date openDate = new Date(oAssignment.getOpenTime().getTime());
