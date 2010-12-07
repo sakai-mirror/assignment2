@@ -260,4 +260,6 @@ public interface AssignmentDao extends GeneralGenericDao {
      * @param obj
      */
     public void evictObject(Object obj);
+    
+    public List<Assignment2> getAssignmentsWithLinkedGradebookItemId(Long id);
 }

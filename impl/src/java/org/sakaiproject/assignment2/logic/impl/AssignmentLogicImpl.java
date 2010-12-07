@@ -61,6 +61,7 @@ import org.sakaiproject.assignment2.model.ModelAnswerAttachment;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entitybroker.entityprovider.EntityProviderManager;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.genericdao.api.search.Search;
@@ -137,9 +138,18 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     public void setExternalEventLogic(ExternalEventLogic externalEventLogic) {
         this.externalEventLogic = externalEventLogic;
     }
+    
+    // Move to an external API
+    private ServerConfigurationService serverConfigurationService; 
+    public void setServerConfigurationService (ServerConfigurationService serverConfigurationService) {
+            this.serverConfigurationService = serverConfigurationService;
+    }
+    
+    private boolean allowGradebookSync;
 
     public void init(){
         if(log.isDebugEnabled()) log.debug("init");
+        allowGradebookSync = serverConfigurationService.getBoolean(AssignmentConstants.CONFIG_ALLOW_GB_SYNC, true);
     }
     
     public Assignment2 getAssignmentByIdWithAssociatedData(Long assignmentId) {
@@ -256,6 +266,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new InvalidGradebookItemAssociationException("The gradebook item " + assignment.getGradebookItemId() + 
             " is not a valid gradebook item to associate with this assignment");
         }
+        
 
         // trim trailing spaces on title
         assignment.setTitle(assignment.getTitle().trim());
@@ -448,6 +459,17 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 
                 throw new ContentReviewException("The assignment was saved, " +
                  "but Turnitin information was unable to be updated", cre);
+            }
+        }
+        
+        if (allowGradebookSync) {
+            if (assignment.isGraded()) { // ONC-3115
+                List<Assignment2> linkedAsnns = 
+                    getAssignmentsWithLinkedGradebookItemId(assignment.getGradebookItemId());
+                if (linkedAsnns.size() == 1) {
+                    gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
+                            assignment.getContextId(), assignment.getTitle(), assignment.getDueDate());
+                }
             }
         }
 
@@ -1085,6 +1107,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         assignDef.setProperties(assignment.getProperties());
 
         return assignDef;
+    }
+
+    @Override
+    public List<Assignment2> getAssignmentsWithLinkedGradebookItemId(Long id) {
+        // TODO Permissions I'm assuming at the moment, that if someone had
+        // permissions to update the gradebook, they can update the assignment
+        // too, but that may not be true...
+        return dao.getAssignmentsWithLinkedGradebookItemId(id);
     }
 
 }

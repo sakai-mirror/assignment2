@@ -381,7 +381,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
             newItem.setUngraded(false);
         }
 
-        gradebookService.addAssignment(contextId, newItem);
+        gradebookService.addAssignment(contextId, newItem); 
         if (log.isDebugEnabled()) log.debug("New gradebook item added to gb via assignment2 tool");
 
         // now let's retrieve the id of this newly created item
@@ -391,6 +391,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
 
         return gradebookItemId;
+    }
+    
+    public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate) {
+        Assignment gbItem = gradebookService.getAssignment(contextId, gbItemId);
+        String oldName = gbItem.getName();
+        gbItem.setName(title);
+        gbItem.setDueDate(dueDate);
+        gradebookService.updateAssignment(contextId, oldName, gbItem);
     }
 
     public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId) {

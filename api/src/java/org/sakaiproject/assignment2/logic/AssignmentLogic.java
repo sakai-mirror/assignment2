@@ -160,5 +160,17 @@ public interface AssignmentLogic {
      */
     public AssignmentDefinition getAssignmentDefinition(Assignment2 assignment, Map<Long, GradebookItem> gbIdItemMap,
             Map<String, String> groupIdToTitleMap);
-
+    
+    /**
+     * Get all the assignments that are linked to a specific gradebook item. 
+     * These will we not be depth populated. 
+     * 
+     * This is originally intended for Gradebook sync 
+     * functionality that updates the title, due date, and points for both the
+     * Gradebook and Assignment if they are one-to-one matched.
+     * 
+     * @param Long gradebookItemId
+     * @return List of Assignment2
+     */
+    public List<Assignment2> getAssignmentsWithLinkedGradebookItemId(Long id);
 }

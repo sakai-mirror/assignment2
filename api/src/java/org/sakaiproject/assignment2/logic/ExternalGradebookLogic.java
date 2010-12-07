@@ -275,6 +275,11 @@ public interface ExternalGradebookLogic {
      */
     public Long createGbItemInGradebook(String contextId, String title, Double pointsPossible, Date dueDate,
             boolean releasedToStudents, boolean countedInCourseGrade);
+    
+    /**
+     * ONC-3115
+     */
+    public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate);
 
     /**
      * @param contextId

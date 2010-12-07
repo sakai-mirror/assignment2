@@ -388,4 +388,6 @@ public class AssignmentConstants {
                 EVENT_UPLOAD_FEEDBACK_AND_GRADES
         };
     }
+    
+    public static final String CONFIG_ALLOW_GB_SYNC = "assignment2.config.allowgbsync";
 }

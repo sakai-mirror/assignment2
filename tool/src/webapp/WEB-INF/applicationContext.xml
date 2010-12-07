@@ -3,6 +3,18 @@
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+    <bean class="org.sakaiproject.assignment2.tool.GradebookItemObserver"
+      init-method="init" destroy-method="destroy">
+        <property name="eventTrackingService" 
+            ref="org.sakaiproject.event.api.EventTrackingService" />
+        <property name="assignmentLogic" 
+            ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+        <property name="gradebookLogic" 
+            ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+        <property name="serverConfigurationService"
+            ref="org.sakaiproject.component.api.ServerConfigurationService" />
+    </bean>
+
     <bean id="asnnHelperHandlerHookBeanProxy" parent="RSACBridgeProxy">
         <property name="targetBeanName" value="asnnHelperHandlerHookBean"/>
     </bean>

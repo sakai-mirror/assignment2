@@ -61,6 +61,8 @@
       <property name="entityProviderManager" ref="org.sakaiproject.entitybroker.entityprovider.EntityProviderManager" />
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
       <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
+      <property name="serverConfigurationService"
+            ref="org.sakaiproject.component.api.ServerConfigurationService" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentPermissionLogicImpl" init-method="init">

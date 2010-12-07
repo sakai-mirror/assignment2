@@ -183,4 +183,9 @@
              left join fetch assignment.assignmentGroupSet
              where assignment.id = :assignmentId]]>
   	</query>
+  	
+  	<query name="findAssignmentsByGradebookItemId">
+  	<![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
+  	         where assignment.gradebookItemId = :gradebookItemId]]>
+  	</query>
 </hibernate-mapping>
