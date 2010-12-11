@@ -351,11 +351,15 @@ public class AssignmentConstants {
      */
     public static final String EVENT_SUB_SUBMIT = "assignment2.submission.submit";
     
-    // Done
-    public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.submission.saveGradeAndFeedback";
+    /**
+     * This event is to be triggered when an Instructor saves feedback for a Student's submission
+     */
+    public static final String EVENT_SUB_SAVE_GRADE_AND_FEEDBACK = "assignment2.saveFeedback";
     
-    // Done
-    public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.submission.saveAndReleaseGradeAndFeedback";
+    /**
+     * This event is to be triggered when an Instructor saves and releases feedback for a Student's submission
+     */
+    public static final String EVENT_SUB_SAVE_AND_RELEASE_GRADE_AND_FEEDBACK = "assignment2.saveReleaseFeedback";
     
     // Done
     public static final String EVENT_RELEASE_ALL_FEEDBACK = "assignment2.releaseAllFeedback";
@@ -369,8 +373,10 @@ public class AssignmentConstants {
     // Done
     public static final String EVENT_RETRACT_ALL_GRADES = "assignment2.retractAllGrades";
     
-    // Done
-    public static final String EVENT_UPLOAD_FEEDBACK_AND_GRADES = "assignment2.uploadFeedbackAndGrades";
+    /**
+     * This event is to be triggered when an Instructor uses the Upload feature to upload grades and/or feedback
+     */
+    public static final String EVENT_UPLOAD_FEEDBACK_AND_GRADES = "assignment2.uploadFeedback";
     
     public static String[] getEventCodes() {
         return new String [] {
