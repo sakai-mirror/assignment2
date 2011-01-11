@@ -886,4 +886,11 @@ public class GradebookServiceStub implements GradebookService {
         return null;
     }
 
+	@Override
+	public boolean checkStudentsNotSubmitted(String arg0)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
