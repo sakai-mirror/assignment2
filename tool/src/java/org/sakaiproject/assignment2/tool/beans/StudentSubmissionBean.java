@@ -93,7 +93,7 @@ public class StudentSubmissionBean {
         }else {
 
             submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
-                    asv.getSubmittedText(), asv.getSubmissionAttachSet(), true);
+                    asv.getSubmittedText(), asv.getHonorPledge(), asv.getSubmissionAttachSet(), true);
 
             // just in case submission closed while the student was working on
             // it, double check that the current submission isn't still
@@ -149,7 +149,7 @@ public class StudentSubmissionBean {
 
                 submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
                         assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
-                        asv.getSubmissionAttachSet(), true);
+                        asv.getHonorPledge(), asv.getSubmissionAttachSet(), true);
             }
         }
 
@@ -181,7 +181,7 @@ public class StudentSubmissionBean {
         try {
             submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(),
                     assignmentSubmission.getAssignment(), true, asv.getSubmittedText(),
-                    asv.getSubmissionAttachSet(), true);
+                    asv.getHonorPledge(), asv.getSubmissionAttachSet(), true);
             messages.addMessage(new TargettedMessage("assignment2.student-submit.info.submission_save_draft",
                     new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_INFO));
         } catch (SubmissionClosedException sce) {
