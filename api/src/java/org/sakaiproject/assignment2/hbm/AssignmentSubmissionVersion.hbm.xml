@@ -39,6 +39,10 @@
         <property name="submittedText" type="text">
         	<column name="SUBMITTED_TEXT" not-null="false" />
         </property>
+        <!-- the honor pledge check for this submission -->
+        <property name="honorPledge" type="boolean">
+        	<column name="HONOR_PLEDGE" />
+        </property>
         <!-- the submitted text with grader annotation -->
         <property name="annotatedText" type="text">
         	<column name="ANNOTATED_TEXT" not-null="false" />
