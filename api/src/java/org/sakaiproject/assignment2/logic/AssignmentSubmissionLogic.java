@@ -148,7 +148,7 @@ public interface AssignmentSubmissionLogic {
      * @throws SubmissionClosedException if submission is closed for this assignment and saveAsDraftIfClosed is false
      */
     public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-            String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed);
+            String submittedText, boolean honorPledge, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed);
 
 
     /**

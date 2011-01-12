@@ -209,7 +209,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     }
 
     public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-            String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed) {
+            String submittedText, boolean honorPledge, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed) {
         if (userId == null || assignment == null) {
             throw new IllegalArgumentException("null userId, or assignment passed to saveAssignmentSubmission");
         }
@@ -292,6 +292,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         version.setAssignmentSubmission(submission);
         version.setDraft(draft);
         version.setSubmittedText(submittedText);
+        version.setHonorPledge(honorPledge);
 
         if (!isAnUpdate) {
             version.setCreatedBy(currentUserId);
