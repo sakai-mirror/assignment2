@@ -87,6 +87,7 @@
         SUBMITTED_VERSION_NUMBER integer not null,
         FEEDBACK_RELEASED_DATE timestamp,
         SUBMITTED_TEXT clob(255),
+        HONOR_PLEDGE smallint,
         ANNOTATED_TEXT clob(255),
         FEEDBACK_NOTES clob(255),
         DRAFT smallint,
