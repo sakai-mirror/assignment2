@@ -87,7 +87,7 @@ public class StudentSubmissionBean {
         
         //check whether honor pledge was added if required
 //        if (assignment.isHonorPledge() && !(this.honorPledge != null && Boolean.TRUE.equals(honorPledge))) {
-      if (assignment.isHonorPledge() && ! asv.getHonorPledge()) {
+      if (assignment.isHonorPledge() && (asv.getHonorPledge() != null && ! Boolean.TRUE.equals(asv.getHonorPledge()))) {
             messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
                     new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
