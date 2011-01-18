@@ -1,4 +1,2 @@
 alter table A2_SUBMISSION_VERSION_T add HONOR_PLEDGE bit(1);
 
--- fill in HONOR_PLEDGE with 0
-update A2_SUBMISSION_VERSION_T set HONOR_PLEDGE = 0;
