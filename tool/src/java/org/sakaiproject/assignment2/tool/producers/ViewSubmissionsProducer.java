@@ -237,10 +237,20 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
             UIOutput.make(tofill, "no_gb_item", messageLocator.getMessage("assignment2.assignment_grade-assignment.gb_item_deleted"));
         }
         
+        // We need to check if it's a non electronic submission.  If it is, we don't want to have 
+        // the submitted columns appear (Submitted and Submission Status).
+        // We pass in the boolean parameter nonElectronicSubmission to viewSubmission.js (specifically snn2subview.init()), 
+        // where logic is there to use this parameter.
+        boolean nonElectronicSubmission = false;
+        
+        if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
+        	nonElectronicSubmission = true;
+        }
+        	
         
         UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
                 new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
-                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, pagesize, orderBy, ascending, gradesReleased, params.pageIndex});
+                placement.getId(), submissions.size(), assignment.isGraded(), contentReviewEnabled, nonElectronicSubmission, pagesize, orderBy, ascending, gradesReleased, params.pageIndex});
 
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
