@@ -244,6 +244,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         "for closed assignment " + assignment.getId());
             }
         }
+        
+        if (!draft && (assignment.isHonorPledge() && (honorPledge == null || Boolean.FALSE.equals(honorPledge)))) {
+            throw new IllegalArgumentException("assignment needs an honor pledge");        	
+        }
 
         // if there is no current version or the most recent version was submitted, we will need
         // to create a new version. If the current version is draft, we will continue to update
