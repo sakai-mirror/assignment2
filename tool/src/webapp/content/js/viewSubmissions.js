@@ -76,27 +76,32 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
           decorators: [
             {"jQuery": ["click", onSortClick('studentName')]}
           ]
-        },
-        { ID: "submitted-time-sort",
-          value: true,
-          decorators: [
-            {"jQuery": ["click", onSortClick('submittedDate')]}
-          ]
-        },
-        { ID: "submission-status-sort",
-          value: true,
-          decorators: [
-            {"jQuery": ["click", onSortClick('submissionStatus')]}
-          ]
-        },
-        { ID: "feedback-released-sort",
-          value: true,
-          decorators: [
-            {"jQuery": ["click", onSortClick('feedbackReleased')]}
-          ]
         }
       ]
   };
+  
+  if (asnn2subview.nonElectronicSubmission === false) {
+      tree.children.push({
+          ID: "submitted-time-sort", value: true,
+          decorators: [
+                        {"jQuery": ["click", onSortClick('submittedDate')]}
+          ]
+      });
+      tree.children.push({ 
+          ID: "submission-status-sort", value: true,
+          decorators: [
+                        {"jQuery": ["click", onSortClick('submissionStatus')]}
+          ]
+      });
+  }
+  
+  tree.children.push({ 
+          ID: "feedback-released-sort", value: true,
+          decorators: [
+                    {"jQuery": ["click", onSortClick('feedbackReleased')]}
+      ]
+    });
+
 
   if (asnn2subview.graded === true) {
     tree.children.push({
@@ -254,23 +259,28 @@ asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAs
       key: "student-name-sort",
       valuebinding: "*.studentName",
       sortable: true
-    },
-    {
-      key: "submitted-time-sort",
-      valuebinding: "*.submittedDateFormat",
-      sortable: true
-    },
-    {
-      key: "submission-status-sort",
-      valuebinding: "*.submissionStatus",
-      sortable: true
-    },
-    {
+    }
+  ];
+  
+  if (asnn2subview.nonElectronicSubmission === false) {
+    columnDefs.push ({
+            key: "submitted-time-sort",
+            valuebinding: "*.submittedDateFormat",
+            sortable: true
+      });
+    columnDefs.push({
+        key: "submission-status-sort",
+        valuebinding: "*.submissionStatus",
+        sortable: true
+      });	
+  }
+  
+  columnDefs.push({
       key: "feedback-released-sort",
       valuebinding: "*.feedbackReleased",
       sortable: true
-    }
-  ];
+    });
+
 
   if (asnn2subview.graded === true) {
     columnDefs.push({
@@ -359,17 +369,21 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
       { ID: "student-grade-link",
         target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId+'?viewSubPageIndex='+asnn2subview.pager.model.pageIndex,
         linktext: row.studentName
-      },
-      {
-        ID: "submission-status",
-        value: row.submissionStatus
       }
     ];
 
-    if (row.submittedDateFormat) {
-      togo.push({ ID: "submitted-time",
-        value: row.submittedDateFormat
-      });
+    if (asnn2subview.nonElectronicSubmission === false) {
+
+   	    togo.push({ ID: "submission-status",
+            value: row.submissionStatus
+          });
+
+        if (row.submittedDateFormat) {
+            togo.push({ ID: "submitted-time",
+              value: row.submittedDateFormat
+            });
+          }
+   
     }
 
     if (row.feedbackReleased === true) {
@@ -437,7 +451,7 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
     return togo;
   };
 
-asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, curPageSize, curOrderBy, curAscending, gradesReleased, pageIndex) {
+asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, graded, reviewEnabled, nonElectronicSubmission, curPageSize, curOrderBy, curAscending, gradesReleased, pageIndex) {
   sakai.curPlacement = placementId;
   sakai.curContext = contextId;
 
@@ -459,12 +473,19 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   else { 
     asnn2subview.graded = false;
   }
+
   if (reviewEnabled === "true") {
     asnn2subview.reviewEnabled = true;
   } else {
     asnn2subview.reviewEnabled = false;
   }
   
+  if (nonElectronicSubmission === "true") {
+        asnn2subview.nonElectronicSubmission = true;
+  } else {
+        asnn2subview.nonElectronicSubmission = false;
+  }
+
   if (curAscending === "false" || curAscending === false) {
     curAscending = -1;
   }
