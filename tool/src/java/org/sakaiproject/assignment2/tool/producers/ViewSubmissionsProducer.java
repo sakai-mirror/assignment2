@@ -244,7 +244,7 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         boolean nonElectronicSubmission = false;
         
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
-        	nonElectronicSubmission = true;
+                nonElectronicSubmission = true;
         }
         	
         
