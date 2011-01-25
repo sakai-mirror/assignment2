@@ -77,37 +77,18 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
             {"jQuery": ["click", onSortClick('studentName')]}
           ]
         }
-/*        { ID: "submitted-time-sort",
-          value: true,
-          decorators: [
-            {"jQuery": ["click", onSortClick('submittedDate')]}
-          ]
-        },
-        { ID: "submission-status-sort",
-          value: true,
-          decorators: [
-            {"jQuery": ["click", onSortClick('submissionStatus')]}
-          ]
-        }, 
-        { ID: "feedback-released-sort",
-          value: true,
-          decorators: [
-            {"jQuery": ["click", onSortClick('feedbackReleased')]}
-          ]
-        }
-        */
       ]
   };
   
   if (asnn2subview.nonElectronicSubmission === false) {
-	  tree.children.push({
-		  ID: "submitted-time-sort", value: true,
+      tree.children.push({
+          ID: "submitted-time-sort", value: true,
           decorators: [
                         {"jQuery": ["click", onSortClick('submittedDate')]}
           ]
-	  });
+      });
       tree.children.push({ 
-    	  ID: "submission-status-sort", value: true,
+          ID: "submission-status-sort", value: true,
           decorators: [
                         {"jQuery": ["click", onSortClick('submissionStatus')]}
           ]
@@ -115,8 +96,8 @@ asnn2subview.getSortHeaderComptree = function(newModel) {
   }
   
   tree.children.push({ 
-	  ID: "feedback-released-sort", value: true,
-      decorators: [
+          ID: "feedback-released-sort", value: true,
+          decorators: [
                     {"jQuery": ["click", onSortClick('feedbackReleased')]}
       ]
     });
@@ -279,31 +260,14 @@ asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAs
       valuebinding: "*.studentName",
       sortable: true
     }
-/*
-    {
-      key: "submitted-time-sort",
-      valuebinding: "*.submittedDateFormat",
-      sortable: true
-    },
-    {
-      key: "submission-status-sort",
-      valuebinding: "*.submissionStatus",
-      sortable: true
-    },
-    {
-      key: "feedback-released-sort",
-      valuebinding: "*.feedbackReleased",
-      sortable: true
-    }
-*/
   ];
   
   if (asnn2subview.nonElectronicSubmission === false) {
-	columnDefs.push ({
-	        key: "submitted-time-sort",
-	        valuebinding: "*.submittedDateFormat",
-	        sortable: true
-	      });
+    columnDefs.push ({
+            key: "submitted-time-sort",
+            valuebinding: "*.submittedDateFormat",
+            sortable: true
+      });
     columnDefs.push({
         key: "submission-status-sort",
         valuebinding: "*.submissionStatus",
@@ -406,17 +370,11 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
         target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId+'?viewSubPageIndex='+asnn2subview.pager.model.pageIndex,
         linktext: row.studentName
       }
-/*
-      {
-        ID: "submission-status",
-        value: row.submissionStatus
-      }
-*/
     ];
 
     if (asnn2subview.nonElectronicSubmission === false) {
 
-    	togo.push({ ID: "submission-status",
+   	    togo.push({ ID: "submission-status",
             value: row.submissionStatus
           });
 
@@ -425,7 +383,7 @@ asnn2subview.filteredRowTransform = function(obj, idx) {
               value: row.submittedDateFormat
             });
           }
-    	
+   
     }
 
     if (row.feedbackReleased === true) {
@@ -523,10 +481,10 @@ asnn2subview.init = function(asnnid, contextId, placementId, numSubmissions, gra
   }
   
   if (nonElectronicSubmission === "true") {
-	    asnn2subview.nonElectronicSubmission = true;
-	  } else {
-	    asnn2subview.nonElectronicSubmission = false;
-	  }
+        asnn2subview.nonElectronicSubmission = true;
+  } else {
+        asnn2subview.nonElectronicSubmission = false;
+  }
 
   if (curAscending === "false" || curAscending === false) {
     curAscending = -1;
