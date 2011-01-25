@@ -246,7 +246,6 @@ public class ViewSubmissionsProducer implements ViewComponentProducer, Navigatio
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {
                 nonElectronicSubmission = true;
         }
-        	
         
         UIInitBlock.make(tofill, "asnn2subview-init", "asnn2subview.init", 
                 new Object[]{assignmentId, externalLogic.getCurrentContextId(), 
