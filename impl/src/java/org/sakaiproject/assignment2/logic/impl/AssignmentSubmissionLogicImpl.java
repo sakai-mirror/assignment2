@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
+import org.sakaiproject.assignment2.exception.SubmissionHonorPledgeException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -246,7 +247,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         }
         
         if (!draft && (assignment.isHonorPledge() && (honorPledge == null || Boolean.FALSE.equals(honorPledge)))) {
-            throw new IllegalArgumentException("assignment needs an honor pledge");        	
+            throw new SubmissionHonorPledgeException("assignment needs an honor pledge");        	
         }
 
         // if there is no current version or the most recent version was submitted, we will need
