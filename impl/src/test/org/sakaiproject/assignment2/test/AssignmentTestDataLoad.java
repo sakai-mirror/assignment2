@@ -45,6 +45,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 public class AssignmentTestDataLoad {
 
     // constants
+    public static final String HONORPLEDGE_CONTEXT_ID = "honorPledgeContext";
     public static final String CONTEXT_ID = "validContext";
     public static final String BAD_CONTEXT = "badContext";
 
@@ -52,6 +53,7 @@ public class AssignmentTestDataLoad {
     public static final String ASSIGN2_TITLE = "Assignment 2";
     public static final String ASSIGN3_TITLE = "Assignment 3";
     public static final String ASSIGN4_TITLE = "Assignment 4";
+    public static final String ASSIGN5_TITLE = "Assignment Honor Pledge";
 
     public static final String INSTRUCTOR_UID = "instructorUid";
     public static final String TA_UID = "taUid";
@@ -68,34 +70,40 @@ public class AssignmentTestDataLoad {
     public Assignment2 a2;
     public Assignment2 a3;
     public Assignment2 a4;
+    public Assignment2 a5;
 
     public Long a1Id;
     public Long a2Id;
     public Long a3Id;
-    public Long a4Id;;
+    public Long a4Id;
+    public Long a5Id;
 
     // Assignment 1 has 2 attachments and 2 groups
     // Assignment 2 has 0 attachments and 0 group
     // Assignment 3 has 1 attachment and 0 groups
     // Assignment 4 has 0 attachments and 1 group
+    // Assignment 5 has 0 attachments and 0 groups
 
-    // Student 1 - has access to assign 1, 2, 3
+    // Student 1 - has access to assign 1, 2, 3, 5
     //	A1: submission with 1 version
     //  A2: no submission
     //  A3: submission with 2 versions
     //  A4: no submission
+    //  A5: submission with 1 version
 
     // Student 2 - has access to assign 1, 2, 3, 4
     //  A1: submission with 3 versions
     //  A2: submission with no version
     //  A3: submission with 1 version
     //  A4: submission with 2 versions
+    //  A5: no submission
 
     // Student 3 - has access to assign 2 and 3
     //  A1: no submission
     //  A2: no submission
     //  A3: submission with 2 versions
     //  A4: no submission
+    //  A5: no submission
 
     public AssignmentSubmission st1a1Submission;
     public AssignmentSubmission st2a1Submission;
@@ -110,6 +118,11 @@ public class AssignmentTestDataLoad {
     public AssignmentSubmission st1a3Submission;
     public AssignmentSubmissionVersion st1a3FirstVersion;
     public AssignmentSubmissionVersion st1a3CurrVersion; // 1 FA, 1 SA - draft!
+    
+    public AssignmentSubmission st1a5Submission;
+    public AssignmentSubmissionVersion st1a5FirstVersion;
+    public AssignmentSubmissionVersion st1a5CurrVersion;
+    
     public AssignmentSubmission st2a3Submission;
     public AssignmentSubmissionVersion st2a3CurrVersion; // 1 SA
     public AssignmentSubmission st3a3Submission;
@@ -163,9 +176,8 @@ public class AssignmentTestDataLoad {
         a3.setGradebookItemId(GB_ITEM1_ID);
         a4 = createGenericAssignment2Object(ASSIGN4_TITLE, 3, true);
         a4.setGradebookItemId(GB_ITEM2_ID);
-
+        a5 = createGenericAssignment2Object(ASSIGN5_TITLE, 4, false, true, HONORPLEDGE_CONTEXT_ID);
         
-
         Set<AssignmentAttachment> attachFora1 = new HashSet<AssignmentAttachment>();
         Set<AssignmentAttachment> attachFora2 = new HashSet<AssignmentAttachment>();
         Set<AssignmentAttachment> attachFora3 = new HashSet<AssignmentAttachment>();
@@ -195,6 +207,7 @@ public class AssignmentTestDataLoad {
         assignSet.add(a2);
         assignSet.add(a3);
         assignSet.add(a4);
+        assignSet.add(a5);
 
         dao.saveMixedSet(new Set[] {assignSet, attachFora1, groupsFora1, attachFora2, groupsFora2, attachFora3, groupsFora3,
                 attachFora4, groupsFora4});
@@ -203,6 +216,7 @@ public class AssignmentTestDataLoad {
         a2Id = a2.getId();
         a3Id = a3.getId();
         a4Id = a4.getId();
+        a5Id = a5.getId();
 
         Set<FeedbackAttachment> feedbackAttachSet = new HashSet<FeedbackAttachment>();
         Set<SubmissionAttachment> subAttachSet = new HashSet<SubmissionAttachment>();
@@ -270,6 +284,7 @@ public class AssignmentTestDataLoad {
         subAttachSet.add(new SubmissionAttachment(st2a4FirstVersion, "st2a4FirstVersionRef"));
         st2a4CurrVersion = createGenericVersion(st2a4Submission, 2);
         dao.save(st2a4CurrVersion);
+        
 
         dao.saveMixedSet(new Set[] {feedbackAttachSet, subAttachSet});
 
@@ -278,13 +293,14 @@ public class AssignmentTestDataLoad {
         a2 = dao.getAssignmentByIdWithGroupsAndAttachments(a2Id);
         a3 = dao.getAssignmentByIdWithGroupsAndAttachments(a3Id);
         a4 = dao.getAssignmentByIdWithGroupsAndAttachments(a4Id);
+        a5 = dao.getAssignmentByIdWithGroupsAndAttachments(a5Id);
 
     }
 
 
-    private Assignment2 createGenericAssignment2Object(String title, int sortIndex, boolean graded) {
+    private Assignment2 createGenericAssignment2Object(String title, int sortIndex, boolean graded, boolean honorPledge, String contextId) {
         Assignment2 assignment = new Assignment2();
-        assignment.setContextId(CONTEXT_ID);
+        assignment.setContextId(contextId);
         assignment.setCreateDate(new Date());
         assignment.setCreator("ADMIN");
         assignment.setDraft(false);
@@ -294,7 +310,7 @@ public class AssignmentTestDataLoad {
         assignment.setRemoved(false);
         assignment.setSubmissionType(AssignmentConstants.SUBMIT_INLINE_AND_ATTACH);
         assignment.setGraded(graded);
-        assignment.setHonorPledge(false);
+        assignment.setHonorPledge(honorPledge);
         assignment.setHasAnnouncement(false);
         assignment.setAddedToSchedule(false);
         assignment.setSortIndex(sortIndex);
@@ -303,6 +319,11 @@ public class AssignmentTestDataLoad {
         assignment.setNumSubmissionsAllowed(1);
 
         return assignment;
+        
+    }
+
+    private Assignment2 createGenericAssignment2Object(String title, int sortIndex, boolean graded) {
+        return createGenericAssignment2Object(title, sortIndex, graded, false, CONTEXT_ID);
     }
 
     public AssignmentSubmissionVersion createGenericVersion(AssignmentSubmission submission, int versionNum) {
