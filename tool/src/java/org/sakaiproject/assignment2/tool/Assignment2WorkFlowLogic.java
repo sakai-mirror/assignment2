@@ -140,11 +140,24 @@ public class Assignment2WorkFlowLogic implements ViewParamsInterceptor, ActionRe
             //    result.propagateBeans = ARIResult.FLOW_FASTSTART;
             //    break;
         case STUDENT_CONTINUE_EDITING_SUBMISSION:
-            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);
+            if (incoming instanceof StudentSubmissionParams) {
+                StudentSubmissionParams tempParams = (StudentSubmissionParams) incoming;
+                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false, false, tempParams.resubmit );
+            } else {
+                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, false);                
+            }
+
             result.propagateBeans = ARIResult.PROPAGATE;
             break;
         case STUDENT_PREVIEW_SUBMISSION:
-            result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, true);
+            if (incoming instanceof StudentSubmissionParams) {
+                StudentSubmissionParams tempParams = (StudentSubmissionParams) incoming;
+                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, true, false, tempParams.resubmit );
+            } else {
+                StudentSubmissionParams tempParams = (StudentSubmissionParams) incoming;
+                result.resultingView = new StudentSubmissionParams(StudentSubmitProducer.VIEW_ID, assignmentId, true, false, tempParams.resubmit );
+            }
+            
             result.propagateBeans = ARIResult.FLOW_FASTSTART;
             break;
         case STUDENT_SAVE_DRAFT_SUBMISSION:
