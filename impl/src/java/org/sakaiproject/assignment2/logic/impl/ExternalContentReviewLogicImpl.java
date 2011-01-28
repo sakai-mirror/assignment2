@@ -322,8 +322,10 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             }
             catch (ReportException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                //ASNN-729 we expect some of these
+            	if (log.isDebugEnabled()) {
+            		log.debug("ReportException", e);
+            	}
             }
         }
         
