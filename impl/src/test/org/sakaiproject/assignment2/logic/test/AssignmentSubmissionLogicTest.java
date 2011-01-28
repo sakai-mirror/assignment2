@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
+import org.sakaiproject.assignment2.exception.SubmissionHonorPledgeException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -516,6 +517,30 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a4, true, null, Boolean.TRUE, null, false);
             fail("did not catch student making submission to assignment that is restricted");
         } catch(SecurityException se) {}
+        
+        
+        // honor pledge
+        
+        // No honor pledge submitted on an assignment that requires one and submission IS a draft
+        try {
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a5, true, null, Boolean.FALSE, null, false);
+        } catch(SubmissionHonorPledgeException shpe) {
+            fail("should not have caught a student making a no honor pledge supplied submission to assignment that requires an honor pledge and it is a draft");
+        }
+
+        // No honor pledge submitted on an assignment that requires one and submission is NOT a draft
+        try {
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a5, false, null, Boolean.FALSE, null, false);
+            fail("did not catch a student making a no honor pledge supplied submission to an assignment that requires an honor pledge and it's NOT a draft");
+        } catch(SubmissionHonorPledgeException shpe) {}
+        
+        // Honor pledge submitted on an assignment that requires one and submission is NOT a draft
+        try {
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a5, false, null, Boolean.TRUE, null, false);
+        } catch(SubmissionHonorPledgeException shpe) {
+            fail("should not have caught a student making an honor pledge supplied submission to an assignment that requires an honor pledge and it's NOT a draft");
+        }
+        
     }
 
     public void testSaveAllInstructorFeedback() {
