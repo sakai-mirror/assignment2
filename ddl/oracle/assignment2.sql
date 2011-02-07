@@ -87,6 +87,7 @@
         SUBMITTED_VERSION_NUMBER number(10,0) not null,
         FEEDBACK_RELEASED_DATE date,
         SUBMITTED_TEXT clob,
+        HONOR_PLEDGE number(1,0),
         ANNOTATED_TEXT clob,
         FEEDBACK_NOTES clob,
         DRAFT number(1,0),

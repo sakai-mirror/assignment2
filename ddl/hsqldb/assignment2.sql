@@ -87,6 +87,7 @@
         SUBMITTED_VERSION_NUMBER integer not null,
         FEEDBACK_RELEASED_DATE timestamp,
         SUBMITTED_TEXT longvarchar,
+        HONOR_PLEDGE bit,
         ANNOTATED_TEXT longvarchar,
         FEEDBACK_NOTES longvarchar,
         DRAFT bit,

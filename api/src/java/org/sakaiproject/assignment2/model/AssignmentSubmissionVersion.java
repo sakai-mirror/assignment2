@@ -42,6 +42,7 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
     private String annotatedText;
     private String feedbackNotes;
     private String submittedText;
+    private Boolean honorPledge;
     private boolean draft;
     private String createdBy;
     private Date createdDate;
@@ -149,6 +150,22 @@ public class AssignmentSubmissionVersion implements FeedbackVersion {
      */
     public void setSubmittedText(String submittedText) {
         this.submittedText = submittedText;
+    }
+
+    /**
+     * 
+     * @return the honor pledge
+     */
+    public Boolean getHonorPledge() {
+        return honorPledge;
+    }
+
+    /**
+     * set the honorPledge
+     * @param honorPledge
+     */
+    public void setHonorPledge(Boolean honorPledge) {
+        this.honorPledge = honorPledge;
     }
 
     /**

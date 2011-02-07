@@ -87,6 +87,7 @@
         SUBMITTED_VERSION_NUMBER int4 not null,
         FEEDBACK_RELEASED_DATE timestamp,
         SUBMITTED_TEXT text,
+        HONOR_PLEDGE bool,
         ANNOTATED_TEXT text,
         FEEDBACK_NOTES text,
         DRAFT bool,

@@ -39,6 +39,7 @@ import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.StaleObjectModificationException;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
+import org.sakaiproject.assignment2.exception.SubmissionHonorPledgeException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
@@ -209,7 +210,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
     }
 
     public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-            String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed) {
+            String submittedText, Boolean honorPledge, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed) {
         if (userId == null || assignment == null) {
             throw new IllegalArgumentException("null userId, or assignment passed to saveAssignmentSubmission");
         }
@@ -243,6 +244,10 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                 throw new SubmissionClosedException("User " + currentUserId + " attempted to make a submission " +
                         "for closed assignment " + assignment.getId());
             }
+        }
+        
+        if (!draft && (assignment.isHonorPledge() && (honorPledge == null || Boolean.FALSE.equals(honorPledge)))) {
+            throw new SubmissionHonorPledgeException("assignment needs an honor pledge");        	
         }
 
         // if there is no current version or the most recent version was submitted, we will need
@@ -292,6 +297,7 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         version.setAssignmentSubmission(submission);
         version.setDraft(draft);
         version.setSubmittedText(submittedText);
+        version.setHonorPledge(honorPledge);
 
         if (!isAnUpdate) {
             version.setCreatedBy(currentUserId);

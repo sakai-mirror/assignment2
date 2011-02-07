@@ -315,7 +315,15 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
 
         if (assignment.isHonorPledge()) {
             UIOutput.make(joint, "honor_pledge_fieldset");
-            UIBoundBoolean honorPledge = UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
+//            UIBoundBoolean honorPledge = UIBoundBoolean.make(form, "honor_pledge", "#{StudentSubmissionBean.honorPledge}");
+            UIBoundBoolean honorPledge = UIBoundBoolean.make(form, "honor_pledge", asvOTP + ".honorPledge");
+
+            if (resubmit)
+            {
+              AssignmentSubmissionVersion previousVersion = assignmentSubmission.getCurrentSubmissionVersion();
+              honorPledge.setValue(previousVersion.getHonorPledge() == null ? Boolean.FALSE : previousVersion.getHonorPledge());
+            }
+
             if (preview || studentPreviewSubmission)
             {
                 honorPledge.decorate(new UIFreeAttributeDecorator("disabled","true"));

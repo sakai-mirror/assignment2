@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
 import org.sakaiproject.assignment2.exception.SubmissionClosedException;
+import org.sakaiproject.assignment2.exception.SubmissionHonorPledgeException;
 import org.sakaiproject.assignment2.exception.SubmissionNotFoundException;
 import org.sakaiproject.assignment2.exception.VersionNotFoundException;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -361,33 +362,33 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
     public void testSaveStudentSubmission() {
         // try passing a null userId
         try {
-            submissionLogic.saveStudentSubmission(null, new Assignment2(), true, null, null, false);
+            submissionLogic.saveStudentSubmission(null, new Assignment2(), true, null, Boolean.TRUE, null, false);
             fail("Did not catch null userId passed to saveStudentSubmission");
         } catch (IllegalArgumentException iae) {}
 
         // try passing a null assignment
         try {
-            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, null, true, null, null, false);
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, null, true, null, Boolean.TRUE, null, false);
             fail("Did not catch null assignment passed to saveStudentSubmission");
         } catch (IllegalArgumentException iae) {}
 
         // try passing an empty assignment (with no id)
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                    new Assignment2(), false, null, null, false);
+                    new Assignment2(), false, null, Boolean.TRUE, null, false);
         } catch (IllegalArgumentException iae) {}
 
         // let's see if an instructor can make a submission for a student
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.INSTRUCTOR_UID);
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
-                    testData.a1, false, null, null, false);
+                    testData.a1, false, null, Boolean.TRUE, null, false);
             fail("did not catch instructor trying to save a student's submission via saveStudentSubmission");
         } catch (SecurityException se) {}
         // do the same thing with the saveAsDraftIfClosed switch true
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
-                    testData.a1, false, null, null, true);
+                    testData.a1, false, null, Boolean.TRUE, null, true);
             fail("did not catch instructor trying to save a student's submission via saveStudentSubmission");
         } catch (SecurityException se) {}
 
@@ -395,13 +396,13 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.TA_UID);
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
-                    testData.a1, false, null, null, false);
+                    testData.a1, false, null, Boolean.TRUE, null, false);
             fail("did not catch ta trying to save a student's submission via saveStudentSubmission");
         } catch (SecurityException se) {}
         // do the same thing with the saveAsDraftIfClosed switch true
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID,
-                    testData.a1, false, null, null, true);
+                    testData.a1, false, null, Boolean.TRUE, null, true);
             fail("did not catch ta trying to save a student's submission via saveStudentSubmission");
         } catch (SecurityException se) {}
 
@@ -431,7 +432,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         attachSet.add(attach2);
 
         submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                testData.a2, true, "this is my text", attachSet, false);
+                testData.a2, true, "this is my text", Boolean.TRUE, attachSet, false);
 
         // now check that it exists 
         subList = dao.findByProperties(
@@ -453,7 +454,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         // should not create a new version
         attachSet.remove(attach2);
         submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                testData.a2, true, "this is my text - revised!", attachSet, false);
+                testData.a2, true, "this is my text - revised!", Boolean.TRUE, attachSet, false);
         // text and attach should have been updated
         existingSub = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, subId);
         List<AssignmentSubmissionVersion> versionHistory = dao.getVersionHistoryForSubmission(existingSub);
@@ -464,7 +465,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // now let's actually submit it (make draft = false)
         submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                testData.a2, false, "this is my text - revised!", currVersion.getSubmissionAttachSet(), false);
+                testData.a2, false, "this is my text - revised!", Boolean.TRUE, currVersion.getSubmissionAttachSet(), false);
         existingSub = (AssignmentSubmission)dao.findById(AssignmentSubmission.class, subId);
         versionHistory = dao.getVersionHistoryForSubmission(existingSub);
         assertTrue(versionHistory.size() == 1);
@@ -477,7 +478,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         String sub3Text = "sub 3";
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                    testData.a2, false, sub1Text, currVersion.getSubmissionAttachSet(), false);
+                    testData.a2, false, sub1Text, Boolean.TRUE, currVersion.getSubmissionAttachSet(), false);
             fail("submission saved even though not allowed to resubmit!");
         } catch (SubmissionClosedException sce) {}
 
@@ -486,20 +487,20 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         dao.save(existingSub);
 
         submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                testData.a2, false, sub2Text, null, false);
+                testData.a2, false, sub2Text, Boolean.TRUE, null, false);
         versionHistory = dao.getVersionHistoryForSubmission(existingSub);
         assertTrue(versionHistory.size() == 2);
 
         // double check that student is not allowed to submit again
         try {
             submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                    testData.a2, false, sub2Text, currVersion.getSubmissionAttachSet(), false);
+                    testData.a2, false, sub2Text, Boolean.TRUE, currVersion.getSubmissionAttachSet(), false);
             fail("submission saved even though not allowed to resubmit!");
         } catch (SubmissionClosedException sce) {}
 
         // now let's flip the saveAsDraftIfClosed switch
         submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, 
-                testData.a2, false, sub3Text, null, true);
+                testData.a2, false, sub3Text, Boolean.TRUE, null, true);
         versionHistory = dao.getVersionHistoryForSubmission(existingSub);
         assertEquals(3, versionHistory.size());
         for (AssignmentSubmissionVersion ver : versionHistory) {
@@ -513,9 +514,33 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // what if student is not allowed to submit to a restricted assignment?
         try {
-            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a4, true, null, null, false);
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a4, true, null, Boolean.TRUE, null, false);
             fail("did not catch student making submission to assignment that is restricted");
         } catch(SecurityException se) {}
+        
+        
+        // honor pledge
+        
+        // No honor pledge submitted on an assignment that requires one and submission IS a draft
+        try {
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a5, true, null, Boolean.FALSE, null, false);
+        } catch(SubmissionHonorPledgeException shpe) {
+            fail("should not have caught a student making a no honor pledge supplied submission to assignment that requires an honor pledge and it is a draft");
+        }
+
+        // No honor pledge submitted on an assignment that requires one and submission is NOT a draft
+        try {
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a5, false, null, Boolean.FALSE, null, false);
+            fail("did not catch a student making a no honor pledge supplied submission to an assignment that requires an honor pledge and it's NOT a draft");
+        } catch(SubmissionHonorPledgeException shpe) {}
+        
+        // Honor pledge submitted on an assignment that requires one and submission is NOT a draft
+        try {
+            submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT1_UID, testData.a5, false, null, Boolean.TRUE, null, false);
+        } catch(SubmissionHonorPledgeException shpe) {
+            fail("should not have caught a student making an honor pledge supplied submission to an assignment that requires an honor pledge and it's NOT a draft");
+        }
+        
     }
 
     public void testSaveAllInstructorFeedback() {
@@ -1041,7 +1066,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // let's make a draft submission to double check it is still open
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-        submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", null, false);
+        submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", Boolean.TRUE, null, false);
         numRemaining = submissionLogic.getNumberOfRemainingSubmissionsForStudent(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
         assertEquals(1, numRemaining);
@@ -1157,7 +1182,7 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
 
         // let's make a draft submission to double check it is still open
         externalLogic.setCurrentUserId(AssignmentTestDataLoad.STUDENT2_UID);
-        submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", null, false);
+        submissionLogic.saveStudentSubmission(AssignmentTestDataLoad.STUDENT2_UID, testData.a1, true, "blah", Boolean.TRUE, null, false);
         open = submissionLogic.isSubmissionOpenForStudentForAssignment(
                 AssignmentTestDataLoad.STUDENT2_UID, testData.a1Id);
         assertTrue(open);

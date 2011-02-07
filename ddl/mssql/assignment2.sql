@@ -87,6 +87,7 @@
         SUBMITTED_VERSION_NUMBER int not null,
         FEEDBACK_RELEASED_DATE datetime null,
         SUBMITTED_TEXT text null,
+        HONOR_PLEDGE tinyint null,
         ANNOTATED_TEXT text null,
         FEEDBACK_NOTES text null,
         DRAFT tinyint null,

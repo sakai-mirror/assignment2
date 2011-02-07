@@ -134,6 +134,7 @@ public interface AssignmentSubmissionLogic {
      * @param draft - true if this submission is draft
      * @param submittedText - the submitter's text
      * @param subAttachSet - the set of SubmissionAttachments associated with the
+     * @param honorPledge - the student's honor pledge
      * version. if this is an update, will delete any existing attachments associated
      * with the version that aren't included in this set
      * @param saveAsDraftIfClosed if this method is called after submission is
@@ -148,7 +149,7 @@ public interface AssignmentSubmissionLogic {
      * @throws SubmissionClosedException if submission is closed for this assignment and saveAsDraftIfClosed is false
      */
     public void saveStudentSubmission(String userId, Assignment2 assignment, boolean draft, 
-            String submittedText, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed);
+            String submittedText, Boolean honorPledge, Set<SubmissionAttachment> subAttachSet, boolean saveAsDraftIfClosed);
 
 
     /**
