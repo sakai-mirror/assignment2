@@ -413,6 +413,7 @@
    <!--  Beans -->
    <bean id="AssignmentAuthoringBean" class="org.sakaiproject.assignment2.tool.beans.AssignmentAuthoringBean">
    	  <property name="logic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
+   	  <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
    	  <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    	  <property name="messages" ref="targettedMessageList"/>
    	  <property name="assignmentAuthoringFlowBean" ref="AssignmentAuthoringFlowBean" />
