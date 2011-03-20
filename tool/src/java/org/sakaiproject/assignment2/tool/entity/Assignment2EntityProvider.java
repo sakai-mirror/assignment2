@@ -113,6 +113,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         this.contentReviewLogic = contentReviewLogic;
     }
     
+    
     /**
      * This is necessary because the Statisticable interface gives us a Locale
      * to use so we shouldn't just use the default.  MessageLocator doesn't
@@ -123,6 +124,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         this.messageSource = messageSource;
     }
 
+    
+    
     public static String PREFIX = "assignment2";
     public String getEntityPrefix() {
         return PREFIX;
@@ -481,6 +484,79 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         }
         
         return eventNames;
+    }
+
+    @SuppressWarnings("unchecked")
+    @EntityCustomAction(action="getMessageBundleText", viewKey=EntityView.VIEW_LIST)
+    public String getMessageBundleText(EntityView view, Map<String, Object> params) {
+
+        String key = null;
+        String message = "";
+        List <String> messageParams = new ArrayList<String>();
+        final String argumentBase = "mbarg";
+        int argumentindex = 0;
+        String tempArgumentName = null;
+        String tempArgumentValue = null;
+        
+        if (params != null && params.containsKey("key") && (key = (String) params.get("key")) != null) {
+            key = key.trim();
+
+            while (params.containsKey(tempArgumentName = argumentBase + argumentindex)) {
+                if ((tempArgumentValue = (String) params.get(tempArgumentName)) != null) {
+                    messageParams.add(tempArgumentValue);
+                    
+                    argumentindex++;
+                }
+            }
+            
+            if (key.startsWith("assignment2")) {
+                try {
+                    message = assignmentBundleLogic.getFormattedMessage(key, messageParams.toArray());
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        
+        
+        return message;
+    }
+
+    @SuppressWarnings("unchecked")
+    @EntityCustomAction(action="isLinkedAssignmentNameInGradebook", viewKey=EntityView.VIEW_SHOW)
+    public String isLinkedAssignmentNameInGradebook(EntityView view, Map<String, Object> params) {
+        String togo = String.valueOf(Boolean.FALSE);
+
+        Assignment2 as2 = assignmentLogic.getAssignmentById(Long.parseLong(view.getEntityReference().getId()));
+        
+        if (as2 == null || ! as2.isGraded() || params == null || ! params.containsKey("title"))
+        {
+            return String.valueOf(Boolean.FALSE);
+        }
+
+        String title = (String) params.get("title");
+        
+        togo = String.valueOf(gradebookLogic.isAssignmentNameDefinedinGradebook(as2.getContextId(), title));
+
+        return togo;
+    }
+
+    @SuppressWarnings("unchecked")
+    @EntityCustomAction(action="getFreeAssignmentNameinGradebook", viewKey=EntityView.VIEW_SHOW)
+    public String getFreeAssignmentNameInGradebook(EntityView view, Map<String, Object> params) {
+        String togo = null;
+        
+        Assignment2 as2 = assignmentLogic.getAssignmentById(Long.parseLong(view.getEntityReference().getId()));
+        String title = (String) params.get("title");
+
+        if (title != null && as2 != null) {
+            togo = String.valueOf(gradebookLogic.getFreeAssignmentName(as2.getContextId(), title));
+        }
+
+        return togo;
     }
 
 }
