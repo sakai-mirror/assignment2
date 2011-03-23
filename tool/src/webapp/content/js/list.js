@@ -451,8 +451,8 @@ asnn2.setupInlineEdits = function () {
                       that.finish();
                       return false;
                   } // end else
-          } // end onFinishEdit 
-      } // end listeners 
+              } // end onFinishEdit 
+          } // end listeners 
 
       });    // end fluid.inlineedit()
 
