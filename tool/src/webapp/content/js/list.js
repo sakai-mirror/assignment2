@@ -348,130 +348,113 @@ asnn2.setupInlineEdits = function () {
   var editFields = jQuery("#asnn-list");
   
   jQuery.each(editFields, function(index, value) {
-	  var that = fluid.inlineEdit(value, {
-		      selectors : {
-	      text: ".titleedit",
+      var that = fluid.inlineEdit(value, {
+          selectors : {
+          text: ".titleedit",
 	      editables: "p"
-	    },
+          },
 	      useTooltip: true,
 	      tooltipDelay : 500,
 	      tooltipText : "Click to edit assignment title",
 	      listeners: {
-	        onFinishEdit: function (newValue, oldValue, editNode, viewNode) {
-	          var asnnid = $(".asnnid", viewNode.parentNode).text();
-	          var existsInGradebook = "false";
+              onFinishEdit: function (newValue, oldValue, editNode, viewNode) {
+	              var asnnid = $(".asnnid", viewNode.parentNode).text();
+	              var existsInGradebook = "false";
+
+                  jQuery.ajax({
+                      type: "GET",
+                      async: false,
+                      url: "/direct/assignment2/"+asnnid+"/isLinkedAssignmentNameInGradebook",
+                      data: { 
+                          id: asnnid,
+                          title: newValue
+                      },
+                      error: function (jqXHR, textStatus, errorThrown) {
+                      },
+                      success: function (data) {
+                          existsInGradebook = data;
+                      }
+                  });
 	          
-	          
-	          jQuery.ajax({
-	              type: "GET",
-	              async: false,
-	              url: "/direct/assignment2/"+asnnid+"/isLinkedAssignmentNameInGradebook",
-	              data: { 
-	          	        id: asnnid,
-	                    title: newValue
-	          },
-	              error: function (jqXHR, textStatus, errorThrown) {
-//	          	      alert("Error in checking existing in gradebook");
-//	            	  alert (textStatus);
-//	            	  alert (errorThrown);
-	              },
-	              success: function (data) {
-	              	existsInGradebook = data;
-//	            	  alert("Success2. Data = " + data);
-	              }
-	            });
-	          
-	          if (existsInGradebook == "false") {        
-	          	jQuery.ajax({
-	          		type: "POST",
-	                  url: "/direct/assignment2/"+asnnid+"/edit",
-	                  data: {
-	                  id: asnnid,
-	                  title: newValue
-	                  },
-	                  error: function (jqXHR, textStatus, errorThrown) {
-	                  	alert ("error updating assignment " + textStatus);
-	          	        alert("error updating assignment " + errorThrown);
-	          	        }
-	                  }); 
-	          	
-	          	asnn2.getAsnnObj(new Number(asnnid))['title'] = newValue;
-	          	} else {
-	          		var displayDialog = jQuery("#gradebooknameconflict-asnn-dialog");
-	          		
-	          		var displayDialogText = "";
-	          		var displayDialogButtonText = "";
-	          		var freeAssignmentName = "";
-	          		
-	          		
-	  	            jQuery.ajax({
-			              type: "GET",
-			              async: false,
-			              url: "/direct/assignment2/"+asnnid+"/getFreeAssignmentNameinGradebook",
-			              data: { 
-                                id: asnnid,
-			          	        title: newValue
-			          },
-			              error: function (jqXHR, textStatus, errorThrown) {
-			          	      alert("Error!! + " + textStatus + ", " + errorThrown);
-			              },
-			              success: function (data) {
-//			            	  alert("success = " + data);
-			            	  freeAssignmentName = data;
-			              }
-			            });
+                  if (existsInGradebook == "false") {        
+                      jQuery.ajax({
+                          type: "POST",
+                          url: "/direct/assignment2/"+asnnid+"/edit",
+                          data: {
+                              id: asnnid,
+                              title: newValue
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                          }
+                      }); 
+                      
+                      asnn2.getAsnnObj(new Number(asnnid))['title'] = newValue;
+                  } else {
+                      var displayDialog = jQuery("#gradebooknameconflict-asnn-dialog");
+                      var displayDialogText = "";
+                      var displayDialogButtonText = "";
+                      var freeAssignmentName = "";
 
-	          		
-	  	            jQuery.ajax({
-		              type: "GET",
-		              async: false,
-		              url: "/direct/assignment2/getMessageBundleText",
-		              data: { 
-		          	        key: "assignment2.assignment_rename.duplicate_gradebook_name_error",
-		                    mbarg0: freeAssignmentName
-		          },
-		              error: function (jqXHR, textStatus, errorThrown) {
-//		          	      alert("Error!!");
-		              },
-		              success: function (data) {
-//		            	  alert("success = " + data);
-		            	  displayDialogText = data;
-		              }
-		            });
 
-	  	            jQuery.ajax({
-			              type: "GET",
-			              async: false,
-			              url: "/direct/assignment2/getMessageBundleText",
-			              data: { 
-			          	        key: "assignment2.close"
-			          },
-			              error: function (jqXHR, textStatus, errorThrown) {
-//			          	      alert("Error!!");
-			              },
-			              success: function (data) {
-//			            	  alert("success = " + data);
-			            	  displayDialogButtonText = data;
-			              }
-			            });
+                      jQuery.ajax({
+                          type: "GET",
+                          async: false,
+                          url: "/direct/assignment2/"+asnnid+"/getFreeAssignmentNameinGradebook",
+                          data: { 
+                              id: asnnid,
+                              title: newValue
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                          },
+                          success: function (data) {
+                              freeAssignmentName = data;
+                          }
+                      });
 
-	  	            displayDialog.find(".alertMessageInline").html(displayDialogText);
-	  	            
-	  	            jQuery("#gradebooknameconfict-asnn-dialog-close-button").attr("value", displayDialogButtonText);
-	  	            
-	          	    asnn2util.openDialog(displayDialog);
-	          	    
-	          	    that.updateModelValue(freeAssignmentName);
+                      jQuery.ajax({
+                          type: "GET",
+                          async: false,
+                          url: "/direct/assignment2/getMessageBundleText",
+                          data: { 
+                              key: "assignment2.assignment_rename.duplicate_gradebook_name_error",
+                              mbarg0: freeAssignmentName
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                          },
+                          success: function (data) {
+                              displayDialogText = data;
+                          }
+                      });
 
-	  	            that.finish();
-	          	    return false;
-	          	}
+                      jQuery.ajax({
+                          type: "GET",
+                          async: false,
+                          url: "/direct/assignment2/getMessageBundleText",
+                          data: { 
+                              key: "assignment2.close"
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                          },
+                          success: function (data) {
+                              displayDialogButtonText = data;
+                          }
+                      });
 
-	            
-	      } // end onFinishEdit 
-	  } // end listeners 
+                      displayDialog.find(".alertMessageInline").html(displayDialogText); 
+                      
+                      jQuery("#gradebooknameconfict-asnn-dialog-close-button").attr("value", displayDialogButtonText);
 
-	  });    // end fluid.inlineedit()
+                      asnn2util.openDialog(displayDialog);
+
+                      that.updateModelValue(freeAssignmentName);
+
+                      that.finish();
+                      return false;
+                  } // end else
+          } // end onFinishEdit 
+      } // end listeners 
+
+      });    // end fluid.inlineedit()
 
   }); // end jQuery each	  
 
