@@ -490,4 +490,23 @@ public interface ExternalGradebookLogic {
      * but not be gradable in the gradebook because of permission discrepancies between the two tools
      */
     public boolean isUserAStudentInGradebook(String contextId, String userId);
+    
+    /**
+     * @param gradebookUid
+     * @param assignmentTitle
+     * @return true if an assignment with the given name already exists in the
+     * given gradebook... false otherwise 
+     */
+    public boolean isAssignmentNameDefinedinGradebook(String gradebookUid, String assignmentTitle);
+    
+    /**
+     * @param gradebookUid
+     * @param assignmentTitle
+     * @return an assignmentTitle not currently used in the gradebook based on a numerical pattern. 
+     * For instance, if the assignmentTitle parameter is sent in as "ted", this method will look to see if 
+     * "ted (1)" is used in the gradebook.  If it is not in use it returns that.  If it is in use then 
+     * "ted (2)" is checked. And so on and so on until a non in use gradebook assignmentTitle is found.
+     */
+    public String getFreeAssignmentName(String gradebookUid, String assignmentTitle);
+    
 }

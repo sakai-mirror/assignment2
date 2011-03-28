@@ -466,7 +466,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             if (assignment.isGraded()) { // ONC-3115
                 List<Assignment2> linkedAsnns = 
                     getAssignmentsWithLinkedGradebookItemId(assignment.getGradebookItemId());
-                if (linkedAsnns.size() == 1) {
+                if (linkedAsnns != null && linkedAsnns.size() == 1) {
                     gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
                             assignment.getContextId(), assignment.getTitle(), assignment.getDueDate());
                 }

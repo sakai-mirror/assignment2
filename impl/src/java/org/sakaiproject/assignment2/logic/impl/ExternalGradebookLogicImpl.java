@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameInGradebookException;
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
@@ -45,6 +46,7 @@ import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
 import org.sakaiproject.service.gradebook.shared.Assignment;
+import org.sakaiproject.service.gradebook.shared.ConflictingAssignmentNameException;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
@@ -396,9 +398,19 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate) {
         Assignment gbItem = gradebookService.getAssignment(contextId, gbItemId);
         String oldName = gbItem.getName();
-        gbItem.setName(title);
-        gbItem.setDueDate(dueDate);
-        gradebookService.updateAssignment(contextId, oldName, gbItem);
+        
+        try {
+            if (! oldName.equalsIgnoreCase(title) && gradebookService.isAssignmentDefined(contextId, title)) {
+                throw new ConflictingAssignmentNameException("error");
+            }
+
+            gbItem.setName(title);
+            gbItem.setDueDate(dueDate);
+        
+            gradebookService.updateAssignment(contextId, oldName, gbItem);
+        } catch (ConflictingAssignmentNameException cane) {
+            throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + title);
+        }
     }
 
     public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId) {
@@ -870,6 +882,27 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
         
         return authzLogic.userHasPermission(userId, contextId, GB_STUDENT);
+    }
+    
+    public boolean isAssignmentNameDefinedinGradebook(String gradebookUid, String assignmentTitle)
+    {
+        try {
+            return gradebookService.isAssignmentDefined(gradebookUid, assignmentTitle);
+        } catch (Exception e) {
+            return false;
+        }        
+    }
+    
+    public String getFreeAssignmentName(String gradebookUid, String assignmentTitle) {
+       
+        int itemindex = 1;
+        String safeAssignmentName = null;
+        
+        while (isAssignmentNameDefinedinGradebook(gradebookUid, (safeAssignmentName = assignmentTitle + " (" + itemindex + ")") )) {
+            itemindex++;
+        }
+        
+        return safeAssignmentName;
     }
 
 }

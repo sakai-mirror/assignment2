@@ -29,8 +29,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
+import org.sakaiproject.assignment2.exception.ConflictingAssignmentNameInGradebookException;
 import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
@@ -88,6 +90,10 @@ public class AssignmentAuthoringBean {
         this.logic = logic;
     }
 
+    private ExternalGradebookLogic externalGradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic) {
+        this.externalGradebookLogic = externalGradebookLogic;
+    }
 
 
     //private Map<String, Assignment2> OTPMap;
@@ -270,13 +276,28 @@ public class AssignmentAuthoringBean {
         Assignment2Validator validator = new Assignment2Validator();
         if (validator.validate(assignment, messages) && !errorFound){
             //Validation Passed!
-            try {
-
-                logic.saveAssignment(assignment);
+            try {               
+                
+                List<Assignment2> linkedAsnns = logic.getAssignmentsWithLinkedGradebookItemId(assignment.getGradebookItemId());
+                if (linkedAsnns != null && linkedAsnns.size() == 1 && 
+                    (! linkedAsnns.get(0).getTitle().equalsIgnoreCase(assignment.getTitle())) && 
+                    externalGradebookLogic.isAssignmentNameDefinedinGradebook(assignment.getContextId(), assignment.getTitle())) {
+                    throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + assignment.getTitle());
+                }
+                
+            logic.saveAssignment(assignment);
 
             } catch (ContentReviewException cre) {
                 messages.addMessage(new TargettedMessage("assignment2.turnitin.error.unable_to_save_tii",
                         new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+            } catch (ConflictingAssignmentNameInGradebookException canige) {
+                assignment.setTitle(this.externalGradebookLogic.getFreeAssignmentName(assignment.getContextId(), assignment.getTitle()));
+                
+                messages.addMessage(new TargettedMessage("assignment2.assignment_rename.duplicate_gradebook_name_error",
+                        new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
+                
+
+                return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
             }
             
 
