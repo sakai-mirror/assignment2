@@ -12,7 +12,7 @@
     <parent>
         <artifactId>assignment2</artifactId>
         <groupId>org.sakaiproject.assignment2</groupId>
-        <version>2.9-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <properties>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.sakaiproject.assignment2</groupId>
             <artifactId>sakai-assignment2-api</artifactId>
-            <version>2.9-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
 
