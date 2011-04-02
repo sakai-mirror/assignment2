@@ -350,7 +350,7 @@ var editFields = jQuery("#asnn-list .asnn-title-cell");
   jQuery.each(editFields, function(index, value) {
       var that = fluid.inlineEdit(value, {
           selectors : {
-          text: ".titleedit",
+          text: ".titleedit"
 //	      editables: "p"
           },
 	      useTooltip: true,
