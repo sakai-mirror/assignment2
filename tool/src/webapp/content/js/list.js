@@ -345,13 +345,13 @@ asnn2.setupInlineEdits = function () {
   });
 
 
-  var editFields = jQuery("#asnn-list");
+var editFields = jQuery("#asnn-list .asnn-title-cell");
   
   jQuery.each(editFields, function(index, value) {
       var that = fluid.inlineEdit(value, {
           selectors : {
           text: ".titleedit",
-	      editables: "p"
+//	      editables: "p"
           },
 	      useTooltip: true,
 	      tooltipDelay : 500,
