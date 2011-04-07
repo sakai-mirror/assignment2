@@ -59,7 +59,7 @@ case "$version" in
                 cd ../..
                 patch -p1 -i patches/assignment2_sakai_2_7_x.patch
                 echo
-                echo "Succesfully prepared assignment2 for a sakai 2.7.x environment."
+                echo "Successfully prepared assignment2 for a sakai 2.7.x environment."
                 echo "You should be able to build and deploy assignment2 now."
                 echo
 
@@ -78,16 +78,23 @@ case "$version" in
                 cd ../..
                 patch -p1 -i patches/assignment2_sakai_2_8_x.patch
                 echo
-                echo "Succesfully prepared assignment2 for a sakai 2.8.x environment."
+                echo "Successfully prepared assignment2 for a sakai 2.8.x environment."
                 echo "You should be able to build and deploy assignment2 now."
                 echo
 
                 break
                 ;;
         3)
-                echo "Sakai 2.9.x/trunk"
+                echo "Preparing for a Sakai 2.9.x/trunk environment...."
                 echo 
-                echo "Nothing needs to be done for this version"
+                getSvn "https://source.sakaiproject.org/svn/content-review/trunk temp/content-review-2.9.x"
+                cd temp/content-review-2.9.x
+                compileInstall
+                cd ../..
+                patch -p1 -i patches/assignment2_sakai_2_9_x.patch
+                echo
+                echo "Successfully prepared assignment2 for a sakai 2.9.x/trunk environment."
+                echo "You should be able to build and deploy assignment2 now."
                 echo
 
                 break
