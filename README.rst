@@ -37,8 +37,8 @@ Sakai branches 2.8.x and 2.7.x
 
 For Sakai branches 2.8.x and 2.7.x you will need to download two dependencies
 (taggable-2.9.x and content-review-2.9.1) and patch pom.xml files. The script 
-prepare_for_sakai.sh script is included to accomplish this. The script will 
-download into a directory in assignment2 named temp. It then compiles and 
+prepare_for_sakai_env.sh script is included to accomplish this. The script 
+will download into a directory in assignment2 named temp. It then compiles and 
 installs into your local maven repository the dependencies.  It will patch 
 the dependencies' pom.xml files as well as patch assignment2's pom.xml files 
 to work w/ your branch of Sakai.  It will ONLY patch files within the 
