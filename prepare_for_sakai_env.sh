@@ -91,7 +91,6 @@ case "$version" in
                 cd temp/content-review-2.9.x
                 compileInstall
                 cd ../..
-                patch -p1 -i patches/assignment2_sakai_2_9_x.patch
                 echo
                 echo "Successfully prepared assignment2 for a sakai 2.9.x/trunk environment."
                 echo "You should be able to build and deploy assignment2 now."
