@@ -16,7 +16,7 @@
 	<parent>
 		<artifactId>assignment2</artifactId>
 		<groupId>org.sakaiproject.assignment2</groupId>
-		<version>1.0</version><!--entitybroker.version-->
+		<version>1.0-rc-1</version><!--entitybroker.version-->
 	</parent>
 
 	<dependencies>
@@ -24,20 +24,20 @@
 			<groupId>org.sakaiproject.assignment2
 				</groupId>
 			<artifactId>sakai-assignment2-api</artifactId>
-			<version>1.0</version>
+			<version>1.0-rc-1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.sakaiproject.assignment2</groupId>
 			<artifactId>sakai-assignment2-pack</artifactId>
-			<version>1.0</version>
+			<version>1.0-rc-1</version>
 			<type>war</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.sakaiproject.assignment2</groupId>
 			<artifactId>sakai-assignment2-tool</artifactId>
-			<version>1.0</version>
+			<version>1.0-rc-1</version>
 			<type>war</type>
 			<scope>compile</scope>
 		</dependency>

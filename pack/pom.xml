@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.sakaiproject.assignment2</groupId>
     <artifactId>assignment2</artifactId>
-    <version>1.0</version>
+    <version>1.0-rc-1</version>
   </parent>
   <name>sakai-assignment2-pack</name>
   <groupId>org.sakaiproject.assignment2</groupId>
