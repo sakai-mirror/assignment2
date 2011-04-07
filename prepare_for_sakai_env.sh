@@ -35,13 +35,13 @@ do
   echo "tree (it does NOT touch anything outside of it).  This assignment2 directory MUST be sitting inside"
   echo "your Sakai tree before you try to run this script."
   echo
-  echo "(1) - Sakai 2.7.x"
-  echo "(2) - Sakai 2.8.x"
-  echo "(3) - Sakai 2.9.x/trunk"
+  echo "(1) - Sakai 2.7.x branch"
+  echo "(2) - Sakai 2.8.x branch"
+  echo "(3) - Sakai 2.9.x branch/trunk"
   echo 
   echo "(4) - Exit"
   echo
-  echo "Please choose sakai verson to patch the tool for: \c "
+  echo "Please choose Sakai branch to patch the tool for: \c "
   read version
 done
 
