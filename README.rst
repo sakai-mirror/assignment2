@@ -22,7 +22,7 @@ Tools needed
 ------------
 
 You will need to have maven2, subversion and patch installed on your system.
-You will also need to be using the local same maven repository (by default 
+You will also need to be using the same local maven repository (by default 
 $HOME/.m2/repository) that you used to build your Sakai branch.  Your Sakai
 branch needs to be built before you try to build/install Assignment2.
 
