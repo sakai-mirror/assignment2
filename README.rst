@@ -26,14 +26,8 @@ You will also need to be using the local maven repository (by default
 $HOME/.m2/repository) that you used to build your Sakai branch.  Your Sakai
 branch needs to be built before you try to build/install Assignment2.
 
-Sakai 2.9.x branch/trunk
-------------------------
-
-Nothing special needs to be done to use. It should install and deploy 
-"as is".
-
-Sakai branches 2.8.x and 2.7.x
-------------------------------
+Obtaining dependencies and patching pom.xmls
+--------------------------------------------
 
 For Sakai branches 2.8.x and 2.7.x you will need to download two dependencies
 (taggable-2.9.x and content-review-2.9.1) and patch pom.xml files. The script 
