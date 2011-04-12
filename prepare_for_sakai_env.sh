@@ -18,14 +18,64 @@ compileDeploy()
   mvn clean install sakai:deploy
 }
 
-applyPatch()
+promptVersion()
 {
-  echo "applying patch " $1
+  echo "Sakai version (the version in your Sakai master/pom.xml) [default: ${1}] > : \c"
+  read sakaiVersion
+
+  if [ ! $sakaiVersion  ]; then
+      sakaiVersion=$1
+  fi
+
+}
+          
+prepareContentReview()
+{
+    getSvn "https://source.sakaiproject.org/svn/content-review/trunk temp/content-review-2.9.x"
+    cd temp/content-review-2.9.x
+    compileInstall
+    cd ../..
+}      
+
+prepareTaggable()
+{
+    getSvn "https://source.sakaiproject.org/svn/taggable/trunk temp/taggable-2.9.x"
+    cd temp/taggable-2.9.x
+    cat ../../patches/taggable.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p1
+    compileInstall
+    cd ../..
+}
+
+prepareAssignment2()
+{
+    if [ ! $1 ]; then
+      promptVersion "2.8-SNAPSHOT"
+    else
+      sakaiVersion=$1
+    fi
+
+    echo "Preparing for a ${sakaiVersion} environment...."
+    echo
+
+    prepareContentReview
+
+    if [ "$sakaiVersion" != "2.9-SNAPSHOT" ]; then
+        prepareTaggable
+    fi
+
+    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p1
+}
+
+printDonePreparing()
+{
+    echo
+    echo "Successfully prepared assignment2 for a Sakai ${sakaiVersion} environment."
+    echo "You should be able to build and deploy assignment2 now."
+    echo
 }
 
 
-
-while [ "$version" != "1" -a "$version" != "2" -a "$version" != "3" -a "$version" != "4" ] 
+while [ "$version" != "1" -a "$version" != "2" -a "$version" != "3" -a "$version" != "4" -a "$version" != "5" ] 
 do
   clear
   echo
@@ -35,70 +85,45 @@ do
   echo "tree (it does NOT touch anything outside of it).  This assignment2 directory MUST be sitting inside"
   echo "your Sakai tree before you try to run this script."
   echo
-  echo "(1) - Sakai 2.7.x branch"
-  echo "(2) - Sakai 2.8.x branch"
-  echo "(3) - Sakai 2.9.x branch/trunk"
-  echo 
-  echo "(4) - Exit"
+  echo "(1) - Sakai branch 2.7.x"
+  echo "(2) - Sakai branch 2.8.x"
+  echo "(3) - Sakai branch 2.9.x/trunk"
   echo
-  echo "Please choose Sakai branch to patch the tool for: \c "
+  echo "(4) - Custom Sakai version (must be a derivitive of 2.7.x or 2.8.x)"
+  echo 
+  echo "(5) - Exit"
+  echo
+  echo "Please choose an option: \c "
   read version
+  echo
 done
 
 case "$version" in
         1)
-                echo "Preparing for a Sakai 2.7.x environment...."
-                getSvn "https://source.sakaiproject.org/svn/content-review/trunk temp/content-review-2.9.x"
-                cd temp/content-review-2.9.x
-                compileInstall
-                cd ../..
-                getSvn "https://source.sakaiproject.org/svn/taggable/trunk temp/taggable-2.9.x"
-                cd temp/taggable-2.9.x
-                patch -p1 -i ../../patches/taggable_sakai_2_7_x.patch
-                compileInstall
-                cd ../..
-                patch -p1 -i patches/assignment2_sakai_2_7_x.patch
-                echo
-                echo "Successfully prepared assignment2 for a sakai 2.7.x environment."
-                echo "You should be able to build and deploy assignment2 now."
-                echo
-
+                prepareAssignment2 "2.7-SNAPSHOT"
+                printDonePreparing
                 break
                 ;;
+
         2)
-                echo "Preparing for a Sakai 2.8.x environment...."
-                getSvn "https://source.sakaiproject.org/svn/content-review/trunk temp/content-review-2.9.x"
-                cd temp/content-review-2.9.x
-                compileInstall
-                cd ../..
-                getSvn "https://source.sakaiproject.org/svn/taggable/trunk temp/taggable-2.9.x"
-                cd temp/taggable-2.9.x
-                patch -p1 -i ../../patches/taggable_sakai_2_8_x.patch
-                compileInstall
-                cd ../..
-                patch -p1 -i patches/assignment2_sakai_2_8_x.patch
-                echo
-                echo "Successfully prepared assignment2 for a sakai 2.8.x environment."
-                echo "You should be able to build and deploy assignment2 now."
-                echo
-
+                prepareAssignment2 "2.8-SNAPSHOT"
+                printDonePreparing
                 break
                 ;;
+
         3)
-                echo "Preparing for a Sakai 2.9.x/trunk environment...."
-                echo 
-                getSvn "https://source.sakaiproject.org/svn/content-review/trunk temp/content-review-2.9.x"
-                cd temp/content-review-2.9.x
-                compileInstall
-                cd ../..
-                echo
-                echo "Successfully prepared assignment2 for a sakai 2.9.x/trunk environment."
-                echo "You should be able to build and deploy assignment2 now."
-                echo
-
+                prepareAssignment2 "2.9-SNAPSHOT"
+                printDonePreparing
                 break
                 ;;
+
         4)
+                prepareAssignment2
+                printDonePreparing
+                break
+                ;;
+
+        5)
                 echo "Exit"
                 echo 
                 
