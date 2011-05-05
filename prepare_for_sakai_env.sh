@@ -29,14 +29,6 @@ promptVersion()
 
 }
           
-prepareContentReview()
-{
-    getSvn "https://source.sakaiproject.org/svn/content-review/trunk temp/content-review-2.9.x"
-    cd temp/content-review-2.9.x
-    compileInstall
-    cd ../..
-}      
-
 prepareTaggable()
 {
     getSvn "https://source.sakaiproject.org/svn/taggable/trunk temp/taggable-2.9.x"
@@ -56,8 +48,6 @@ prepareAssignment2()
 
     echo "Preparing for a ${sakaiVersion} environment...."
     echo
-
-    prepareContentReview
 
     if [ "$sakaiVersion" != "2.9-SNAPSHOT" ]; then
         prepareTaggable
