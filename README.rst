@@ -12,39 +12,42 @@ Assignments 2
 Overview
 ========
 
-Assignments 2 is a Sakai Module for flexible and robust dissemination of
+Assignments 2 is a Sakai Module for flexible use of assignments and 
 work in the classroom, and can be used as alternative to the out of the
 box Assignments module in Sakai.
 
-Integrations
-============
 
-Assignments 2 has a number of integrations, displayed in the matrix below.
+.. Integrations
+.. ============
 
-===============    =====  =====  ============
-Sakai Version      2.7.x  2.8.x  2.9.x(trunk)
----------------    -----  -----  ------------
-Assignment 2   
-OSP Matrix
-OSP Evaluations
-Gradebook
-Gradebook 2
-Turnitin CRS
+.. Assignments 2 has a number of integrations, displayed in the matrix below.
 
-OSP Matrix Integration 
------------------------
+.. This section of documentation is in progress.
 
-OSP Evaluations
----------------
+.. ===============    =====  =====  ============
+.. Sakai Version      2.7.x  2.8.x  2.9.x(trunk)
+.. ---------------    -----  -----  ------------
+.. Assignment 2   
+.. OSP Matrix
+.. OSP Evaluations
+.. Gradebook
+.. Gradebook 2
+.. Turnitin CRS
 
-Gradebook
----------
+.. OSP Matrix Integration 
+.. -----------------------
 
-Gradebook 2
------------
+.. OSP Evaluations
+.. ---------------
 
-Turnitin Content Review Service
--------------------------------
+.. Gradebook
+.. ---------
+
+.. Gradebook 2
+.. -----------
+
+.. Turnitin Content Review Service
+.. -------------------------------
 
 Installation
 ============
@@ -96,15 +99,11 @@ tree before you try to run the script.
 Compilation
 ```````````
 After your install has been patched as above (if necessary), you can either
-add Assignments 2 to your master pom file or build it with the usual
+add Assignments 2 to your master pom file or build it with the usual.
 
 ::
   
   mvn -Dmaven.tomcat.home=/your/path/to/tomcat clean install sakai:deploy
-
-
-Post Install Configuration
-```````````````````````````````
 
 
 
