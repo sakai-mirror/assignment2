@@ -499,6 +499,16 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning.no_add");
             }
 
+/*            UIOutput.make(tofill, 
+                          "gradebook_points", 
+                          Double.toString(externalGradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId()).getPointsPossible()));
+*/            
+            assignment.setGradebookPoints((assignment.isGraded()) ? externalGradebookLogic.getGradebookItemById(assignment.getContextId(), 
+                                                                                                                assignment.getGradebookItemId()).getPointsPossible().toString()
+                                                                  : "");
+            UIInput.make(tofill, "gradebook_points", assignment2OTP + ".gradebookPoints");
+            
+            
             // Error indicator if assignment graded but no gb item selected
             UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
             String errorInfo = messageLocator.getMessage("assignment2.assignment_graded_no_gb_item");

@@ -412,6 +412,18 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
             throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + title);
         }
     }
+    
+    @Override
+    public void updateGbItemInGradebook(Long gbItemId, String contextId, String points)
+    {
+        Assignment gbItem = gradebookService.getAssignment(contextId, gbItemId);
+        
+        gbItem.setPoints(Double.valueOf(points));
+        
+        gradebookService.updateAssignment(contextId, gbItem.getName(), gbItem);
+    }
+
+
 
     public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId) {
         if (contextId == null || gradebookItemId == null) {

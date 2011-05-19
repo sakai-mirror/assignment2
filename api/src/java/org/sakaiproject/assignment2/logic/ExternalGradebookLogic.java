@@ -280,6 +280,14 @@ public interface ExternalGradebookLogic {
      * ONC-3115
      */
     public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate);
+    
+    /**
+     * @param contextId
+     * @param gradebookItemId
+     * @param points
+     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradebookItemId
+     */
+    public void updateGbItemInGradebook(Long gbItemId, String contextId, String points);
 
     /**
      * @param contextId

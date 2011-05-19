@@ -78,6 +78,20 @@ public class Assignment2Validator  {
             valid = false;
         }
 
+        // check for valid points
+        if (assignment.isGraded()) {
+            try {
+                Double.valueOf(assignment.getGradebookPoints());
+            }
+            catch (Exception e) {
+                messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+                        new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
+                valid = false;
+                
+            }
+        }
+            
+            
         // check for due date after open date
         if (assignment.getDueDate() != null && assignment.getOpenDate() != null
                 && assignment.getDueDate().before(assignment.getOpenDate())) {
