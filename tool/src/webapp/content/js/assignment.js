@@ -37,9 +37,22 @@ function update_resubmit_until() {
     }
 }
 
+function enableDisableGradebookPoints() {
+	if (jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked ||
+	    jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0) == 0) {
+		
+	    jQuery("input[name='page-replace\:\:gradebook_points']").val("");
+	    jQuery("input[name='page-replace\:\:gradebook_points']").attr("disabled", true);
+	} else {
+	    jQuery("input[name='page-replace\:\:gradebook_points']").removeAttr("disabled");    		
+	}
+}
+
 jQuery(document).ready(function() {
     update_resubmit_until();
     asnn2.initializeSorting();
+    
+    enableDisableGradebookPoints();
 });
 
 function slide_submission(img) {
@@ -399,6 +412,33 @@ var asnn2 = asnn2 || {};
         }
     };
 
+    asnn2.populateGradebookPoints = function() {
+        // get the currently selected gb item
+        var gbSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).value;
+        var gbRadio = jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked;
+        var points = "";
+
+        if (gbSelect != "0" && gbRadio) {
+            jQuery.ajax({
+                type: "GET",
+                async: false,
+                url: "/direct/assignment2/getAssignmentPointsinGradebook",
+                data: { 
+                    contextId: asnn2.contextId,
+                    gradebookItemId: gbSelect
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                },
+                success: function (data) {
+            	    points = data;
+                }
+            });
+        }
+        
+	    jQuery("input[name='page-replace\:\:gradebook_points']").val(points);
+        
+    };
+    
     /**
      * Select the graded/ungraded radio button depending on whether a gb item
      * has been selected in the drop down
@@ -407,9 +447,12 @@ var asnn2 = asnn2 || {};
         el = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0);
         if (el.selectedIndex != 0) {
             jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked = true;
+
         } else {
             jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked = true;
         }
+        
+        enableDisableGradebookPoints();
     };
 
     /**
@@ -429,6 +472,8 @@ var asnn2 = asnn2 || {};
         asnn2.populateTitleWithGbItemName();
         asnn2.populateDueDateWithGBItemDueDate();
         asnn2.showHideGradeSettingError();
+        asnn2.populateGradebookPoints();
+
     };
 
     /**
@@ -459,6 +504,7 @@ var asnn2 = asnn2 || {};
         var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title + "&dueDateTime=" + time;
 
         jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
+        
     }
     
     /**
