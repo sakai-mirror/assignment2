@@ -21,6 +21,7 @@
 
 package org.sakaiproject.assignment2.tool.beans;
 
+import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
@@ -42,6 +43,11 @@ import uk.org.ponder.messageutil.TargettedMessageList;
  *
  */
 public class Assignment2Validator  {
+
+    private ExternalGradebookLogic externalGradebookLogic;
+    public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic) {
+        this.externalGradebookLogic = externalGradebookLogic;
+    }  
 
     /**
      * Validates the Assignment2 object. Currently checks to make sure there
@@ -78,18 +84,17 @@ public class Assignment2Validator  {
             valid = false;
         }
 
-        // check for valid points
-        if (assignment.isGraded()) {
-            try {
-                Double.valueOf(assignment.getGradebookPoints());
-            }
-            catch (Exception e) {
-                messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
-                        new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
-                valid = false;
-                
-            }
+        
+        // check for valid gradebook points
+        if (! externalGradebookLogic.isValidGradebookPoints(assignment.getContextId(), 
+                                                            assignment.getGradebookItemId(), 
+                                                            assignment.getGradebookPoints())) {
+            messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
+            
+            valid = false;
         }
+            
             
             
         // check for due date after open date
