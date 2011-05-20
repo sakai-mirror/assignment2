@@ -54,6 +54,8 @@ import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
 import org.sakaiproject.site.api.Group;
 
+import uk.org.ponder.messageutil.TargettedMessage;
+
 
 /**
  * This is the implementation for logic to interact with the Sakai
@@ -915,6 +917,28 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
         
         return safeAssignmentName;
+    }
+
+    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, String gradebookPoints)
+    {
+        Double gradebookPointsDouble = null;
+        
+        if (contextId == null || gradebookUid == null || gradebookPoints == null) {
+            return false;
+        }
+        
+        try {
+            gradebookPointsDouble = Double.valueOf(gradebookPoints);
+        }
+        catch (Exception e) {
+            return false;            
+        }
+        
+        if (gradebookPoints.trim().length() == 0 || gradebookPointsDouble == null || gradebookPointsDouble < 0) {
+            return false;                
+        }
+        
+        return true;
     }
 
 }
