@@ -221,6 +221,7 @@
       <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
       <property name="localTurnitinLogic" ref="localTurnitinLogic" />
       <property name="assignmentPermissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentPermissionLogic" />
+      <property name="placement" ref="sakai-Placement" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GradeProducer">
@@ -420,6 +421,7 @@
    	  <property name="assignmentAuthoringOptionsFlowBean" ref="AssignmentAuthoringOptionsFlowBean" />
    	  <property name="messageLocator" ref="messageLocator" />
 	  <property name="notificationBean" ref="notificationBean" />
+	  <property name="validator" ref="assignment2Validator" />
    </bean>
    
    <bean id="GradeAndFeedbackSubmissionBean" class="org.sakaiproject.assignment2.tool.beans.GradeAndFeedbackSubmissionBean">
@@ -496,7 +498,9 @@
 	</bean>
 
 	<!-- Validators -->
-	<bean id="Assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator" />
+	<bean id="assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator">
+    	<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic"></property>
+	</bean>
 
     <!-- ASNN-521 -->
     <bean id="asnnHelperHandlerHookBean"
