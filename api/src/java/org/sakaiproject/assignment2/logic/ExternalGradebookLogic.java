@@ -516,5 +516,7 @@ public interface ExternalGradebookLogic {
      * "ted (2)" is checked. And so on and so on until a non in use gradebook assignmentTitle is found.
      */
     public String getFreeAssignmentName(String gradebookUid, String assignmentTitle);
+
+    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, String gradebookPoints);
     
 }
