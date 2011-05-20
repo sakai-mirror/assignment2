@@ -559,4 +559,29 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         return togo;
     }
 
+    @SuppressWarnings("unchecked")
+    @EntityCustomAction(action="getAssignmentPointsinGradebook", viewKey=EntityView.VIEW_LIST)
+    public String getAssignmentPointsInGradebook(EntityView view, Map<String, Object> params) {
+        String contextId = null;
+        String gradebookItemId = null;
+        GradebookItem gradebookItem;
+        
+        String message = "";
+        
+        if (params != null && 
+            params.containsKey("contextId") && params.containsKey("gradebookItemId") &&
+            ((contextId = (String) params.get("contextId")) != null) &&
+            ((gradebookItemId = (String) params.get("gradebookItemId")) != null)) {
+
+            contextId = contextId.trim();
+            gradebookItemId = gradebookItemId.trim();
+            
+            gradebookItem = gradebookLogic.getGradebookItemById(contextId, Long.valueOf(gradebookItemId));
+            
+            message = gradebookItem.getPointsPossible().toString();
+        }
+
+        return message;
+    }
+
 }
