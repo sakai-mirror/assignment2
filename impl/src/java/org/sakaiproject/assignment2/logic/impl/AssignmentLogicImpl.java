@@ -267,9 +267,11 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             " is not a valid gradebook item to associate with this assignment");
         }
         
-        gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
-                                               assignment.getContextId(), 
-                                               assignment.getGradebookPoints());
+        if (assignment.isGraded()) {
+            gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
+                                                   assignment.getContextId(), 
+                                                   assignment.getGradebookPoints());
+        }
 
         // trim trailing spaces on title
         assignment.setTitle(assignment.getTitle().trim());
