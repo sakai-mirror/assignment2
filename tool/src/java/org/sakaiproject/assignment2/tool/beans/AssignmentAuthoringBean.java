@@ -95,6 +95,11 @@ public class AssignmentAuthoringBean {
         this.externalGradebookLogic = externalGradebookLogic;
     }
 
+    private Assignment2Validator validator;
+    public void setValidator(Assignment2Validator validator) {
+        this.validator = validator;
+    }
+
 
     //private Map<String, Assignment2> OTPMap;
     //@SuppressWarnings("unchecked")
@@ -272,8 +277,6 @@ public class AssignmentAuthoringBean {
             errorFound = true;
         }
 
-        //start the validator
-        Assignment2Validator validator = new Assignment2Validator();
         if (validator.validate(assignment, messages) && !errorFound){
             //Validation Passed!
             try {               
