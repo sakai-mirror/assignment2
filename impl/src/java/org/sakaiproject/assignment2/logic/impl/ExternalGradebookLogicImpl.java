@@ -54,9 +54,6 @@ import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
 import org.sakaiproject.site.api.Group;
 
-import uk.org.ponder.messageutil.TargettedMessage;
-
-
 /**
  * This is the implementation for logic to interact with the Sakai
  * Gradebook tool
