@@ -269,10 +269,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         
         GradebookItem gbItem = null;
         if (assignment.isGraded()) {
-//            gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
-//                                                   assignment.getContextId(), 
-//                                                   assignment.getGradebookPoints());
-
             Double pointsPossible = null;
             
             try {
