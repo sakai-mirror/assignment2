@@ -267,10 +267,31 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             " is not a valid gradebook item to associate with this assignment");
         }
         
+        GradebookItem gbItem = null;
         if (assignment.isGraded()) {
-            gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
-                                                   assignment.getContextId(), 
-                                                   assignment.getGradebookPoints());
+//            gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
+//                                                   assignment.getContextId(), 
+//                                                   assignment.getGradebookPoints());
+
+            Double pointsPossible = null;
+            
+            try {
+                pointsPossible = Double.valueOf(assignment.getGradebookPoints());
+            }
+            catch (Exception e) {
+            }
+            
+            gbItem = new GradebookItem(assignment.getGradebookItemId(),
+                                       assignment.getTitle(),
+                                       pointsPossible,
+                                       assignment.getDueDate(),
+                                       assignment.isOpen(),
+                                       assignment.isGraded()
+                                      );
+
+            
+            gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);
+
         }
 
         // trim trailing spaces on title
@@ -471,9 +492,8 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             if (assignment.isGraded()) { // ONC-3115
                 List<Assignment2> linkedAsnns = 
                     getAssignmentsWithLinkedGradebookItemId(assignment.getGradebookItemId());
-                if (linkedAsnns != null && linkedAsnns.size() == 1) {
-                    gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
-                            assignment.getContextId(), assignment.getTitle(), assignment.getDueDate());
+                if (linkedAsnns != null && linkedAsnns.size() == 1 && gbItem != null) {
+                    gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);
                 }
             }
         }
