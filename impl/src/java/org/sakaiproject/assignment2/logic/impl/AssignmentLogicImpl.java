@@ -282,7 +282,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                                        pointsPossible,
                                        assignment.getDueDate(),
                                        assignment.isOpen(),
-                                       assignment.isGraded()
+                                       ! assignment.isGraded()
                                       );
 
             
