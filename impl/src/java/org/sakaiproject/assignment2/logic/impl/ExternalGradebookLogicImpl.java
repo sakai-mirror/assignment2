@@ -393,35 +393,40 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
         return gradebookItemId;
     }
-    
-    public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate) {
-        Assignment gbItem = gradebookService.getAssignment(contextId, gbItemId);
-        String oldName = gbItem.getName();
-        
-        try {
-            if (! oldName.equalsIgnoreCase(title) && gradebookService.isAssignmentDefined(contextId, title)) {
-                throw new ConflictingAssignmentNameException("error");
-            }
 
-            gbItem.setName(title);
-            gbItem.setDueDate(dueDate);
-        
-            gradebookService.updateAssignment(contextId, oldName, gbItem);
-        } catch (ConflictingAssignmentNameException cane) {
-            throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + title);
-        }
-    }
-    
     @Override
-    public void updateGbItemInGradebook(Long gbItemId, String contextId, String points)
-    {
-        Assignment gbItem = gradebookService.getAssignment(contextId, gbItemId);
+    public void updateGbItemInGradebook(String contextId, GradebookItem gbItem) {
         
-        gbItem.setPoints(Double.valueOf(points));
+        if (contextId == null || gbItem == null){
+            return;
+        }
         
-        gradebookService.updateAssignment(contextId, gbItem.getName(), gbItem);
-    }
+        Assignment assignmentGbItem = gradebookService.getAssignment(contextId, gbItem.getGradebookItemId());
 
+        if (assignmentGbItem == null) {
+            return;
+        }
+        
+        if (gbItem.getDueDate() != null) {
+            assignmentGbItem.setDueDate(gbItem.getDueDate());
+        }
+        
+        if (gbItem.getPointsPossible() != null && gbItem.getPointsPossible() > 0) {
+            assignmentGbItem.setPoints(gbItem.getPointsPossible());
+        }
+        
+        String oldName = assignmentGbItem.getName();
+        
+        if (gbItem.getTitle() != null) {
+            assignmentGbItem.setName(gbItem.getTitle());
+        }
+        
+        if (oldName != null) {
+            gradebookService.updateAssignment(contextId, oldName, assignmentGbItem);
+        }
+        
+    }
+    
 
 
     public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId) {

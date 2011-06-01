@@ -277,17 +277,12 @@ public interface ExternalGradebookLogic {
             boolean releasedToStudents, boolean countedInCourseGrade);
     
     /**
-     * ONC-3115
-     */
-    public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate);
-    
-    /**
      * @param contextId
-     * @param gradebookItemId
-     * @param points
-     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gradebookItemId
+     * @param gradebookItem
+     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gbItem.gradebookItemId
      */
-    public void updateGbItemInGradebook(Long gbItemId, String contextId, String points);
+    public void updateGbItemInGradebook(String contextId, GradebookItem gbItem);
+
 
     /**
      * @param contextId
