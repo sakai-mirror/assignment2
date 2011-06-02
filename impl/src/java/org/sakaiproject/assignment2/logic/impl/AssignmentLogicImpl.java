@@ -277,15 +277,10 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             catch (Exception e) {
             }
             
-            gbItem = new GradebookItem(assignment.getGradebookItemId(),
-                                       assignment.getTitle(),
-                                       pointsPossible,
-                                       assignment.getDueDate(),
-                                       assignment.isOpen(),
-                                       ! assignment.isGraded()
-                                      );
+            gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+            gbItem.setPointsPossible(pointsPossible);
+            gbItem.setTitle(assignment.getTitle());
 
-            
             gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);
 
         }
