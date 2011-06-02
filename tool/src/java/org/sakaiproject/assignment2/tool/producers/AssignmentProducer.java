@@ -508,6 +508,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             assignment.setGradebookPoints((assignment.isGraded()) ? externalGradebookLogic.getGradebookItemById(assignment.getContextId(), 
                                                                                                                 assignment.getGradebookItemId()).getPointsPossible().toString()
                                                                   : "");
+            
+            UIOutput.make(form, "gradebook_points_label", messageLocator.getMessage("assignment2.details.gradebook.points_possible"));
+
             UIInput.make(form, "gradebook_points", assignment2OTP + ".gradebookPoints");
             
             UIVerbatim.make(tofill, "contextId", "asnn2.contextId = \"" + placement.getContext() + "\";");
