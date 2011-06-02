@@ -407,20 +407,31 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
             return;
         }
         
-        if (gbItem.getDueDate() != null) {
-            assignmentGbItem.setDueDate(gbItem.getDueDate());
-        }
         
-        if (gbItem.getPointsPossible() != null && gbItem.getPointsPossible() > 0) {
+        assignmentGbItem.setDueDate(gbItem.getDueDate());
+        
+        if (isValidGradebookPoints(contextId, gbItem.getGradebookItemId(), (gbItem.getPointsPossible() == null) ? "" : gbItem.getPointsPossible().toString())) {
             assignmentGbItem.setPoints(gbItem.getPointsPossible());
         }
         
         String oldName = assignmentGbItem.getName();
         
+        
+        
         if (gbItem.getTitle() != null) {
             assignmentGbItem.setName(gbItem.getTitle());
         }
         
+        try {
+            if (! oldName.equalsIgnoreCase(assignmentGbItem.getName()) && 
+                    gradebookService.isAssignmentDefined(contextId, assignmentGbItem.getName())) {
+                throw new ConflictingAssignmentNameException("error");
+            }
+
+        } catch (ConflictingAssignmentNameException cane) {
+            throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + assignmentGbItem.getName());
+        }
+
         if (oldName != null) {
             gradebookService.updateAssignment(contextId, oldName, assignmentGbItem);
         }
