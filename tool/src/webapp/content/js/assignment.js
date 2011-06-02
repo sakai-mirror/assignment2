@@ -38,13 +38,21 @@ function update_resubmit_until() {
 }
 
 function enableDisableGradebookPoints() {
+	var gradebook_points_label = jQuery("label[id='page-replace\:\:gradebook_points_label']");
+	var gradebook_points = jQuery("input[name='page-replace\:\:gradebook_points']");
+	
 	if (jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked ||
 	    jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0) == 0) {
 		
-	    jQuery("input[name='page-replace\:\:gradebook_points']").val("");
-	    jQuery("input[name='page-replace\:\:gradebook_points']").attr("disabled", true);
+	    gradebook_points.val("");
+	    
+	    gradebook_points.attr("disabled", true);
+	    gradebook_points_label.hide();
+	    gradebook_points.hide();
 	} else {
-	    jQuery("input[name='page-replace\:\:gradebook_points']").removeAttr("disabled");    		
+	    gradebook_points.removeAttr("disabled");
+	    gradebook_points_label.show();
+	    gradebook_points.show();
 	}
 }
 
@@ -52,7 +60,9 @@ jQuery(document).ready(function() {
     update_resubmit_until();
     asnn2.initializeSorting();
     
-    enableDisableGradebookPoints();
+    if (jQuery("input[name='page-replace\:\:gradebook_points']").size() > 0) {
+        enableDisableGradebookPoints();
+    }
 });
 
 function slide_submission(img) {
