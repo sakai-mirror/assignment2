@@ -512,6 +512,6 @@ public interface ExternalGradebookLogic {
      */
     public String getFreeAssignmentName(String gradebookUid, String assignmentTitle);
 
-    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, String gradebookPoints);
+    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, Double gradebookPoints);
     
 }

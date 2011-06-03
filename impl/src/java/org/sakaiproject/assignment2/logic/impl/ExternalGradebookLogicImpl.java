@@ -410,7 +410,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         
         assignmentGbItem.setDueDate(gbItem.getDueDate());
         
-        if (isValidGradebookPoints(contextId, gbItem.getGradebookItemId(), (gbItem.getPointsPossible() == null) ? "" : gbItem.getPointsPossible().toString())) {
+        if (isValidGradebookPoints(contextId, gbItem.getGradebookItemId(), gbItem.getPointsPossible())) {
             assignmentGbItem.setPoints(gbItem.getPointsPossible());
         }
         
@@ -932,22 +932,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return safeAssignmentName;
     }
 
-    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, String gradebookPoints)
+    // dummy method until Gradebook service gets this implemented
+    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, Double gradebookPoints)
     {
-        Double gradebookPointsDouble = null;
-        
-        if (contextId == null || gradebookUid == null || gradebookPoints == null) {
+        if (contextId == null || gradebookUid == null) {
             return false;
         }
         
-        try {
-            gradebookPointsDouble = Double.valueOf(gradebookPoints);
-        }
-        catch (Exception e) {
-            return false;            
-        }
-        
-        if (gradebookPoints.trim().length() == 0 || gradebookPointsDouble == null || gradebookPointsDouble < 0) {
+        if (gradebookPoints != null && gradebookPoints < 0) {
             return false;                
         }
         
