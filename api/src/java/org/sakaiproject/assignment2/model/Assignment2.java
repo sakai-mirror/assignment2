@@ -76,7 +76,7 @@ public class Assignment2 {
     private Set<AssignmentGroup> assignmentGroupSet; 
     private Map properties;
 
-    private String gradebookPoints;
+    private Double gradebookPointsPossible;
     /**
      * Default constructor
      */
@@ -834,11 +834,11 @@ public class Assignment2 {
         this.modelAnswerAttachmentSet = modelAnswerAttachmentSet;
     }
     
-    public String getGradebookPoints() {
-        return gradebookPoints;
+    public Double getGradebookPointsPossible() {
+        return gradebookPointsPossible;
     }
     
-    public void setGradebookPoints(String gradebookPoints) {
-        this.gradebookPoints = gradebookPoints;
+    public void setGradebookPointsPossible(Double gradebookPointsPossible) {
+        this.gradebookPointsPossible = gradebookPointsPossible;
     }
 }
