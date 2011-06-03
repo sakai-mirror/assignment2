@@ -88,7 +88,7 @@ public class Assignment2Validator  {
         // check for valid gradebook points
         if (! externalGradebookLogic.isValidGradebookPoints(assignment.getContextId(), 
                                                             assignment.getGradebookItemId(), 
-                                                            assignment.getGradebookPoints())) {
+                                                            assignment.getGradebookPointsPossible())) {
             messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
                                 new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
             
