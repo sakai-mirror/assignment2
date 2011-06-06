@@ -65,7 +65,7 @@ prepareAssignment2()
         stuboutTaggable
     fi
 
-    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p1
+    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
 }
 
 printDonePreparing()
