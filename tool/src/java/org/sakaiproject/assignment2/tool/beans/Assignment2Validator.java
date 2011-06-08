@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.tool.beans;
 
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
@@ -86,9 +87,10 @@ public class Assignment2Validator  {
 
         
         // check for valid gradebook points
-        if (! externalGradebookLogic.isValidGradebookPoints(assignment.getContextId(), 
-                                                            assignment.getGradebookItemId(), 
-                                                            assignment.getGradebookPointsPossible())) {
+        if (! externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(), 
+                                                           externalGradebookLogic.getAssignment(assignment.getContextId(), 
+                                                                                                assignment.getGradebookItemId()),
+                                                           assignment.getGradebookPointsPossible())) {
             messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
                                 new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
             
