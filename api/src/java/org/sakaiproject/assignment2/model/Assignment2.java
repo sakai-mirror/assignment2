@@ -76,7 +76,12 @@ public class Assignment2 {
     private Set<AssignmentGroup> assignmentGroupSet; 
     private Map properties;
 
+    /* This variable is NOT persisted to the database.  It is simply used to carry-over the gradebook
+     * points possible value on the Edit Assignment page
+     */
     private Double gradebookPointsPossible;
+    
+    
     /**
      * Default constructor
      */
