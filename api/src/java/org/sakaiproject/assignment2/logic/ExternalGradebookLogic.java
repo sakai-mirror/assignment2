@@ -34,6 +34,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -512,6 +513,15 @@ public interface ExternalGradebookLogic {
      */
     public String getFreeAssignmentName(String gradebookUid, String assignmentTitle);
 
-    public boolean isValidGradebookPoints(String contextId, Long gradebookUid, Double gradebookPoints);
+    public boolean isPointsPossibleValid(String gradebookUid, Assignment gradebookItem, Double pointsPossible);
+    
+    /**
+     * 
+     * @param gradebookUid
+     * @param gbItemId
+     * @return an Assignment
+     */
+    public Assignment getAssignment(String gradebookUid, Long gbItemId);
+
     
 }
