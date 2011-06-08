@@ -403,12 +403,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
                     contextId + " gradebookItem:" + gbItem);
         }
         
-        Assignment assignmentGbItem = gradebookService.getAssignment(contextId, gbItem.getGradebookItemId());
+        Assignment assignmentGbItem = null;
 
-        if (assignmentGbItem == null) {
-            return;
+        try {
+            assignmentGbItem = gradebookService.getAssignment(contextId, gbItem.getGradebookItemId());
+        } catch (AssessmentNotFoundException anfe) {
+            throw new GradebookItemNotFoundException ("No gradebook item exists with gradebookItemId " 
+                    + gbItem.getGradebookItemId() + " in context " + contextId, anfe);
         }
-        
         
         assignmentGbItem.setDueDate(gbItem.getDueDate());
         
