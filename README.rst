@@ -16,38 +16,15 @@ Assignments 2 is a Sakai Module for flexible use of assignments and
 work in the classroom, and can be used as alternative to the out of the
 box Assignments module in Sakai.
 
+Important links:
 
-.. Integrations
-.. ============
+- `A2 Confluence Home <https://confluence.sakaiproject.org/display/ASNN/Home>`_
+- `A2 Jira Bug Tracking <https://jira.sakaiproject.org/browse/ASNN>`_
+- `A2 Subversion Source <https://source.sakaiproject.org/contrib/assignment2>`_
+- `This README <https://source.sakaiproject.org/contrib/assignment2/trunk/README.html>`_
+- `A1/A2 Gap List <https://confluence.sakaiproject.org/display/ASNN/Gap+Analysis+of+Assignments+and+Assignments+2>`_
 
-.. Assignments 2 has a number of integrations, displayed in the matrix below.
 
-.. This section of documentation is in progress.
-
-.. ===============    =====  =====  ============
-.. Sakai Version      2.7.x  2.8.x  2.9.x(trunk)
-.. ---------------    -----  -----  ------------
-.. Assignment 2   
-.. OSP Matrix
-.. OSP Evaluations
-.. Gradebook
-.. Gradebook 2
-.. Turnitin CRS
-
-.. OSP Matrix Integration 
-.. -----------------------
-
-.. OSP Evaluations
-.. ---------------
-
-.. Gradebook
-.. ---------
-
-.. Gradebook 2
-.. -----------
-
-.. Turnitin Content Review Service
-.. -------------------------------
 
 Installation
 ============
@@ -105,6 +82,38 @@ add Assignments 2 to your master pom file or build it with the usual.
   
   mvn -Dmaven.tomcat.home=/your/path/to/tomcat clean install sakai:deploy
 
+
+.. Integrations
+.. ============
+
+.. Assignments 2 has a number of integrations, displayed in the matrix below.
+
+.. This section of documentation is in progress.
+
+.. ===============    =====  =====  ============
+.. Sakai Version      2.7.x  2.8.x  2.9.x(trunk)
+.. ---------------    -----  -----  ------------
+.. Assignment 2   
+.. OSP Matrix
+.. OSP Evaluations
+.. Gradebook
+.. Gradebook 2
+.. Turnitin CRS
+
+.. OSP Matrix Integration 
+.. -----------------------
+
+.. OSP Evaluations
+.. ---------------
+
+.. Gradebook
+.. ---------
+
+.. Gradebook 2
+.. -----------
+
+.. Turnitin Content Review Service
+.. -------------------------------
 
 
 .. This document is written in restructured text, and at the moment I'm using the
