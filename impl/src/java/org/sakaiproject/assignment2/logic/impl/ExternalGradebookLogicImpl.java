@@ -398,7 +398,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     public void updateGbItemInGradebook(String contextId, GradebookItem gbItem) {
         
         if (contextId == null || gbItem == null){
-            return;
+            throw new IllegalArgumentException ("Null contextId or gradebookItem " +
+                    "passed to updateGbItemInGradebook. contextId:" +
+                    contextId + " gradebookItem:" + gbItem);
         }
         
         Assignment assignmentGbItem = gradebookService.getAssignment(contextId, gbItem.getGradebookItemId());
