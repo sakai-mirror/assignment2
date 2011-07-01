@@ -99,7 +99,7 @@
 
         <!-- Schedule/Calendar integration -->
         <dependency>
-            <groupId>org.sakaiproject</groupId>
+            <groupId>org.sakaiproject.calendar</groupId>
             <artifactId>sakai-calendar-api</artifactId>
         </dependency>
 
