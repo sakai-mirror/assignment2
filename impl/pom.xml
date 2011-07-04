@@ -7,7 +7,7 @@
     <parent>
         <artifactId>assignment2</artifactId>
         <groupId>org.sakaiproject.assignment2</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
 
     <name>sakai-assignment2-impl</name>
