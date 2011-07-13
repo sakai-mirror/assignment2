@@ -342,9 +342,13 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_RETRY_CODE");
             } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_NO_RETRY_CODE)) {
                 // Look up actual error from ContentReview
-            	// TODO what happens if there is no translation for this code?
-                errorMessage = contentReview.getLocalizedStatusMessage(errorCode.toString());
-            	//errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_NO_RETRY_CODE");
+                if (errorCode == null) {
+                    errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_NO_RETRY_CODE");
+                }
+                else {
+                    // TODO what happens if there is no translation for this code?
+                    errorMessage = contentReview.getLocalizedStatusMessage(errorCode.toString());
+                }
             } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_RETRY_CODE");
             } else if (status.equals(ContentReviewItem.SUBMISSION_ERROR_RETRY_EXCEEDED)) {
