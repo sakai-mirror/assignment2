@@ -81,7 +81,8 @@ public class ReviewStatusRenderer {
                     reportLink.decorators = reportLinkDecorators;
                     
                 } 
-                else if (ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE.equals(status)) {
+                else if (ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE.equals(status)
+                        || ContentReviewItem.NOT_SUBMITTED_CODE.equals(status)) {
                     UIOutput pendingDisplay = UIOutput.make(joint, "review_pending", messageLocator.getMessage("assignment2.content_review.pending.display"));
                     DecoratorList pendingDeco = new DecoratorList();
                     pendingDeco.add(new UITooltipDecorator(messageLocator.getMessage("assignment2.content_review.pending.info")));
