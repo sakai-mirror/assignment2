@@ -184,7 +184,7 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.sakaiproject</groupId>
+                <groupId>org.sakaiproject.assignment</groupId>
                 <artifactId>sakai-assignment-api</artifactId>
                 <version>2.9-SNAPSHOT</version>
                 <scope>provided</scope>
