@@ -429,7 +429,7 @@ public class ExternalLogicImpl implements ExternalLogic {
                 for (User user : users) {
                 	//TODO Should paren formatting be i18n-ized?
                     userIdSortNameMap.put(user.getId(), user.getSortName() 
-                    		+ " ( " + user.getEid() + " )");
+                    		+ " (" + user.getEid() + ")");
                 }
             }
         }
