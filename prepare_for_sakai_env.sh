@@ -50,8 +50,8 @@ stuboutTaggable()
 # This function removes the extra groupId segment for sakai version != 2.9
 fixGroupIds()
 {
-    echo "fixing groupIds ..."
-    patch -p0 < patches/groupids.patch
+    echo "Fixing groupIds ..."
+    cat patches/groupids.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
 }
 
 prepareAssignment2()
