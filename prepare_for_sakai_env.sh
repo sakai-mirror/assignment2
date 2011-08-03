@@ -47,6 +47,12 @@ stuboutTaggable()
     echo "Stubbing out taggable for ..."
     patch -p0 < patches/remove-taggable-functionality-stub-false.patch
 }
+# This function removes the extra groupId segment for sakai version != 2.9
+fixGroupIds()
+{
+    echo "fixing groupIds ..."
+    patch -p0 < patches/groupids.patch
+}
 
 prepareAssignment2()
 {
@@ -59,13 +65,16 @@ prepareAssignment2()
     echo "Preparing for a ${sakaiVersion} environment...."
     echo
 
+    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
+    
     if [ "$sakaiVersion" != "2.9-SNAPSHOT" ]; then
         # prepareTaggable
         #echo "Commenting out taggable for now..."
         stuboutTaggable
+        fixGroupIds
     fi
 
-    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
+    
 }
 
 printDonePreparing()
