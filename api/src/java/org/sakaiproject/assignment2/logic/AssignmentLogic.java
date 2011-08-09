@@ -63,6 +63,18 @@ public interface AssignmentLogic {
     public void saveAssignment(Assignment2 assignment);
 
     /**
+     * Saves assignment with option as to whether the Sakai Gradebook should be
+     * updated with the title and other metadata.ÊOther than the second 
+     * parameter, this follows the same behavior as 
+     * {@link AssignmentLogic#saveAssignment(Assignment2)}
+     * 
+     * @see AssignmentLogic#saveAssignment(Assignment2)
+     * @param assignment
+     * @param syncGradebook
+     */
+    public void saveAssignment(Assignment2 assignment, boolean syncGradebook);
+    
+    /**
      * Delete an Assignment. This method will also remove the following associations:
      * announcements, schedule items, and tags. If an error is encountered while
      * removing an association, the deletion of the assignment will continue. 

@@ -212,8 +212,13 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         return assign;
     }
-
+    
     public void saveAssignment(Assignment2 assignment) throws SecurityException, 
+    NoGradebookItemForGradedAssignmentException {
+        saveAssignment(assignment, true);
+    }
+
+    public void saveAssignment(Assignment2 assignment, boolean syncGradebook) throws SecurityException, 
     NoGradebookItemForGradedAssignmentException
     {
         if (assignment == null || assignment.getContextId() == null) {
@@ -462,7 +467,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             }
         }
         
-        if (allowGradebookSync) {
+        if (allowGradebookSync && syncGradebook) {
             if (assignment.isGraded()) { // ONC-3115
                 List<Assignment2> linkedAsnns = 
                     getAssignmentsWithLinkedGradebookItemId(assignment.getGradebookItemId());
