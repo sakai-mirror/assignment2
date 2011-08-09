@@ -28,7 +28,10 @@ promptVersion()
   fi
 
 }
-          
+        
+# This downloads and compiles a version of taggable to prepopulate your maven repo.
+# Currently we aren't doing this in favor of stubbing out the older versions of the signatures
+# with a patch.  
 prepareTaggable()
 {
     getSvn "https://source.sakaiproject.org/svn/taggable/trunk temp/taggable-2.9.x"
@@ -36,6 +39,19 @@ prepareTaggable()
     cat ../../patches/taggable.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p1
     compileInstall
     cd ../..
+}
+
+# This function removes the taggable implementation by replacing it with a mostly empty shell.
+stuboutTaggable()
+{
+    echo "Stubbing out taggable for ..."
+    patch -p0 < patches/remove-taggable-functionality-stub-false.patch
+}
+# This function removes the extra groupId segment for sakai version != 2.9
+fixGroupIds()
+{
+    echo "Fixing groupIds ..."
+    cat patches/groupids.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
 }
 
 prepareAssignment2()
@@ -49,11 +65,16 @@ prepareAssignment2()
     echo "Preparing for a ${sakaiVersion} environment...."
     echo
 
+    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
+    
     if [ "$sakaiVersion" != "2.9-SNAPSHOT" ]; then
-        prepareTaggable
+        # prepareTaggable
+        #echo "Commenting out taggable for now..."
+        stuboutTaggable
+        fixGroupIds
     fi
 
-    cat patches/assignment2.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p1
+    
 }
 
 printDonePreparing()

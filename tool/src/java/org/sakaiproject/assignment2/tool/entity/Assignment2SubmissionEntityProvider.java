@@ -372,7 +372,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
                             submap.put("reviewScoreClass", styleClass);
                         }
                         else if (ContentReviewItem.SUBMITTED_AWAITING_REPORT_CODE.equals(
-                                attach.getContentReviewInfo().getContentReviewItem().getStatus())) {
+                                attach.getContentReviewInfo().getContentReviewItem().getStatus())
+                                || ContentReviewItem.NOT_SUBMITTED_CODE.equals(
+                                   attach.getContentReviewInfo().getContentReviewItem().getStatus())) {
                             submap.put("reviewPending", true);
                             submap.put("reviewError", false);
                             submap.put("reviewScore", reviewPendingScoreDisplay);
