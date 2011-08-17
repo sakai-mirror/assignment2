@@ -320,7 +320,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                         }
 
                         try {
-                            assignmentLogic.saveAssignment(newAssignment);
+                            assignmentLogic.saveAssignment(newAssignment, false);
                             if (log.isDebugEnabled()) log.debug("New assignment " + 
                                     newAssignment.getTitle() + " added in site " + toContext);
                         } catch (AnnouncementPermissionException ape) {
