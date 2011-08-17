@@ -212,15 +212,14 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         return assign;
     }
-
+    
     public void saveAssignment(Assignment2 assignment) throws SecurityException, 
     NoGradebookItemForGradedAssignmentException {
         saveAssignment(assignment, true);
     }
 
     public void saveAssignment(Assignment2 assignment, boolean syncGradebook) throws SecurityException, 
-    NoGradebookItemForGradedAssignmentException
-    {
+    NoGradebookItemForGradedAssignmentException {
         if (assignment == null || assignment.getContextId() == null) {
             throw new IllegalArgumentException("Null assignment or assignment.contextId passed to saveAssignment");
         }
