@@ -26,6 +26,8 @@ import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
+import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
+
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
@@ -77,28 +79,49 @@ public class Assignment2Validator  {
             valid = false;
         }
 
-        //check for graded but no gradebookItemId
-        if (assignment.isGraded() && (assignment.getGradebookItemId() == null || 
-                assignment.getGradebookItemId().longValue() < 1)) {
-            messages.addMessage(new TargettedMessage("assignment2.assignment_graded_no_gb_item", 
-                    new Object[] {}, "Assignment2."+ key + ".gradebookItemId"));
-            valid = false;
-        }
-
+        if (assignment.isGraded()) {
+            //check for graded but no gradebookItemId
+            if (assignment.getGradebookItemId() == null || 
+                assignment.getGradebookItemId().longValue() < 1) {
+                messages.addMessage(new TargettedMessage("assignment2.assignment_graded_no_gb_item", 
+                        new Object[] {}, "Assignment2."+ key + ".gradebookItemId"));
+                valid = false;
+            }
         
-        // check for valid gradebook points
-        if (! externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(), 
-                                                           externalGradebookLogic.getAssignment(assignment.getContextId(), 
-                                                                                                assignment.getGradebookItemId()),
-                                                           assignment.getGradebookPointsPossible())) {
-            messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+            // check if the points possible is valid        
+            PointsPossibleValidation result =  
+                externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(), 
+                                                             externalGradebookLogic.getAssignment(assignment.getContextId(), 
+                                                                                                  assignment.getGradebookItemId()),
+                                                                                                  assignment.getGradebookPointsPossible());
+            if (result != PointsPossibleValidation.VALID) {
+                switch(result) {
+                    case INVALID_DECIMAL: {
+                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
                                 new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
-            
-            valid = false;
-        }
-            
-            
-            
+                        break;
+                    }
+                    case INVALID_NULL_VALUE: {
+                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
+                        break;
+                    }
+                    case INVALID_NUMERIC_VALUE: {
+                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
+                        break;
+                    }
+                    default: {
+                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
+                    }
+                } // end switch
+                
+                valid = false;
+            } // end if result !=
+        } // end if isGraded()
+
+
         // check for due date after open date
         if (assignment.getDueDate() != null && assignment.getOpenDate() != null
                 && assignment.getDueDate().before(assignment.getOpenDate())) {
