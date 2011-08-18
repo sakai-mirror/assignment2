@@ -52,6 +52,7 @@ import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
+import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -414,12 +415,14 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         
         assignmentGbItem.setDueDate(gbItem.getDueDate());
         
-        if (isPointsPossibleValid(contextId, getAssignment(contextId, gbItem.getGradebookItemId()), 
-                                  gbItem.getPointsPossible())) {
-            
+        if (isPointsPossibleValid(contextId, getAssignment(contextId, 
+                                                           gbItem.getGradebookItemId()), 
+                                                           gbItem.getPointsPossible()) 
+            == PointsPossibleValidation.VALID) {
             assignmentGbItem.setPoints(gbItem.getPointsPossible());
         }
-        
+
+
         String oldName = assignmentGbItem.getName();
         
         
@@ -939,17 +942,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
     }
 
     // dummy method until Gradebook service gets this implemented
-    public boolean isPointsPossibleValid(String gradebookUid, Assignment gradebookItem, Double pointsPossible)
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, Assignment gradebookItem, Double pointsPossible)
     {
-        if (gradebookUid == null || gradebookItem == null) {
-            return false;
-        }
-        
-        if (pointsPossible != null && pointsPossible < 0) {
-            return false;                
-        }
-        
-        return true;
+        return gradebookService.isPointsPossibleValid(gradebookUid, gradebookItem, pointsPossible);
     }
     
     public Assignment getAssignment(String gradebookUid, Long gbItemId)
