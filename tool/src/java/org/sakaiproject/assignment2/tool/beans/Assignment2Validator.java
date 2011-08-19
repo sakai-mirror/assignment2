@@ -88,14 +88,25 @@ public class Assignment2Validator  {
                 valid = false;
             }
         
-            // check if the points possible is valid        
-            PointsPossibleValidation result =  
-                externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(), 
-                                                             externalGradebookLogic.getAssignment(assignment.getContextId(), 
-                                                                                                  assignment.getGradebookItemId()),
-                                                                                                  assignment.getGradebookPointsPossible());
-            if (result != PointsPossibleValidation.VALID) {
-                switch(result) {
+            try {
+                assignment.getGradebookPointsPossibleDouble();
+            }
+            catch (Exception e) {
+                messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
+                        new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));    
+                valid = false;
+            }
+            
+            // if the double convert attempt fails we don't want/need for the following to execute
+            if (valid) {
+                // check if the points possible is valid        
+                PointsPossibleValidation result =  
+                    externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(), 
+                            externalGradebookLogic.getAssignment(assignment.getContextId(), 
+                                    assignment.getGradebookItemId()),
+                                    assignment.getGradebookPointsPossibleDouble());
+                if (result != PointsPossibleValidation.VALID) {
+                    switch(result) {
                     case INVALID_DECIMAL: {
                         messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
                                 new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
@@ -115,10 +126,11 @@ public class Assignment2Validator  {
                         messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
                                 new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
                     }
-                } // end switch
-                
-                valid = false;
-            } // end if result !=
+                    } // end switch
+
+                    valid = false;
+                } // end if result !=
+            } // end if valid
         } // end if isGraded()
 
 

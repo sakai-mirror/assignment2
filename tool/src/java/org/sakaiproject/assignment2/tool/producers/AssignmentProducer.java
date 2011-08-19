@@ -506,8 +506,8 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             }
 
             if (assignment.getGradebookItemId() != null) {
-                assignment.setGradebookPointsPossible(externalGradebookLogic.getGradebookItemById(assignment.getContextId(), 
-                                                                                                  assignment.getGradebookItemId()).getPointsPossible());
+                assignment.setGradebookPointsPossible((externalGradebookLogic.getGradebookItemById(assignment.getContextId(), 
+                                                                                                   assignment.getGradebookItemId()).getPointsPossible()).toString());
             }
             
             UIOutput.make(form, "gradebook_points_label", messageLocator.getMessage("assignment2.details.gradebook.points_possible"));
