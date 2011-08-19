@@ -893,4 +893,11 @@ public class GradebookServiceStub implements GradebookService {
 		return false;
 	}
 
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid,
+            Assignment gradebookItem, Double pointsPossible)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
