@@ -92,7 +92,7 @@ public class Assignment2Validator  {
             try {
                 assignment.getGradebookPointsPossibleDouble();
             }
-            catch (Exception e) {
+            catch (NumberFormatException e) {
                 messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
                         new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));    
                 valid = false;
