@@ -42,6 +42,8 @@ import org.sakaiproject.service.gradebook.shared.GradeDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
+import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
+import org.sakaiproject.service.gradebook.shared.Assignment;
 
 /**
  * This is a stub class for testing purposes. Integrating the GradebookService
@@ -892,5 +894,11 @@ public class GradebookServiceStub implements GradebookService {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, 
+                                                          Assignment gradebookItem,  
+                                                          Double pointsPossible)
+    {
+        return  PointsPossibleValidation.VALID;
+    }
 }
