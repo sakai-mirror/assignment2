@@ -130,11 +130,6 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         this.assignmentAuthoringFlowBean = assignmentAuthoringFlowBean;
     }
 
-    private Placement placement;
-    public void setPlacement(Placement placement) {
-        this.placement = placement;
-    }
-
     /*
      * You can change the date input to accept time as well by uncommenting the lines like this:
      * dateevolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -514,7 +509,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
             UIInput.make(form, "gradebook_points", assignment2OTP + ".gradebookPointsPossible");
             
-            UIVerbatim.make(tofill, "contextId", "asnn2.contextId = \"" + placement.getContext() + "\";");
+            UIVerbatim.make(tofill, "contextId", "asnn2.contextId = \"" + externalLogic.getCurrentContextId() + "\";");
             
             // Error indicator if assignment graded but no gb item selected
             UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
