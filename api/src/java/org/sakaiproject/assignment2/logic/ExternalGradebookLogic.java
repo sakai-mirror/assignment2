@@ -516,18 +516,8 @@ public interface ExternalGradebookLogic {
      * 
      * @param gradebookUid
      * @param gradebookItem
-     * @param pointsPossible
      * @return
      */
-    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, Assignment gradebookItem, Double pointsPossible);
-    
-    /**
-     * 
-     * @param gradebookUid
-     * @param gbItemId
-     * @return an Assignment
-     */
-    public Assignment getAssignment(String gradebookUid, Long gbItemId);
-
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, GradebookItem gradebookItem);
     
 }

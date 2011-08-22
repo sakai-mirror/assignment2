@@ -415,13 +415,9 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         
         assignmentGbItem.setDueDate(gbItem.getDueDate());
         
-        if (isPointsPossibleValid(contextId, getAssignment(contextId, 
-                                                           gbItem.getGradebookItemId()), 
-                                                           gbItem.getPointsPossible()) 
-            == PointsPossibleValidation.VALID) {
+       if (isPointsPossibleValid(contextId, gbItem)  == PointsPossibleValidation.VALID) {
             assignmentGbItem.setPoints(gbItem.getPointsPossible());
         }
-
 
         String oldName = assignmentGbItem.getName();
         
@@ -941,14 +937,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return safeAssignmentName;
     }
 
-    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, Assignment gradebookItem, Double pointsPossible)
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, GradebookItem gradebookItem)
     {
-        return gradebookService.isPointsPossibleValid(gradebookUid, gradebookItem, pointsPossible);
+        Assignment assignment = gradebookService.getAssignment(gradebookUid, gradebookItem.getGradebookItemId());
+        
+        return gradebookService.isPointsPossibleValid(gradebookUid, assignment, gradebookItem.getPointsPossible());
     }
     
-    public Assignment getAssignment(String gradebookUid, Long gbItemId)
-    {
-        return gradebookService.getAssignment(gradebookUid, gbItemId);
-    }
-
 }

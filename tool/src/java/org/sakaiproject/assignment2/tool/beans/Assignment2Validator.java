@@ -27,6 +27,7 @@ import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
 import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
+import org.sakaiproject.assignment2.logic.GradebookItem;
 
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
@@ -100,11 +101,14 @@ public class Assignment2Validator  {
             // if the double convert attempt fails we don't want/need for the following to execute
             if (valid) {
                 // check if the points possible is valid        
+                GradebookItem gbItem = new GradebookItem();
+                gbItem.setGradebookItemId(assignment.getGradebookItemId());
+                gbItem.setTitle(assignment.getTitle());
+                gbItem.setPointsPossible(assignment.getGradebookPointsPossibleDouble());
+
                 PointsPossibleValidation result =  
-                    externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(), 
-                            externalGradebookLogic.getAssignment(assignment.getContextId(), 
-                                    assignment.getGradebookItemId()),
-                                    assignment.getGradebookPointsPossibleDouble());
+                    externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(),
+                                                                 gbItem);
                 if (result != PointsPossibleValidation.VALID) {
                     switch(result) {
                     case INVALID_DECIMAL: {
