@@ -941,7 +941,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return safeAssignmentName;
     }
 
-    // dummy method until Gradebook service gets this implemented
     public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, Assignment gradebookItem, Double pointsPossible)
     {
         return gradebookService.isPointsPossibleValid(gradebookUid, gradebookItem, pointsPossible);
