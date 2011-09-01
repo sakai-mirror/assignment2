@@ -108,9 +108,15 @@ public class ZipExportLogicImpl implements ZipExportLogic
     public String extractIdFromFolderName(String folderName, Pattern pattern) {
         String id = null;
         Matcher idMatcher = pattern.matcher(folderName);
-        if (idMatcher.find()) {
+
+        // in case the string is in the format (XXX) (YYY) (ZZZ).  We want the last string inside ()
+        boolean b = idMatcher.find();
+        
+        while (b) {            
             id = idMatcher.group();
+            b = idMatcher.find();
         }
+        
         return id;
     }
 
