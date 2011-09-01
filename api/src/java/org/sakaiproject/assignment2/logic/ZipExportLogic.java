@@ -15,7 +15,7 @@ public interface ZipExportLogic
      * Also used for the version folder which is in the format "20090225_12:45PM (34)" where
      * the value in parens is the version id.
      */
-    public static final String FILE_NAME_REGEX = "(?<=\\().*(?=\\))";
+    public static final String FILE_NAME_REGEX = "(?<=\\()[^\\(\\)]+(?=\\))";
 
     /**
      * the file can't be extracted and is considered "corrupt" if the folder 
