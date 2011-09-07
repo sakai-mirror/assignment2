@@ -901,11 +901,4 @@ public class GradebookServiceStub implements GradebookService {
     {
         return  PointsPossibleValidation.VALID;
     }
-    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid,
-            Assignment gradebookItem, Double pointsPossible)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
