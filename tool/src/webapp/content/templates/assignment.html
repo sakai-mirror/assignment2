@@ -250,20 +250,26 @@
                       </span>
                       <ol id="grading_options">
                         <li>
-                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();"/> 
+                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();enableDisableGradebookPoints();"/> 
                             <label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
                         </li>
                         <li>
-                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();"/> 
+                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();enableDisableGradebookPoints();asnn2.populateGradebookPoints()"/> 
                             <label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
                             <span rsf:id="msg=assignment2.assignment_add.gradebook_associated"> and is associated with a Gradebook Item:</span> 
-                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();asnn2.showHideGradeSettingError();">
+                                <select rsf:id="gradebook_item" onchange="asnn2.selectGraded();asnn2.populateTitleWithGbItemName();asnn2.showHideGradeSettingError();asnn2.populateGradebookPoints();">
                                     <option value="">Select a Gradebook Item</option>
                                     <option value="GB Item 1">GB Item 1</option>
                                     <option value="GB Item 2">GB Item 2</option>
                                     <option value="GB Item 3">GB Item 3</option>
                                     <option value="GB Item 4">GB Item 4</option>
                                 </select>
+                                &nbsp;
+                                <span>
+                                    <label for="gradebook_points" id="gradebook_points_label" rsf:id="gradebook_points_label">Points:</label>
+                                    <input id="gradebook_points" rsf:id="gradebook_points" size="8" value="0" />
+                                </span>
+                                <script rsf:id="contextId" type="text/javascript" />
                                 
                                 <p class="indent" rsf:id="create_new_gb_item">
                                     <span rsf:id="msg=assignment2.assignment_add.gradebook_or"> -or- </span>
