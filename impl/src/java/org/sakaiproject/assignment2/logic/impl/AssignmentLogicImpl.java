@@ -219,8 +219,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
     }
 
     public void saveAssignment(Assignment2 assignment, boolean syncGradebook) throws SecurityException, 
-    NoGradebookItemForGradedAssignmentException
-    {
+    NoGradebookItemForGradedAssignmentException {
         if (assignment == null || assignment.getContextId() == null) {
             throw new IllegalArgumentException("Null assignment or assignment.contextId passed to saveAssignment");
         }
@@ -271,7 +270,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             throw new InvalidGradebookItemAssociationException("The gradebook item " + assignment.getGradebookItemId() + 
             " is not a valid gradebook item to associate with this assignment");
         }
-        
 
         // trim trailing spaces on title
         assignment.setTitle(assignment.getTitle().trim());
@@ -279,6 +277,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         // clean up the html string for the instructions
         assignment.setInstructions(externalLogic.cleanupUserStrings(assignment.getInstructions(), true));
         
+
         // double check that content review is available for this assignment
         if (assignment.isContentReviewEnabled()) {
             if (!externalContentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
@@ -467,17 +466,41 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             }
         }
         
-        if (allowGradebookSync && syncGradebook) {
-            if (assignment.isGraded()) { // ONC-3115
+        
+        if (assignment.isGraded()) {
+            GradebookItem gbItem = gradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
+            boolean updateGradebook = false;
+            
+            if (allowGradebookSync && syncGradebook) { // ONC-3115 (refactored)
                 List<Assignment2> linkedAsnns = 
                     getAssignmentsWithLinkedGradebookItemId(assignment.getGradebookItemId());
                 if (linkedAsnns != null && linkedAsnns.size() == 1) {
-                    gradebookLogic.updateGbItemInGradebook(assignment.getGradebookItemId(), 
-                            assignment.getContextId(), assignment.getTitle(), assignment.getDueDate());
+                    gbItem.setTitle(assignment.getTitle());
+                    gbItem.setDueDate(assignment.getDueDate());
+                    updateGradebook = true;
                 }
             }
-        }
+                        
+            if (assignment.getGradebookPointsPossible() != null && // this needs to be checked because if this is called
+                                                           // by updateEntity() during an JS inline title rename
+                                                           // PointsPossible will be null 
+                    gbItem.getPointsPossible() != assignment.getGradebookPointsPossibleDouble()) {
+                
+                gbItem.setPointsPossible(assignment.getGradebookPointsPossibleDouble());
+                updateGradebook = true;
+            }
+            
+            if (! gbItem.getTitle().equals(assignment.getTitle())) {
+                gbItem.setTitle(assignment.getTitle());
+                updateGradebook = true;
+            }
 
+            if (updateGradebook) {
+                gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);
+            }
+
+        } // end if isGraded()
+        
     }
 
     public void deleteAssignment(Assignment2 assignment) throws SecurityException, AnnouncementPermissionException

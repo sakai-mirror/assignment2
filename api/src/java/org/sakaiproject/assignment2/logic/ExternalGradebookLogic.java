@@ -30,10 +30,10 @@ import java.util.Set;
 import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.exception.InvalidGradeForAssignmentException;
 import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
-import org.sakaiproject.assignment2.model.Assignment2;
-import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.service.gradebook.shared.Assignment;
+import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -277,9 +277,12 @@ public interface ExternalGradebookLogic {
             boolean releasedToStudents, boolean countedInCourseGrade);
     
     /**
-     * ONC-3115
+     * @param contextId
+     * @param gradebookItem
+     * @throws GradebookItemNotFoundException if no gradebook item exists with the given gbItem.gradebookItemId
      */
-    public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate);
+    public void updateGbItemInGradebook(String contextId, GradebookItem gbItem);
+
 
     /**
      * @param contextId
@@ -508,5 +511,13 @@ public interface ExternalGradebookLogic {
      * "ted (2)" is checked. And so on and so on until a non in use gradebook assignmentTitle is found.
      */
     public String getFreeAssignmentName(String gradebookUid, String assignmentTitle);
+
+    /**
+     * 
+     * @param gradebookUid
+     * @param gradebookItem
+     * @return
+     */
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, GradebookItem gradebookItem);
     
 }

@@ -52,8 +52,8 @@ import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
+import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.site.api.Group;
-
 
 /**
  * This is the implementation for logic to interact with the Sakai
@@ -394,24 +394,56 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
 
         return gradebookItemId;
     }
-    
-    public void updateGbItemInGradebook(Long gbItemId, String contextId, String title, Date dueDate) {
-        Assignment gbItem = gradebookService.getAssignment(contextId, gbItemId);
-        String oldName = gbItem.getName();
+
+    @Override
+    public void updateGbItemInGradebook(String contextId, GradebookItem gbItem) {
+        
+        if (contextId == null || gbItem == null){
+            throw new IllegalArgumentException ("Null contextId or gradebookItem " +
+                    "passed to updateGbItemInGradebook. contextId:" +
+                    contextId + " gradebookItem:" + gbItem);
+        }
+        
+        Assignment assignmentGbItem = null;
+
+        try {
+            assignmentGbItem = gradebookService.getAssignment(contextId, gbItem.getGradebookItemId());
+        } catch (AssessmentNotFoundException anfe) {
+            throw new GradebookItemNotFoundException ("No gradebook item exists with gradebookItemId " 
+                    + gbItem.getGradebookItemId() + " in context " + contextId, anfe);
+        }
+        
+        assignmentGbItem.setDueDate(gbItem.getDueDate());
+        
+       if (isPointsPossibleValid(contextId, gbItem)  == PointsPossibleValidation.VALID) {
+            assignmentGbItem.setPoints(gbItem.getPointsPossible());
+        }
+
+        String oldName = assignmentGbItem.getName();
+        
+        
+        
+        if (gbItem.getTitle() != null) {
+            assignmentGbItem.setName(gbItem.getTitle());
+        }
         
         try {
-            if (! oldName.equalsIgnoreCase(title) && gradebookService.isAssignmentDefined(contextId, title)) {
+            if (! oldName.equalsIgnoreCase(assignmentGbItem.getName()) && 
+                    gradebookService.isAssignmentDefined(contextId, assignmentGbItem.getName())) {
                 throw new ConflictingAssignmentNameException("error");
             }
 
-            gbItem.setName(title);
-            gbItem.setDueDate(dueDate);
-        
-            gradebookService.updateAssignment(contextId, oldName, gbItem);
         } catch (ConflictingAssignmentNameException cane) {
-            throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + title);
+            throw new ConflictingAssignmentNameInGradebookException("conflicting gradebook name " + assignmentGbItem.getName());
         }
+
+        if (oldName != null) {
+            gradebookService.updateAssignment(contextId, oldName, assignmentGbItem);
+        }
+        
     }
+    
+
 
     public GradebookItem getGradebookItemById(String contextId, Long gradebookItemId) {
         if (contextId == null || gradebookItemId == null) {
@@ -905,4 +937,11 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return safeAssignmentName;
     }
 
+    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, GradebookItem gradebookItem)
+    {
+        Assignment assignment = gradebookService.getAssignment(gradebookUid, gradebookItem.getGradebookItemId());
+        
+        return gradebookService.isPointsPossibleValid(gradebookUid, assignment, gradebookItem.getPointsPossible());
+    }
+    
 }
