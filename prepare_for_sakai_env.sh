@@ -47,11 +47,19 @@ stuboutTaggable()
     echo "Stubbing out taggable for ..."
     patch -p0 < patches/remove-taggable-functionality-stub-false.patch
 }
+
 # This function removes the extra groupId segment for sakai version != 2.9
 fixGroupIds()
 {
     echo "Fixing groupIds ..."
     cat patches/groupids.patch | sed -e "s/{SAKAI_VERSION}/${sakaiVersion}/g" | patch -p0
+}
+
+# This function removes the edit points functionality (ASNN-736)
+removeEditPoints()
+{
+    echo "Removing edit points functionality ..."
+    patch -p0 < patches/editPoints.patch
 }
 
 prepareAssignment2()
@@ -72,6 +80,7 @@ prepareAssignment2()
         #echo "Commenting out taggable for now..."
         stuboutTaggable
         fixGroupIds
+        removeEditPoints
     fi
 
     
