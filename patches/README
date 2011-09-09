@@ -3,6 +3,11 @@ against various versions and configurations of Sakai.
 
 assignment2.patch - This patches changes the current trunk version to 
   SAKAI_VERSION so that it can be adjusted for the version of Sakai.
+  
+editPoints.patch - This patch removes the inline gradebook edit points 
+  functionality (ASNN-736) from A2 if it will be running in any Sakai 
+  version != 2.9.  This edit points functionality requires 1.2 
+  version of the gradebook service.
 
 remove-taggable-functionality-stub-false.patch.txt - This patches several
   *.java files so that the taggable signatures match those of previous
