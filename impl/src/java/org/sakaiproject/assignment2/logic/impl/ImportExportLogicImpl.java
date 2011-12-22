@@ -504,11 +504,19 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                     // in the new tool
                     if (oContent.getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE) {
                         // we will add a gb item for this assignment
+                        Double pointsPossible = null;
                         try {
+                            pointsPossible = new Double(oContent.getMaxGradePointDisplay());
+                        } catch (NumberFormatException nfe) {
+                            // points possible was invalid
+                            pointsPossible = null;
+                        }
+                        
+                        if (pointsPossible != null && pointsPossible > 0) {
                             newAssnDef.setGraded(true);
                             newAssnDef.setAssociatedGbItemName(oAssignment.getTitle());
                             newAssnDef.setAssociatedGbItemPtsPossible(new Double(oContent.getMaxGradePointDisplay()));
-                        } catch (NumberFormatException nfe) {
+                        } else {
                             // set this one as ungraded b/c points possible was invalid
                             newAssnDef.setGraded(false);
                         }
