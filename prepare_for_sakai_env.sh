@@ -109,7 +109,7 @@ do
   echo "(2) - Sakai branch 2.8.x"
   echo "(3) - Sakai branch 2.9.x/trunk"
   echo
-  echo "(4) - Custom Sakai version (must be a derivitive of 2.7.x or 2.8.x)"
+  echo "(4) - Custom Sakai version (must be a derivative of 2.7.x or 2.8.x)"
   echo 
   echo "(5) - Exit"
   echo
