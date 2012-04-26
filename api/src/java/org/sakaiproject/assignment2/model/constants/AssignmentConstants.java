@@ -258,7 +258,7 @@ public class AssignmentConstants {
      * ie, to include the "no repo" and "standard repo" options only, use: 
      * turnitin.repository.setting.count=2
      * turnitin.repository.setting.1 = 0
-     * turnitin.repository.setting.2 = 2
+     * turnitin.repository.setting.2 = 1
      * 
      */
     public static final String TII_PROP_SUBMIT_TO_REPO = "turnitin.repository.setting";
