@@ -64,7 +64,7 @@ public interface AssignmentLogic {
 
     /**
      * Saves assignment with option as to whether the Sakai Gradebook should be
-     * updated with the title and other metadata.ÊOther than the second 
+     * updated with the title and other metadata. Other than the second 
      * parameter, this follows the same behavior as 
      * {@link AssignmentLogic#saveAssignment(Assignment2)}
      * 
