@@ -33,7 +33,7 @@ Installation
 Compatibility
 -------------
 
-Compatible with Sakai branches 2.7.x, 2.8.x and 2.9.x/trunk
+Compatible with Sakai branches 2.8.x, 2.9.x and 2.10.x/trunk
 
 
 Prepare Your Environment
@@ -52,35 +52,32 @@ Tools needed
 ````````````
 
 You will need to have maven2, subversion and patch installed on your system.
-Sed and cat will need to be available.  You will also need to be using the 
-same local maven repository (by default $HOME/.m2/repository) that you 
-used to build your Sakai branch.  Your Sakai branch needs to be built 
-before you try to build/install Assignments 2.
 
-Obtaining dependencies and patching pom.xmls
+Building for 2.8.x
 ````````````````````````````````````````````
 
-For Sakai branches 2.8.x and 2.7.x you will need to download a dependency
-(taggable-2.9.x) and patch pom.xml files. The script 
-prepare_for_sakai_env.sh script is included to accomplish this. The script 
-will download into a subdirectory in assignments 2 named temp. It then compiles 
-and installs into your local maven repository the dependency.  It will patch 
-the dependency's pom.xml file as well as patch Assignments 2's pom.xml files 
-to work w/ your branch of Sakai.  It will ONLY patch files within the 
-Assignments 2's source tree. It does NOT touch anything outside of it so your 
-base Sakai source tree is left untouched.
+For Sakai branches 2.8.x you will need to run the script prepare_for_28_sakai.sh. 
+This will patch A2 to remove the inline edit points and OSP/taggable functionality.
 
-This Assignments 2 directory MUST be sitting inside your Sakai source 
-tree before you try to run the script.
+After patching, calling maven w/ the -f option followed my pom-2.8.xml will allow
+building vs a Sakai 2.8.x setup.
 
-Compilation
-```````````
-After your install has been patched as above (if necessary), you can either
-add Assignments 2 to your master pom file or build it with the usual.
+mvn -f pom-2.8.xml clean install sakai:deploy
 
-::
-  
-  mvn -Dmaven.tomcat.home=/your/path/to/tomcat clean install sakai:deploy
+
+Building for 2.9.x
+````````````````````````````````````````````
+
+No patching is required.  Just issue the maven commend with the -f option for the
+2.9 pom.
+
+mvn -f pom-2.9.xml clean install sakai:deploy
+
+Building for 2.10.x/trunk
+````````````````````````````````````````````
+This should build as normal.
+
+mvn clean install sakai:deploy
 
 
 .. Integrations
