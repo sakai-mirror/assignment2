@@ -1,9 +1,6 @@
 This directory contains patches for running/building Assignments 2
 against various versions and configurations of Sakai.
 
-assignment2.patch - This patches changes the current trunk version to 
-  SAKAI_VERSION so that it can be adjusted for the version of Sakai.
-  
 editPoints.patch - This patch removes the inline gradebook edit points 
   functionality (ASNN-736) from A2 if it will be running in any Sakai 
   version != 2.9.  This edit points functionality requires 1.2 
@@ -16,6 +13,3 @@ remove-taggable-functionality-stub-false.patch.txt - This patches several
   to use the OSP integration with those versions can manually upgrade 
   their taggable versions and remove this patch.
 
-taggable.patch - This patches the taggable module in situation when we may
-  want to download and compile a version of taggable to pre-populate the 
-  maven repo.
