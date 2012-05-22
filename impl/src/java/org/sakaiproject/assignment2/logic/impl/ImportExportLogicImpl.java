@@ -39,6 +39,7 @@ import org.sakaiproject.assignment.api.AssignmentService;
 import org.sakaiproject.assignment2.dao.AssignmentDao;
 import org.sakaiproject.assignment2.exception.AnnouncementPermissionException;
 import org.sakaiproject.assignment2.exception.CalendarPermissionException;
+import org.sakaiproject.assignment2.exception.ContentReviewException;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
@@ -327,6 +328,8 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                             log.warn("No announcements were added because the user does not have permission in the announcements tool");
                         } catch (CalendarPermissionException cpe) {
                             log.warn("No events were added because the user does not have permission in the Schedule tool");
+                        } catch (ContentReviewException cre){
+                            log.warn("No Content Review integration was added during import because of issues saving the data. AsnnID: " + newAssignment.getId());
                         }
                     }
                 }
