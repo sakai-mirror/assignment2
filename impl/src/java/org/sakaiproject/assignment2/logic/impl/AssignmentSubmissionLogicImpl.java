@@ -928,8 +928,8 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
                         numAllowedOnSubLevel, currNumSubmissions);
             } else if (resubmitSettingsOnSubmissionLevel) {
                 // these setting override any settings on the assignment level
-                if (submission.getResubmitCloseDate() == null || 
-                        submission.getResubmitCloseDate().after(new Date())) {
+                if ((submission.getResubmitCloseDate() == null && assignment.isSubmissionOpen()) || 
+                        (submission.getResubmitCloseDate() != null && submission.getResubmitCloseDate().after(new Date()))) {
                     numSubmissionsRemaining = determineNumSubmissionRemaining(numAllowedOnAssignLevel, 
                             numAllowedOnSubLevel, currNumSubmissions);
                 }

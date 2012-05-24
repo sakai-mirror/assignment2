@@ -1122,8 +1122,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assignmentLogic.saveAssignment(assign1);
 
 
-        // let's open up on the submission level for student 2
-        submissionLogic.updateStudentResubmissionOptions(studentList, testData.a1, 4, null);
+        // let's open up on the submission level for student 2 and set the extended due date (otherwise, 
+        //it won't allow the student to re-submit because the assignment is closed
+        cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        submissionLogic.updateStudentResubmissionOptions(studentList, testData.a1, 4, cal.getTime());
 
         // student 1 should not be able to submit b/c of assignment-level restriction
         // but student 2 can
@@ -1237,8 +1240,11 @@ public class AssignmentSubmissionLogicTest extends Assignment2TestBase {
         assignmentLogic.saveAssignment(assign1);
 
 
-        // let's open up on the submission level for student 2
-        submissionLogic.updateStudentResubmissionOptions(studentUids, testData.a1, 4, null);
+        // let's open up on the submission level for student 2 and set the accept until time (otherwise, 
+        //it won't allow the student to re-submit because
+        cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        submissionLogic.updateStudentResubmissionOptions(studentUids, testData.a1, 4, cal.getTime());
 
         // student 1 should not be able to submit b/c of assignment-level restriction
         // but student 2 can
