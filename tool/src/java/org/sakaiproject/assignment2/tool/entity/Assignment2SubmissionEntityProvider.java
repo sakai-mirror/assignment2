@@ -276,6 +276,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         }
 
         for (AssignmentSubmission as : submissions) {
+            if (studentIdSortNameMap.get(as.getUserId()) == null) {
+                continue;                             
+            }
             Map submap = new HashMap();
             submap.put("studentName", studentIdSortNameMap.get(as.getUserId())); 
             submap.put("studentId", as.getUserId());
