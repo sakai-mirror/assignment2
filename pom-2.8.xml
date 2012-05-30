@@ -147,7 +147,7 @@
             <dependency>
                 <groupId>org.sakaiproject.common</groupId>
                 <artifactId>archive-api</artifactId>
-                <version>(1.0,2.0]</version>
+                <version>1.1.7</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -299,9 +299,9 @@
             </activation>
         </profile>
         <profile>
-            <id>2.9.x</id>
+            <id>2.8.x</id>
             <properties>
-                <parent.replacedversion>2.9-SNAPSHOT</parent.replacedversion>
+                <parent.replacedversion>2.8-SNAPSHOT</parent.replacedversion>
              </properties> 
         </profile>
         <profile>
