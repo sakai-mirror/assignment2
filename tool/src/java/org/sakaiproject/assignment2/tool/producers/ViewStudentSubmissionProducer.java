@@ -36,6 +36,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -81,6 +82,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
     private DisplayUtil displayUtil;
     private AsnnToggleRenderer toggleRenderer;
     private ExternalGradebookLogic gradebookLogic;
+    private ExternalLogic externalLogic;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
           // Get Params
@@ -121,7 +123,7 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
           }
 
           // use a date which is related to the current users locale
-          DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+          DateFormat df = externalLogic.getDateFormat(null, null, locale, true);
           
           // title
           UIOutput.make(tofill, "title", assignment.getTitle());
@@ -326,5 +328,9 @@ public class ViewStudentSubmissionProducer implements ViewComponentProducer, Vie
     
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 }

@@ -1,6 +1,5 @@
 package org.sakaiproject.assignment2.tool.producers.renderers;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,12 +50,6 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
         this.submissionLogic = submissionLogic;
     }
 
-    // Dependency
-    private Locale locale;
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
     private MessageLocator messageLocator;
     public void setMessageLocator(MessageLocator messageLocator) {
         this.messageLocator = messageLocator;
@@ -90,8 +83,6 @@ public class AsnnSubmissionHistoryRenderer implements BasicProducer {
 
         Assignment2 assignment = assignmentSubmission.getAssignment();
         List<AssignmentSubmissionVersion> versionHistory = submissionLogic.getVersionHistoryForSubmission(assignmentSubmission);
-
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
 
         if (versionHistory.size() >= 1) {
             // Show the history view if:

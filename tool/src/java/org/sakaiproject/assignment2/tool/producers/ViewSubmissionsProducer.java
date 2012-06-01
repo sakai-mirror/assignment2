@@ -21,7 +21,6 @@
 
 package org.sakaiproject.assignment2.tool.producers;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

@@ -308,8 +308,7 @@ public class ScheduledNotificationImpl implements ScheduledNotification
         StringBuilder content = new StringBuilder();
 
         // format the date display
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, 
-                DateFormat.SHORT, assignmentBundleLogic.getLocale());
+        DateFormat df = externalLogic.getDateFormat(null, null, assignmentBundleLogic.getLocale(), false);
 
         // site title and id
         content.append(assignmentBundleLogic.getString("noti.site.title") + " "
@@ -409,7 +408,7 @@ public class ScheduledNotificationImpl implements ScheduledNotification
         content.append(assignmentBundleLogic.getString("noti.assignment") + " "
                 + a.getTitle() + newline);
 
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
+        DateFormat df = externalLogic.getDateFormat(null, null, assignmentBundleLogic.getLocale(), false);
         String dueDateDisplay = assignmentBundleLogic.getString("noti.assignment.no_due_date");
         if (a.getDueDate() != null)
         {

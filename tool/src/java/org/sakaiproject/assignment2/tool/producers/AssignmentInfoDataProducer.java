@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
 
@@ -47,6 +48,12 @@ public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic assignmentPermissionLogic) {
         this.assignmentPermissionLogic = assignmentPermissionLogic;
     }
+    
+    // Dependency
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
 
     // Dependency
     private Locale locale;
@@ -72,7 +79,7 @@ public class AssignmentInfoDataProducer implements DataView , ViewParamsReporter
             return new Object[] {};
         }
 
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+        DateFormat df = externalLogic.getDateFormat(DateFormat.SHORT, DateFormat.SHORT, locale, true);
 
         Assignment2 assignment = assignmentLogic.getAssignmentById(params.assignmentId);
 

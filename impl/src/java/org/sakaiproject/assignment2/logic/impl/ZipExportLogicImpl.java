@@ -142,6 +142,8 @@ public class ZipExportLogicImpl implements ZipExportLogic
 
         String formatWithTime = bundle.getString("assignment2.assignment_grade_assignment.downloadall.filename_date_format_with_time");
         DateFormat df_withTime = new SimpleDateFormat(formatWithTime, bundle.getLocale());
+        externalLogic.setLocalTimeZone(df_withTime);
+        
         String feedbackFolderName = getFeedbackFolderName();
         String feedbackFileName = getFeedbackFileName();
         String annotatedTextFileName = getAnnotatedTextFileName();

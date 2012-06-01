@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
@@ -56,6 +57,11 @@ public class DisplayUtil {
     private AssignmentBundleLogic bundleLogic;
     public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
         this.bundleLogic = bundleLogic;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 
     /**
@@ -129,7 +135,7 @@ public class DisplayUtil {
      * @return the internationalized text describing the given status
      */
     public String getVersionStatusText(int statusConstant, Date studentSaveDate, Date submittedDate) {
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, bundleLogic.getLocale());
+        DateFormat df = externalLogic.getDateFormat(null, null, bundleLogic.getLocale(), true);
         String statusText = messageLocator.getMessage("assignment2.version.toggle.status.not_started");
         if (statusConstant == AssignmentConstants.SUBMISSION_NOT_STARTED) {
             statusText =  messageLocator.getMessage("assignment2.version.toggle.status.not_started");

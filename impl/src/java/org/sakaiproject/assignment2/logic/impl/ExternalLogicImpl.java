@@ -22,11 +22,13 @@ package org.sakaiproject.assignment2.logic.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +44,7 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.User;
@@ -84,6 +87,11 @@ public class ExternalLogicImpl implements ExternalLogic {
     private ServerConfigurationService serverConfigurationService;
     public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
         this.serverConfigurationService = serverConfigurationService;
+    }
+    
+    private TimeService timeService;
+    public void setTimeService(TimeService timeService) {
+        this.timeService = timeService;
     }
 
     /**
@@ -457,5 +465,23 @@ public class ExternalLogicImpl implements ExternalLogic {
     
     public void addToSession(String attribute, Object value) {
         sessionManager.getCurrentSession().setAttribute(attribute, value);
+    }
+    
+    public DateFormat getDateFormat(Integer optionalDateStyle, Integer optionalTimeStyle, Locale locale, boolean currentUserTimezone) {
+        int dateStyle = optionalDateStyle != null ? optionalDateStyle : DateFormat.MEDIUM;
+        int timeStyle = optionalTimeStyle != null ? optionalTimeStyle : DateFormat.SHORT;
+        
+        DateFormat df = DateFormat.getDateTimeInstance(dateStyle, timeStyle, locale);
+        if (currentUserTimezone) {
+            df.setTimeZone(timeService.getLocalTimeZone());
+        }
+        
+        return df;
+    }
+    
+    public void setLocalTimeZone(DateFormat df) {
+        if (df != null) {
+            df.setTimeZone(timeService.getLocalTimeZone());
+        }
     }
 }

@@ -21,10 +21,12 @@
 
 package org.sakaiproject.assignment2.logic.test.stubs;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -372,6 +374,18 @@ public class ExternalLogicStub implements ExternalLogic {
 
     public void addToSession(String attribute, Object value)
     {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public DateFormat getDateFormat(Integer optionalDateStyle, Integer optionalTimeStyle, Locale locale, boolean currentUserTimezone) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setLocalTimeZone(DateFormat df) {
         // TODO Auto-generated method stub
         
     }

@@ -9,6 +9,7 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
@@ -67,6 +68,12 @@ public class AsnnDetailsRenderer implements BasicProducer {
     public void setAsnnToggleRenderer(AsnnToggleRenderer toggleRenderer) {
         this.toggleRenderer = toggleRenderer;
     }
+    
+    // Dependency
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
 
     /**
      * Renders the assignment details at the top of the Student Submission
@@ -122,7 +129,7 @@ public class AsnnDetailsRenderer implements BasicProducer {
         UIOutput.make(joint, "assignment-details-table");
 
         // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+        DateFormat df = externalLogic.getDateFormat(null, null, locale, true);
 
         UIOutput.make(joint, "open-date", df.format(assignment.getOpenDate()));
 

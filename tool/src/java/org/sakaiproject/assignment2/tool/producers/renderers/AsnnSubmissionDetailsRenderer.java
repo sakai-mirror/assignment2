@@ -11,6 +11,7 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradeInformation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
@@ -105,6 +106,11 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
     public void setExternalContentReviewLogic(ExternalContentReviewLogic contentReviewLogic) {
         this.contentReviewLogic = contentReviewLogic;
     }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
+    }
 
     public void fillComponents(UIContainer parent, String clientID, AssignmentSubmission assignmentSubmission, boolean previewAsStudent) {
         fillComponents(parent, clientID, assignmentSubmission, previewAsStudent, false);
@@ -127,8 +133,8 @@ public class AsnnSubmissionDetailsRenderer implements BasicProducer {
 
         UIJointContainer joint = new UIJointContainer(parent, clientID, "assn2-submission-details-widget:");
 
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-        DateFormat df_short = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+        DateFormat df = externalLogic.getDateFormat(null, null, locale, true);
+        DateFormat df_short = externalLogic.getDateFormat(DateFormat.SHORT, DateFormat.SHORT, locale, true);
 
         // we may have been passed an empty assignmentSubmission object (except for assignment and userId),
         // so let's retrieve the real thing

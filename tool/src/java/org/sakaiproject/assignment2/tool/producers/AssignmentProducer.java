@@ -181,9 +181,6 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             assignmentAuthoringFlowBean.setAssignment(assignment2Creator.createDuplicate(dupAssign, newTitle));
         }
 
-        // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-
         //Breadcrumbs
         UIInternalLink.make(tofill, "breadcrumb", 
                 messageLocator.getMessage("assignment2.list.heading"),
@@ -445,6 +442,11 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             gradebook_item_values[0] = "0";
             gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
             String js_gradebook_items_data = "var gradebook_items_date = {\n";
+            
+
+            // use a date which is related to the current users locale
+            DateFormat gbDf = externalLogic.getDateFormat(null, null, locale, false);
+            
             js_gradebook_items_data += "0: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"\n";
             for (int i=1; i <= gradebook_items.size(); i++) {
                 //Fill out select options
@@ -454,7 +456,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 //store js hash of id => due_date string
                 js_gradebook_items_data += "," + gradebook_items.get(i-1).getGradebookItemId().toString();
                 if(gradebook_items.get(i-1).getDueDate() != null){
-                    js_gradebook_items_data += ":\"" + df.format(gradebook_items.get(i-1).getDueDate()) + "\"\n";
+                    js_gradebook_items_data += ":\"" + gbDf.format(gradebook_items.get(i-1).getDueDate()) + "\"\n";
                 }else{
                     js_gradebook_items_data += ":\"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_no_due_date") + "\"\n";
                 }

@@ -21,9 +21,11 @@
 
 package org.sakaiproject.assignment2.logic;
 
+import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.sakaiproject.assignment2.logic.utils.Assignment2Utils;
@@ -278,4 +280,23 @@ public interface ExternalLogic {
      */
     public void addToSession(String attribute, Object value);
     
+    /**
+     * 
+     * @param optionalDateStyle {@link DateFormat} style for date. Leave null to use default.
+     * @param optionalTimeStyle {@link DateFormat} style for time. Leave null to use default.
+     * @param locale
+     * @param currentUserTimezone true if you want this date to be displayed using the
+     * current user's timezone preference
+     * @return {@link DateFormat} - based upon your parameters, you may obtain the default
+     * DateFormat with or without taking the current user's timezone preference into 
+     * consideration.
+     */
+    public DateFormat getDateFormat(Integer optionalDateStyle, Integer optionalTimeStyle, Locale locale, boolean currentUserTimezone);
+    
+    /**
+     * Given a {@link DateFormat} object, will set the timezone according to the current
+     * user's preferences
+     * @param df
+     */
+    public void setLocalTimeZone(DateFormat df);
 }

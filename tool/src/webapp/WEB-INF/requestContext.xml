@@ -45,6 +45,7 @@
     	<property name="messageLocator" ref="messageLocator"></property>
     	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic"></property>
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
+        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
     </bean>	
     
     <bean id="AsnnDetailsRenderer" 
@@ -56,6 +57,7 @@
         <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
         <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
         <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic"></property>
+        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
     </bean> 
     
     <bean id="GradeDetailsRenderer" 
@@ -119,7 +121,6 @@
     	class="org.sakaiproject.assignment2.tool.producers.renderers.AsnnSubmissionHistoryRenderer">
     	<property name="asnnSubmissionVersionRenderer" ref="AsnnSubmissionVersionRenderer" />
     	<property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
-    	<property name="locale" ref="requestLocale" />
     	<property name="messageLocator" ref="messageLocator" />
       <property name="displayUtil" ref="DisplayUtil" />
       <property name="asnnInstructionsRenderer" ref="AsnnInstructionsRenderer"></property>
@@ -176,6 +177,7 @@
        <property name="assignmentSubmissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
        <property name="currUserId" ref="sakai-UserID" />
        <property name="messageLocator" ref="messageLocator" />
+       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.PreviewAsStudentProducer">
@@ -338,6 +340,7 @@
        <property name="assignmentLogic" ref="org.sakaiproject.assignment2.logic.AssignmentLogic" />
        <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
        <property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic" />
+       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.ViewStudentSubmissionProducer">
@@ -351,6 +354,7 @@
        <property name="displayUtil" ref="DisplayUtil" />
        <property name="asnnToggleRenderer" ref="AsnnToggleRenderer"></property>
        <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
+       <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <bean class="org.sakaiproject.assignment2.tool.producers.GraderPermissionsProducer">

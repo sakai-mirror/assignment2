@@ -176,7 +176,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     public List getAssignmentListForSite(EntityView view) {        
         String context = (String) requestStorage.getStoredValue("siteid");
 
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
+        DateFormat df = externalLogic.getDateFormat(null, null, assignmentBundleLogic.getLocale(), true);
 
         if (context == null) {
             return new ArrayList();

@@ -11,6 +11,7 @@
       <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
       <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+      <property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
    </bean>
    
    <bean id="org.sakaiproject.assignment2.logic.AssignmentAuthzLogic" class="org.sakaiproject.assignment2.logic.impl.AssignmentAuthzLogicImpl" init-method="init">

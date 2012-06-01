@@ -202,7 +202,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         boolean contentReviewEnabled = assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId());
 
         // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+        DateFormat df = externalLogic.getDateFormat(null, null, locale, true);
 
         // get the hover/alt text for the toggles
         String toggleHoverText = messageLocator.getMessage("assignment2.assignment_grade.toggle.hover");
@@ -452,7 +452,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 {
                     UIOutput.make(tofill, "resubmission_dates");
 
-                    DateFormat df2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+                    DateFormat df2 = externalLogic.getDateFormat(DateFormat.SHORT, DateFormat.SHORT, locale, true);
                     if (accept_until_label)
                     {
                         UIMessage.make(tofill, "extend_accept_until", "assignment2.assignment_grade.resubmission.extend.accept_until");

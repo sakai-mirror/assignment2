@@ -33,6 +33,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -74,6 +75,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
     private ExternalGradebookLogic gradebookLogic;
     private ExternalContentReviewLogic contentReviewLogic;
     private AsnnInstructionsRenderer asnnInstructionsRenderer;
+    private ExternalLogic externalLogic;
 
     public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {
         
@@ -110,7 +112,7 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
         }
         
         // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+        DateFormat df = externalLogic.getDateFormat(null, null, locale, true);
         
         // we only display some fields if user may edit this assignment
         boolean instructorView = permissionLogic.isUserAllowedToEditAssignment(null, assignment);
@@ -232,6 +234,10 @@ public class ViewAssignmentProducer implements ViewComponentProducer, ViewParams
     
     public void setAsnnInstructionsRenderer(AsnnInstructionsRenderer asnnInstructionsRenderer) {
         this.asnnInstructionsRenderer = asnnInstructionsRenderer;
+    }
+    
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 
 }

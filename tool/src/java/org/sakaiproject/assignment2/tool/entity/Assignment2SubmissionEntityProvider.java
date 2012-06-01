@@ -240,7 +240,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
             orderByTest = search.getOrders()[0].getProperty();
         }
 
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, assignmentBundleLogic.getLocale());
+        DateFormat df = externalLogic.getDateFormat(null, null, assignmentBundleLogic.getLocale(), true);
 
         List togo = new ArrayList();
         

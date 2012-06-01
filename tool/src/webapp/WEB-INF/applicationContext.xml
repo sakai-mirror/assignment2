@@ -81,6 +81,7 @@
         <property name="submissionLogic" ref="org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic" />
         <property name="messageLocator" ref="messageLocator" />
         <property name="assignmentBundleLogic" ref="org.sakaiproject.assignment2.logic.AssignmentBundleLogic" />
+        <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
     </bean>
 
 	

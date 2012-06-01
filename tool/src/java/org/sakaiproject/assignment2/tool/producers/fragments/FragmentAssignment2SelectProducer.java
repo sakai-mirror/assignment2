@@ -84,7 +84,7 @@ public class FragmentAssignment2SelectProducer implements ViewComponentProducer,
         UIForm form = UIForm.make(tofill, "form");
 
         // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
+        DateFormat df = externalLogic.getDateFormat(null, null, locale, false);
 
         //Get Gradebook Items
         List<GradebookItem> gradebook_items = externalGradebookLogic.getAllGradebookItems(externalLogic.getCurrentContextId(), false);
