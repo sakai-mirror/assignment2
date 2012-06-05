@@ -285,3 +285,28 @@ Index: tool/src/webapp/content/templates/assignment.html
                                  <script rsf:id="contextId" type="text/javascript" />
                                  
                                  <p class="indent" rsf:id="create_new_gb_item">
+Index: impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java
+===================================================================
+--- impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (revision 79942)
++++ impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (working copy)
+@@ -42,7 +42,6 @@
+ import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
+ import org.sakaiproject.service.gradebook.shared.GradebookService;
+ import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
+-import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
+ import org.sakaiproject.service.gradebook.shared.Assignment;
+ 
+ /**
+@@ -887,12 +887,4 @@
+         // TODO Auto-generated method stub
+         return null;
+     }
+-
+-	@Override
+-	public boolean checkStudentsNotSubmitted(String arg0)
+-	{
+-		// TODO Auto-generated method stub
+-		return false;
+-	}
+-	
+ }
