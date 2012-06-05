@@ -205,7 +205,7 @@ Index: tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProdu
 ===================================================================
 --- tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java (revision 76353)
 +++ tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java (working copy)
-@@ -500,15 +500,6 @@
+@@ -502,15 +502,6 @@
                  UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning.no_add");
              }
  
