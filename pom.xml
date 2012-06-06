@@ -26,6 +26,11 @@
     
     <properties>
         <sakai.generic-dao.version>0.9.8</sakai.generic-dao.version>
+        <sakai.taggable.group>org.sakaiproject.taggable</sakai.taggable.group>
+        <sakai.calendar.group>org.sakaiproject.calendar</sakai.calendar.group>
+        <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
+        <sakai.message.group>org.sakaiproject.message</sakai.message.group>
+        <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
     </properties>
     
     <scm>

@@ -113,7 +113,7 @@
             <artifactId>entitybroker-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject.taggable</groupId>
+            <groupId>${sakai.taggable.group}</groupId>
             <artifactId>sakai-taggable-api</artifactId>
             <scope>provided</scope>
         </dependency>
