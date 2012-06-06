@@ -297,16 +297,3 @@ Index: impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServ
  import org.sakaiproject.service.gradebook.shared.Assignment;
  
  /**
-@@ -887,12 +887,4 @@
-         // TODO Auto-generated method stub
-         return null;
-     }
--
--	@Override
--	public boolean checkStudentsNotSubmitted(String arg0)
--	{
--		// TODO Auto-generated method stub
--		return false;
--	}
--	
- }
