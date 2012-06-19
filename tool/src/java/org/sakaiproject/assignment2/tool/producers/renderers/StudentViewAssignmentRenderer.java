@@ -181,9 +181,6 @@ public class StudentViewAssignmentRenderer {
         }
         UIJointContainer joint = new UIJointContainer(tofill, divID, STUDENT_SUBMISSION_DIVID, ""+1);
 
-        // use a date which is related to the current users locale
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
-
         //For preview, get a decorated list of disabled="disabled"
         Map<String, String> disabledAttr = new HashMap<String, String>();
         disabledAttr.put("disabled", "disabled");
