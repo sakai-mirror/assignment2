@@ -852,7 +852,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // make the open date locale-aware
         // use a date which is related to the current users locale
-        DateFormat df = externalLogic.getDateFormat(null, null, bundleLogic.getLocale(), true);
+        DateFormat df = externalLogic.getDateFormat(null, DateFormat.FULL, bundleLogic.getLocale(), true);
         // create url to point back to this assignment to be included in the description
         // ASNN-477
         //String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
@@ -938,7 +938,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
 
         // make the due date locale-aware
         // use a date which is related to the current users locale
-        DateFormat df = externalLogic.getDateFormat(null, null, bundleLogic.getLocale(), true);
+        DateFormat df = externalLogic.getDateFormat(null, DateFormat.FULL, bundleLogic.getLocale(), true);
         // create url to point back to this assignment to be included in the description
         // ASNN-477
         // String assignUrl = externalLogic.getAssignmentViewUrl(REDIRECT_ASSIGNMENT_VIEW_ID) + "/" + updatedAssignment.getId();
