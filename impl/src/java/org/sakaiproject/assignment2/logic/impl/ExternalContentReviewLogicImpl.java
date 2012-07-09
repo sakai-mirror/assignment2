@@ -64,7 +64,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private AssignmentBundleLogic bundleLogic;
     private ServerConfigurationService serverConfigurationService;
     private ExternalLogic externalLogic;
-    
+
     private IdManager idManager;
     public void setIdManager(IdManager idManager) {
         this.idManager = idManager;
@@ -83,7 +83,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         if (siteId == null) {
             throw new IllegalArgumentException("Null siteId passed to isContentReviewAvailable");
         }
-        
+
         boolean available = false;
         if (contentReview != null) {
             // check and see if Turnitin was enabled
@@ -101,7 +101,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
 
         return available;
     }
-    
+
     public boolean isContentReviewAvailable() {
         String siteId = externalLogic.getCurrentContextId();
         return isContentReviewAvailable(siteId);
@@ -172,7 +172,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     }
 
     /**
-     * 
+     *
      * @param assign
      * @return the "taskId" required by the {@link ContentReviewService} to uniquely
      * identify this assignment in the service
@@ -185,7 +185,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             return assign.getContentReviewRef();
         }
     }
-    
+
     public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to populateReviewProperties");
@@ -203,7 +203,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                     populateAssignmentPropertiesFromAssignment(assignment);
                 }
 
-                if (assignment.getProperties() != null && assignment.getProperties().containsKey("s_view_report") && 
+                if (assignment.getProperties() != null && assignment.getProperties().containsKey("s_view_report") &&
                         (Boolean)assignment.getProperties().get("s_view_report")) {
                     populateReports = true;
                 } else {
@@ -250,7 +250,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             }
         }
     }
-    
+
     /**
      * Populates the properties from this review item on the given attach
      * @param reviewItem
@@ -267,32 +267,32 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             Assignment2ContentReviewInfo reviewInfo = new Assignment2ContentReviewInfo();
             reviewInfo.setContentReviewItem(reviewItem);
             attach.setContentReviewInfo(reviewInfo);
-            
+
             if (reviewItem.getStatus() != null) {
                 if (reviewItem.getStatus().equals(ContentReviewItem.SUBMITTED_REPORT_AVAILABLE_CODE)) {
                     reviewInfo.setScoreDisplay(reviewItem.getReviewScore() + "%");
-                } 
-                
+                }
+
                 // now retrieve the report url if status shows it exists
                 String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
                 if (reportUrl != null) {
                     reviewInfo.setReviewUrl(reportUrl);
                 }
             }
-            
+
             properties.put(AssignmentConstants.PROP_REVIEW_INFO, reviewInfo);
             attach.setProperties(properties);
-            
+
         }
     }
-    
+
     public String getReportUrl(String attachmentReference, boolean instructorView) {
         if (attachmentReference == null) {
             throw new IllegalArgumentException("Null attachmentReference passed to getReportUrl");
         }
-        
+
         String reportUrl = null;
-        
+
         if (instructorView) {
             try
             {
@@ -328,13 +328,13 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             	}
             }
         }
-        
+
         return reportUrl;
     }
-    
+
     public String getErrorMessage(Long status, Integer errorCode) {
-        String errorMessage = null; 
-        
+        String errorMessage = null;
+
         if (status != null) {
             if (status.equals(ContentReviewItem.REPORT_ERROR_NO_RETRY_CODE)) {
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.REPORT_ERROR_NO_RETRY_CODE");
@@ -357,20 +357,20 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                 errorMessage = bundleLogic.getString("assignment2.content_review.error.SUBMISSION_ERROR_USER_DETAILS_CODE");
             }
         }
-        
+
         if (errorMessage == null) {
             errorMessage = bundleLogic.getString("assignment2.content_review.error");
         }
-        
+
         return errorMessage;
-        
+
     }
-    
+
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign) {
         if (!assign.isContentReviewEnabled() || assign.getContentReviewRef() == null || assign.getContentReviewRef().equals("")) {
             return;
         }
-        
+
         Map asnnmap = new HashMap();
         try {
             asnnmap = contentReview.getAssignment(assign.getContextId(), assign.getContentReviewRef());
@@ -379,41 +379,69 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             // never ever stops us from loading an assignment.
             log.error(e);
         }
-        
+
         if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_RCODE)) {
-            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE, 
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE,
                     asnnmap.get(AssignmentConstants.TII_RETCODE_RCODE));
         }
         else {
             assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE, "-1");
         }
-        
+
         if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_RMESSAGE)) {
-            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RMESSAGE, 
+            assign.getProperties().put(AssignmentConstants.TII_RETCODE_RMESSAGE,
                     asnnmap.get(AssignmentConstants.TII_RETCODE_RMESSAGE));
         }
-        
+
         if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_OBJECT)) {
             Map asnnobj = (Map) asnnmap.get(AssignmentConstants.TII_RETCODE_OBJECT);
             assign.getProperties().put(AssignmentConstants.TII_RETCODE_SUBMIT_PAPERS_TO,
                     asnnobj.get(AssignmentConstants.TII_API_PARAM_REPOSITORY));
             assign.getProperties().put(AssignmentConstants.TII_RETCODE_REPORT_GEN_SPEED,
                     asnnobj.get(AssignmentConstants.TII_API_PARAM_GENERATE));
-            
-            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHPAPERS, 
+
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHPAPERS,
                     assign, AssignmentConstants.TII_API_PARAM_S_PAPER_CHECK);
-            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHINTERNET, 
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHINTERNET,
                     assign, AssignmentConstants.TII_API_PARAM_INTERNET_CHECK);
-            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHJOURNALS, 
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHJOURNALS,
                     assign, AssignmentConstants.TII_API_PARAM_JOURNAL_CHECK);
-            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHINSTITUTION, 
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SEARCHINSTITUTION,
                     assign, AssignmentConstants.TII_API_PARAM_INSTITUTION_CHECK);
-            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SVIEWREPORTS, 
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SVIEWREPORTS,
                     assign, AssignmentConstants.TII_API_PARAM_S_VIEW_REPORT);
+
+            //erater
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ERATER,
+                    assign, AssignmentConstants.TII_API_PARAM_ERATER);
+
+                //Handbook
+                if(asnnobj.containsKey(AssignmentConstants.TII_RETCODE_ETS_HANDBOOK)){
+                    assign.getProperties().put(AssignmentConstants.TII_API_PARAM_ETS_HANDBOOK,
+                            asnnobj.get(AssignmentConstants.TII_API_PARAM_ETS_HANDBOOK));
+                }
+
+                //Dictionary
+                if(asnnobj.containsKey(AssignmentConstants.TII_RETCODE_ETS_DICTIONARY)){
+                    assign.getProperties().put(AssignmentConstants.TII_API_PARAM_ETS_DICTIONARY,
+                            asnnobj.get(AssignmentConstants.TII_RETCODE_ETS_DICTIONARY));
+                }
+
+                setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_SPELLING,
+                        assign, AssignmentConstants.TII_API_PARAM_ETS_SPELLING);
+                setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_GRAMMAR,
+                        assign, AssignmentConstants.TII_API_PARAM_ETS_GRAMMAR);
+                setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_MECHANICS,
+                        assign, AssignmentConstants.TII_API_PARAM_ETS_MECHANICS);
+                setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_USAGE,
+                        assign, AssignmentConstants.TII_API_PARAM_ETS_USAGE);
+                setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_STYLE,
+                        assign, AssignmentConstants.TII_API_PARAM_ETS_STYLE);
+
         }
-        
+
     }
-    
+
     private void setTurnitinBooleanOption(Map asnnobj, String mapname, Assignment2 assign, String propname) {
         if (asnnobj.containsKey(mapname) && asnnobj.get(mapname).equals("1")) {
             assign.getProperties().put(propname, new Boolean(true));
@@ -425,9 +453,11 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
 
     public void createAssignment(Assignment2 assign) {
         Map opts = new HashMap();
-        
+
         String[] tiioptKeys = new String[] { "submit_papers_to", "report_gen_speed",
-                "s_paper_check", "internet_check", "journal_check", "institution_check", "s_view_report"
+                "s_paper_check", "internet_check", "journal_check", "institution_check", "s_view_report",
+                "erater","ets_handbook","ets_dictionary","ets_spelling","ets_style","ets_grammar",
+                "ets_mechanics","ets_usage"
         };
 
         for (Object key: assign.getProperties().keySet()) {
@@ -445,45 +475,45 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                 }
             }
         }
-        
+
         // ONC-2486
         opts.put("late_accept_flag", "1");
-        
+
         SimpleDateFormat dform = ((SimpleDateFormat) DateFormat.getDateInstance());
         dform.applyPattern("yyyy-MM-dd HH:mm:ss");
-        
+
         if (assign.getOpenDate() != null) {
             opts.put("dtstart", dform.format(assign.getOpenDate()));
         }
-        
+
         if (assign.getDueDate() != null) {
             opts.put("dtdue", dform.format(assign.getDueDate()));
         }
-        
+
         try {
-            contentReview.createAssignment(assign.getContextId(), 
+            contentReview.createAssignment(assign.getContextId(),
                     this.getTaskId(assign), opts);
         } catch (Exception e) {
             throw new ContentReviewException("Unknown exception trying to save TII Exception", e);
         }
     }
-    
+
     public void setExternalContentLogic(ExternalContentLogic contentLogic) {
         this.contentLogic = contentLogic;
     }
-    
+
     public void setContentReviewService(ContentReviewService contentReview) {
         this.contentReview = contentReview;
     }
-    
+
     public void setAssignmentBundleLogic(AssignmentBundleLogic bundleLogic) {
         this.bundleLogic = bundleLogic;
     }
-    
+
     public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
         this.serverConfigurationService = serverConfigurationService;
     }
-    
+
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
     }

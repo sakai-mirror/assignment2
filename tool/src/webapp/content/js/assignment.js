@@ -40,12 +40,12 @@ function update_resubmit_until() {
 function enableDisableGradebookPoints() {
 	var gradebook_points_label = jQuery("label[id='page-replace\:\:gradebook_points_label']");
 	var gradebook_points = jQuery("input[name='page-replace\:\:gradebook_points']");
-	
+
 	if (jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked ||
 	    jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0) == 0) {
-		
+
 	    gradebook_points.val("");
-	    
+
 	    gradebook_points.attr("disabled", true);
 	    gradebook_points_label.hide();
 	    gradebook_points.hide();
@@ -59,7 +59,7 @@ function enableDisableGradebookPoints() {
 jQuery(document).ready(function() {
     update_resubmit_until();
     asnn2.initializeSorting();
-    
+
     if (jQuery("input[name='page-replace\:\:gradebook_points']").size() > 0) {
         enableDisableGradebookPoints();
     }
@@ -111,25 +111,25 @@ var asnn2 = asnn2 || {};
         jQuery("input", newRow).attr("value", ref);
         jQuery("input", newRow).attr("name", asnn2.attachmentItemBinding);
         jQuery("span:first", newRow).html(filesize);
-    
+
         // if there are multiple "Add Attachments" sections on the page,
         // we need a way to uniquely identify which section this new attachment
         // will be appended to. We will use the global var asnn2.attachmentItemListSelector
-        // to uniquely identify the parent list 
+        // to uniquely identify the parent list
         var attachList = jQuery(asnn2.attachmentItemListSelector);
         jQuery(newRow).appendTo(attachList);
-        
+
         // we may need to hide the "No attachments" message
         attachList.prev(".no_attachments_yet").hide();
-        
+
     }
-    
+
     asnn2.removeAttachment = function(attach) {
         var attachment = jQuery(attach).parent('span').parent('li');
         var parentList = attachment.parent('ol');
         //remove the attachment
         attachment.remove();
-        
+
         // we may need to display the "no attachments" message, so let's find out
         // if there are any attachments left
         if (parentList.children().length === 0) {
@@ -137,7 +137,7 @@ var asnn2 = asnn2 || {};
             parentList.prev(".no_attachments_yet").show();
         }
     }
-    
+
     /**
      * sets the asnn2.attachmentItemBinding variable with the value of the element
      * with the given attachBindingSelector. This variable is used to set the appropriate
@@ -150,7 +150,7 @@ var asnn2 = asnn2 || {};
        asnn2.attachmentItemBinding = attachBinding.text();
        asnn2.attachmentItemListSelector = attachmentItemListSelector;
     }
-    
+
     /**
      * toggle the first sibling of the toggleHeader with the given classSelector
      * @param sectionSelector jQuery selector of the sibling element you want to toggle
@@ -159,18 +159,18 @@ var asnn2 = asnn2 || {};
      */
     asnn2.toggleSubsection = function(sectionSelector, toggleHeader) {
         var toggle = jQuery(toggleHeader);
-        
+
         var subsection = toggle.next(sectionSelector);
         subsection.toggle();
-        
+
         // now see if the expand/collapse img was used and needs to be toggled, as well
         var images = toggle.children('img');
         if (images.length > 0) {
             img = images.get(0);
             asnn2.flip_image(img);
-        }    
+        }
     }
-    
+
     asnn2.flip_image = function(img) {
         if (img) {
             if (img.src.match('collapse')) {
@@ -180,7 +180,7 @@ var asnn2 = asnn2 || {};
             }
         }
     }
-    
+
 })(jQuery, asnn2);
 
 /*
@@ -259,9 +259,9 @@ var asnn2util = asnn2util || {};
 
 /*
         alert("viewableWindowHeight: " + viewableWindowHeight + "\n"
-+ "\n scrollTop: " + scrollTop 
-+ "\n totalDistToDialog: " + totalDistToDialog 
-+ "\n iframeOffsetTop: " + iframeOffsetTop 
++ "\n scrollTop: " + scrollTop
++ "\n totalDistToDialog: " + totalDistToDialog
++ "\n iframeOffsetTop: " + iframeOffsetTop
 + "\n dialogCenterX: " + dialogCenterX
 + "\n dialogWidth: " + dialogWidth
 + "\n dialogHeight: " + dialogHeight
@@ -270,12 +270,12 @@ var asnn2util = asnn2util || {};
 + "\n dialogYOption: " + dialogYOption);
 */
 
-        // Sometimes the iframes don't report the correct width until some DOM manipulation 
+        // Sometimes the iframes don't report the correct width until some DOM manipulation
         // occurs and this always needs to be positive.
         if (dialogXOption < 0) {
             dialogXOption = 0;
         }
- 
+
         if (dialogYOption < 0) {
             dialogYOption = 0;
         }
@@ -433,7 +433,7 @@ var asnn2 = asnn2 || {};
                 type: "GET",
                 async: false,
                 url: "/direct/assignment2/getAssignmentPointsinGradebook",
-                data: { 
+                data: {
                     contextId: asnn2.contextId,
                     gradebookItemId: gbSelect
                 },
@@ -444,11 +444,11 @@ var asnn2 = asnn2 || {};
                 }
             });
         }
-        
+
 	    jQuery("input[name='page-replace\:\:gradebook_points']").val(points);
-        
+
     };
-    
+
     /**
      * Select the graded/ungraded radio button depending on whether a gb item
      * has been selected in the drop down
@@ -461,7 +461,7 @@ var asnn2 = asnn2 || {};
         } else {
             jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked = true;
         }
-        
+
         enableDisableGradebookPoints();
     };
 
@@ -501,7 +501,7 @@ var asnn2 = asnn2 || {};
         if (new_title) {
             escaped_title = escape(new_title);
         }
-        
+
         // we also want to add the due date, if populated
         var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
         var curr_req_due_date = require_due_date.checked;
@@ -514,9 +514,9 @@ var asnn2 = asnn2 || {};
         var modifiedUrl = gbUrlWithoutName + "&name=" + escaped_title + "&dueDateTime=" + time;
 
         jQuery("a[id='page-replace\:\:gradebook_item_new_helper']").attr("href", modifiedUrl);
-        
+
     }
-    
+
     /**
      * This method will take in a date as string (most likely from the date picker input)
      * that is in the PUC_DATE_FORMAT, parse it into pieces and figure out the
@@ -531,7 +531,7 @@ var asnn2 = asnn2 || {};
             if (!dateFormat) {
                 dateFormat = "M/d/yy";
             }
-            
+
             // now, let's split this date on '/'
             var datePieces = dateString.split("/");
             var dateFormatPieces = dateFormat.split("/");
@@ -558,17 +558,17 @@ var asnn2 = asnn2 || {};
             		}
             	}
             }
-            
+
             if (month && day && year) {
             	var newDate = new Date();
             	newDate.setDate(day);
             	newDate.setMonth(month-1); // month is 0-based
             	newDate.setFullYear(year);
-            	
+
             	time = newDate.getTime();
             }
     	}
-    	
+
     	return time;
     }
 
@@ -761,13 +761,13 @@ var asnn2 = asnn2 || {};
                 area.hide();
             }
         }
-        
+
         a2SetMainFrameHeight();
     };
-    
+
     /**
      * @param selectElem
-     * @param selectOptions array of values such that, if selectElem is set to one of these values, 
+     * @param selectOptions array of values such that, if selectElem is set to one of these values,
      * we show the given areaElem. if the value of the selectElem is not included in this array, we hide the areaElem.
      * @param areaElem
      */
@@ -776,7 +776,7 @@ var asnn2 = asnn2 || {};
       var areaObj = jQuery(areaElem);
 
       var displayArea = false;
-      
+
       var selectValue = selectObj.val();
       if (selectOptions) {
         for (index in selectOptions) {
@@ -786,14 +786,14 @@ var asnn2 = asnn2 || {};
           }
         }
       }
-      
+
       if (displayArea) {
         areaObj.show();
       } else {
         areaObj.hide();
       }
     }
-    
+
     /**
      * Display a special warning to indicate that the assignment is marked as graded but no item selected
      */
@@ -806,7 +806,7 @@ var asnn2 = asnn2 || {};
             // we need to see if a gradebook item was selected
             var gbItemSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']");
             var selectedItem = gbItemSelect.val();
-            
+
             if (!selectedItem || selectedItem === "0") {
                 // display the error indicator
                 gradingSection.addClass("messageConfirmation");
@@ -823,7 +823,7 @@ var asnn2 = asnn2 || {};
             gradingOptions.removeClass("messageContentPadding");
         }
     };
-    
+
     asnn2.modelAnswerIntegrity = function(checkTrigger) {
         var require_submissions = jQuery("input[name='page-replace\:\:require_submissions']").get(0).checked;
         var due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0).checked;
@@ -831,23 +831,23 @@ var asnn2 = asnn2 || {};
         var modelAnswerEnabled = jQuery("input[name='page-replace\:\:modelAnswerEnabled']").get(0).checked;
         var madr = jQuery("select[name='page-replace\:\:modelAnswerDisplayRule-selection']");
 
-        if (!asnn2.modelDispSubOpts) {                          
-            asnn2.modelDispSubOpts = {}                         
-            for (var i = 0; i < 6; i++) {                   
+        if (!asnn2.modelDispSubOpts) {
+            asnn2.modelDispSubOpts = {}
+            for (var i = 0; i < 6; i++) {
                 asnn2.modelDispSubOpts[i] = madr.find("option[value='"+i+"']").clone();
             }
         }
 
         // grab the current value of the dropdown before we remove the options
         var madrVal = madr.val();
-        
-        // remove all options from the dropdown before we repopulate it
-        madr.children().remove();                               
 
-        var addMadrOptions = function() {                       
-            for (var i = 0; i < arguments.length; i++) {        
+        // remove all options from the dropdown before we repopulate it
+        madr.children().remove();
+
+        var addMadrOptions = function() {
+            for (var i = 0; i < arguments.length; i++) {
                 var newopt = asnn2.modelDispSubOpts[arguments[i]].clone();
-                madr.append(newopt);                    
+                madr.append(newopt);
             }
         }
 
@@ -861,21 +861,21 @@ var asnn2 = asnn2 || {};
             addMadrOptions(0,1,2,3);
         }
         else if (!require_submissions && due_date && !accept_date) {
-            //alert("D"); 
-            addMadrOptions(0,1,4);            
+            //alert("D");
+            addMadrOptions(0,1,4);
         }
         else if (!require_submissions && !due_date && accept_date) {
             //alert("Null A"); same as Null set because of the way you get here.
             addMadrOptions(0,1);
-        }       
+        }
         else if (require_submissions && due_date && !accept_date) {
             //alert("RD");
             addMadrOptions(0,1,2,3,4);
         }
         else if (require_submissions && !due_date && accept_date) {
-            //alert("RA"); 
+            //alert("RA");
             addMadrOptions(0,1,2,3,5);
-        }       
+        }
         else if (!require_submissions && due_date && accept_date) {
             //alert("NULL DA"); same as D
             addMadrOptions(0,1,4);
@@ -966,7 +966,7 @@ var asnn2 = asnn2 || {};
             }
         });
     };
-    
+
     /**
      * @param toggleElement the toggle element that contains the image to swap
      * @param submissionId the submissionId to mark read
@@ -988,7 +988,7 @@ var asnn2 = asnn2 || {};
             }
         });
     };
-    
+
 
     /**
      * Used to generate the confirmation dialog for different choices on the
@@ -996,7 +996,7 @@ var asnn2 = asnn2 || {};
      * @param the form button that was clicked
      * @param dialogSelector jQuery selector for identifying the correct dialog to show
      * @param requireHonorPledge true if the honor pledge needs to be check before proceeding
-     * 
+     *
      */
     asnn2.studentActionConfirm = function(buttonform, dialogSelector, requireHonorPledge) {
         // first, let's make sure the user has checked the honor pledge, if needed.
@@ -1036,7 +1036,7 @@ var asnn2 = asnn2 || {};
         asnn2util.openDialog(confirmDialog);
         return false;
     };
-    
+
     /**
      * Used to generate the confirmation dialog for when a user removes an attachment
      */
@@ -1072,7 +1072,7 @@ var asnn2 = asnn2 || {};
         if (!valid) {
           return false;
         }
-      
+
         // display the confirmation dialog
         confirmDialog = jQuery('#edit-assign-confirm-dialog');
 
@@ -1183,7 +1183,7 @@ var asnn2 = asnn2 || {};
                 },
                   failure: function() {
                   // TODO We need to handle this
-                  } 
+                  }
                 });
             }
         });
@@ -1195,7 +1195,7 @@ var asnn2 = asnn2 || {};
         asnn2util.openDialog(confirmDialog);
         return false;
     };
-    
+
 })(jQuery, asnn2);
 
 // This namespace is for the Assignment Authoring and Editing Screen
@@ -1210,7 +1210,7 @@ var asnn2editpage = asnn2editpage || {};
         acceptBeforeDueMsg = jQuery("#page-replace\\:\\:assignment_accept_before_due");
         checkAgainstMsg = jQuery("#page-replace\\:\\:assignment_check_against");
         checkAgainstMsg2 = jQuery("#page-replace\\:\\:assignment_check_against2");
-        
+
         /*titleMsg.hide();
             nogbMsg.hide();
             dueBeforeOpenMsg.hide();
@@ -1274,7 +1274,7 @@ var asnn2editpage = asnn2editpage || {};
                 }
             }
         }
-        
+
         // validate the turnitin options ASNN-516
         var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
         if (useTiiOption && useTiiOption.checked) {
@@ -1298,7 +1298,7 @@ var asnn2editpage = asnn2editpage || {};
 
         return true;
     };
-    
+
     asnn2editpage.tii_dueDateOptions = function() {
       var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
       if (tii_content) {
@@ -1306,7 +1306,7 @@ var asnn2editpage = asnn2editpage || {};
         var require_due_date = jQuery("input[name='page-replace\:\:require_due_date']").get(0);
         var no_due_date_warning = jQuery("#page-replace\\:\\:gen_reports_no_due_date");
         var gen_report_on_due_date = jQuery("input[type='radio'][id='page-replace\:\:gen_report_on_due_date']");
-        
+
         if (require_due_date && require_due_date.checked) {
           // there is a due date, so we enable the due date radio and hide the warning
           no_due_date_warning.hide();
@@ -1318,10 +1318,10 @@ var asnn2editpage = asnn2editpage || {};
           var gen_report_immediately = jQuery("input[type='radio'][id='page-replace\:\:gen_report_immediately']");
           gen_report_immediately.attr("checked", "checked");
         }
-        
+
       }
     };
-    
+
     asnn2editpage.tii_attachWarning = function() {
         var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
         if (tii_content) {
@@ -1330,18 +1330,37 @@ var asnn2editpage = asnn2editpage || {};
             var attach_warning = jQuery("#page-replace\\:\\:tii_attach_warning");
             if (useTiiOption && useTiiOption.checked) {
                 // check to see if assignment is set to accept text & attachments
-                var submission_method = jQuery("select[name='page-replace\:\:submission_type-selection']");   
+                var submission_method = jQuery("select[name='page-replace\:\:submission_type-selection']");
                 if (submission_method.val() === '2') {
                     attach_warning.show();
                 } else {
                     attach_warning.hide();
-                } 
+                }
             } else {
                 attach_warning.hide();
             }
         }
     };
-    
+
+    asnn2editpage.tii_eraterWarning = function() {
+        var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+        if (tii_content) {
+            // check to see if tii is enabled
+            var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+
+            var eraterCheckbox = jQuery("input[name='page-replace\:\:erater_checkbox']").get(0);
+
+            var eraterWarning = jQuery("#page-replace\\:\\:tii_erater_warning");
+            if (useTiiOption && useTiiOption.checked) {
+                if (eraterCheckbox && eraterCheckbox.checked) {
+                    eraterWarning.show();
+                } else {
+                    eraterWarning.hide();
+                }
+            }
+        }
+    };
+
 })(jQuery, asnn2editpage);
 
 var asnn2listpage = asnn2listpage || {};

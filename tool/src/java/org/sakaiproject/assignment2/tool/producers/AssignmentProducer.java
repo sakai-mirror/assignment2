@@ -92,9 +92,9 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.Placement;
 
 /**
- * Paints the Assignment2 Page used by Instructors to create and edit 
+ * Paints the Assignment2 Page used by Instructors to create and edit
  * assignments.
- * 
+ *
  * @author sgithens
  *
  */
@@ -151,7 +151,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         /**
          * We are starting our own flow here if there isn't one so we can deep
-         * link into this for creating new assignments. See FlowStateManager 
+         * link into this for creating new assignments. See FlowStateManager
          * from RSF for more info.
          */
         if (params.flowtoken == null) {
@@ -182,7 +182,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
 
         //Breadcrumbs
-        UIInternalLink.make(tofill, "breadcrumb", 
+        UIInternalLink.make(tofill, "breadcrumb",
                 messageLocator.getMessage("assignment2.list.heading"),
                 new SimpleViewParameters(ListProducer.VIEW_ID));
         if (params.duplicatedAssignmentId != null) {
@@ -202,7 +202,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             UIMessage.make(tofill, "page-title", "assignment2.assignment_add.title");
         }
 
-        UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions", 
+        UIVerbatim.make(tofill, "instructions", messageLocator.getMessage("assignment2.assignment_add.instructions",
                 new Object[]{ reqStar }));
 
         // DEBUGGING
@@ -218,7 +218,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         // DEBUGGING
 
-        // Is there ever a situation where we should use the Assignment2. OTP 
+        // Is there ever a situation where we should use the Assignment2. OTP
         // on this page?
         //String assignment2OTP = "Assignment2.";
         String assignment2OTP = "AssignmentAuthoringFlowBean.";
@@ -253,7 +253,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         {
             gbErrorMsg = UIMessage.make(tofill, "assignment_graded_no_gb_item", "assignment2.assignment_graded_no_gb_item");
         }
-        
+
         // if this is an "edit" scenario, we need to display a warning if the
         // assignment is graded but doesn't have an assoc gb item
         if (assignment.isGraded()) {
@@ -346,7 +346,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             number_submissions_values[i + 1] = Integer.valueOf(i+1).toString();
             number_submissions_options[i + 1] = Integer.valueOf(i+1).toString();
         }
-        UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options, 
+        UISelect.make(form, "number_submissions", number_submissions_values, number_submissions_options,
                 assignment2OTP + ".numSubmissionsAllowed", current_num_submissions.toString());
 
 
@@ -387,12 +387,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIBoundBoolean.make(form, "honor_pledge", assignment2OTP + ".honorPledge");
 
         //Attachments
-        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs", 
+        UIInputMany attachmentInput = UIInputMany.make(form, "attachment_list:", assignment2OTP + ".assignmentAttachmentRefs",
                 assignment.getAssignmentAttachmentRefs());
         attachmentInput.mustapply = true;
-        
+
         String elementId = "reg_attachments";
-        
+
         attachmentInputEvolver.evolveAttachment(attachmentInput, elementId);
 
         UIOutput noAttach = UIOutput.make(form, "no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
@@ -401,7 +401,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
 
         UIInternalLink addAttachLink = UIInternalLink.make(form, "add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
-                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE,
                         Boolean.TRUE, 500, 700, OTPKey));
         addAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(elementId)));
 
@@ -412,13 +412,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         /********
          *Grading
-         */  
+         */
         boolean userMayAddGbItems = externalGradebookLogic.isCurrentUserAbleToEdit(currentContextId);
         boolean userMayViewGbItems = userMayAddGbItems || externalGradebookLogic.isCurrentUserAbleToGrade(currentContextId);
-        
+
         // if a user does not have permission to view gb items but they are allowed to add/edit
         // assignments here, we need to modify the grading section
-        
+
         if (!userMayViewGbItems) {
             // if it is a new assignment or an existing ungraded item, we will
             // mark it as ungraded. if it is already marked as graded, the user
@@ -429,9 +429,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             } else {
                 messageToDisplay = "assignment2.assignment_add.assignment_ungraded";
             }
-            
+
             UIMessage.make(tofill, "cannot_edit_grading", messageToDisplay);
-            
+
         } else {
             UIOutput.make(tofill, "grade_settings");
             //Get Gradebook Items
@@ -442,11 +442,11 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             gradebook_item_values[0] = "0";
             gradebook_item_labels[0] = messageLocator.getMessage("assignment2.assignment_add.gradebook_item_select");
             String js_gradebook_items_data = "var gradebook_items_date = {\n";
-            
+
 
             // use a date which is related to the current users locale
             DateFormat gbDf = externalLogic.getDateFormat(null, null, locale, false);
-            
+
             js_gradebook_items_data += "0: \"" + messageLocator.getMessage("assignment2.assignment_add.gradebook_item_not_selected") + "\"\n";
             for (int i=1; i <= gradebook_items.size(); i++) {
                 //Fill out select options
@@ -462,7 +462,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 }
             }
             js_gradebook_items_data += "}";
-            UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradebookItemId"); 
+            UISelect.make(form, "gradebook_item",gradebook_item_values, gradebook_item_labels, assignment2OTP + ".gradebookItemId");
 
             //Radio Buttons for Grading
             String [] grading_values = new String[] {
@@ -472,7 +472,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                     "assignment2.assignment_add.assignment_graded",
                     "assignment2.assignment_add.assignment_ungraded"
             };
-            UISelect grading_select = UISelect.make(form, "graded-radios", 
+            UISelect grading_select = UISelect.make(form, "graded-radios",
                     grading_values, grading_labels, assignment2OTP + ".graded").setMessageKeys();
             String grading_select_id = grading_select.getFullID();
             UISelectChoice.make(form, "select_graded", grading_select_id, 0);
@@ -495,7 +495,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 // this link will be hidden and used as a base for adding the user-entered title as a param via javascript
                 String urlWithoutNameParam = externalLogic.getUrlForGradebookItemHelper(null, FinishedHelperProducer.VIEWID, currentContextId);
                 UILink.make(form, "gradebook_url_without_name", urlWithoutNameParam);
-                
+
                 // the text of the gb warning is different if the user cannot add gb items
                 UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning");
             } else {
@@ -503,33 +503,33 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             }
 
             if (assignment.getGradebookItemId() != null) {
-                assignment.setGradebookPointsPossible((externalGradebookLogic.getGradebookItemById(assignment.getContextId(), 
+                assignment.setGradebookPointsPossible((externalGradebookLogic.getGradebookItemById(assignment.getContextId(),
                                                                                                    assignment.getGradebookItemId()).getPointsPossible()).toString());
             }
-            
+
             UIOutput.make(form, "gradebook_points_label", messageLocator.getMessage("assignment2.details.gradebook.points_possible"));
 
             UIInput.make(form, "gradebook_points", assignment2OTP + ".gradebookPointsPossible");
-            
+
             UIVerbatim.make(tofill, "contextId", "asnn2.contextId = \"" + externalLogic.getCurrentContextId() + "\";");
-            
+
             // Error indicator if assignment graded but no gb item selected
             UIOutput gradingErrorIndicator = UIOutput.make(tofill, "gradingSelectionError");
             String errorInfo = messageLocator.getMessage("assignment2.assignment_graded_no_gb_item");
             gradingErrorIndicator.decorate(new UIAlternativeTextDecorator(errorInfo));
             gradingErrorIndicator.decorate(new UITooltipDecorator(errorInfo));
         }
-        
+
         /******
          * Access
          */
-        
+
         /**
          * If a user has add or edit permission but not all groups, they may only create/edit
          * assignments that are restricted to his/her groups. The assignment cannot be
          * for all students.
          */
-        
+
         boolean userHasAllGroups = permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId);
         UIMessage.make(form, "access_legend", "assignment2.assignment_add.access_legend");
 
@@ -557,7 +557,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         } else {
             UIOutput.make(tofill, "access_groups_only");
             form.addParameter(new UIELBinding("AssignmentAuthoringOptionsFlowBean.restrictedToGroups",true));
-            
+
         }
 
         /**
@@ -568,13 +568,13 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
          */
         List<Group> groups = new ArrayList<Group>();
         List<String> groupIdList = new ArrayList<String>();
-        
+
         if (permissionLogic.isUserAllowedForAllGroups(currUserId, currentContextId)) {
             groups.addAll(externalLogic.getSiteGroups(currentContextId));
         } else {
             groups.addAll(externalLogic.getUserMemberships(currUserId, currentContextId));
         }
-        
+
         Collections.sort(groups, new Comparator<Group>() {
             public int compare(Group o1, Group o2) {
                 String title1 = o1.getTitle() == null? "" : o1.getTitle();
@@ -582,7 +582,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 return title1.compareTo(title2);
             };
         });
-        
+
         if (groups.size() > 0) {
             UIOutput.make(form, "access-selection-area");
             List<String> currentGroups = assignment.getListOfAssociatedGroupReferences();
@@ -590,8 +590,8 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 groupIdList.add(g.getId());
                 //Update OTP
                 UIBranchContainer groups_row = UIBranchContainer.make(form, "groups_row:");
-                UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",  
-                        "AssignmentAuthoringOptionsFlowBean.selectedIds." + g.getId(), 
+                UIBoundBoolean checkbox = UIBoundBoolean.make(groups_row, "group_check",
+                        "AssignmentAuthoringOptionsFlowBean.selectedIds." + g.getId(),
                         (currentGroups == null || !currentGroups.contains(g.getId()) ? Boolean.FALSE : Boolean.TRUE));
                 UIOutput.make(groups_row, "group_label", g.getTitle());
                 UIOutput.make(groups_row, "group_description", g.getDescription());
@@ -617,7 +617,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         //Notifications
         UIBoundBoolean.make(form, "sub_notif", assignment2OTP + ".sendSubmissionNotifications");
-        
+
         // Supplemental Information - Model Answer
         UIBoundBoolean.make(form, "modelAnswerEnabled", assignment2OTP + ".modelAnswerEnabled");
         UIOutput model_container = UIOutput.make(form, "model_answer_container");
@@ -629,7 +629,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UIInput modelAnswerText = UIInput.make(form, "modelAnswerText:", assignment2OTP + ".modelAnswerText");
         modelAnswerText.mustapply = Boolean.FALSE;
         richTextEvolver.evolveTextInput(modelAnswerText);
-        
+
         //Model Answer Types
         String[] model_type_values = new String[] {
                 String.valueOf(AssignmentConstants.MODEL_NEVER),
@@ -649,18 +649,18 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         };
         UISelect.make(form, "modelAnswerDisplayRule", model_type_values,
                 model_type_labels, assignment2OTP + ".modelAnswerDisplayRule").setMessageKeys();
-        
+
         UIMessage.make(tofill, "model_warning_submission", "assignment2.assignment_add.model_answer_warning_submission");
         UIMessage.make(tofill, "model_warning_due_date", "assignment2.assignment_add.model_answer_warning_due_date");
         UIMessage.make(tofill, "model_warning_accept_until", "assignment2.assignment_add.model_answer_warning_accept_until");
-        
+
         // Model Answer Attachments
-        UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAnswerAttachmentRefs", 
+        UIInputMany modelAttachmentInput = UIInputMany.make(form, "model_attachment_list:", assignment2OTP + ".modelAnswerAttachmentRefs",
                 assignment.getModelAnswerAttachmentRefs());
         modelAttachmentInput.mustapply = true;
-        
+
         String modelElementId = "model_attachment";
-        
+
         attachmentInputEvolver.evolveAttachment(modelAttachmentInput, modelElementId);
 
         UIOutput modelNoAttach = UIOutput.make(form, "model_no_attachments_yet", messageLocator.getMessage("assignment2.assignment_add.no_attachments"));
@@ -669,7 +669,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
 
         UIInternalLink modelAddAttachLink = UIInternalLink.make(form, "model_add_attachments", UIMessage.make("assignment2.assignment_add.add_attachments"),
-                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE, 
+                new FilePickerHelperViewParams(AddAttachmentHelperProducer.VIEWID, Boolean.TRUE,
                         Boolean.TRUE, 500, 700, OTPKey));
         modelAddAttachLink.decorate(new UIFreeAttributeDecorator("onclick", attachmentInputEvolver.getOnclickMarkupForAddAttachmentEvent(modelElementId)));
 
@@ -701,7 +701,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
     /**
      * Renders the Turnitin Fieldset
-     * 
+     *
      * @param tofill
      * @param assignment2OTP
      * @param assignment
@@ -712,7 +712,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         Map props = assignment.getProperties();
 
         UIOutput.make(tofill, "tii_content_review_area");
-        
+
         // If a Turnitin assignment has already been created for this assignment,
         // then we except there to be some sort of return code from the call
         // that would have been made to populate the properties.
@@ -733,7 +733,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         UIOutput.make(tofill, "tii_enabled_area");
         UIOutput.make(tofill, "tii_properties");
-        
+
         // add the supported formats link, if specified in sakai.properties
         String supportedFormatsUrl = localTurnitinLogic.getSupportedFormatsUrl();
         if (supportedFormatsUrl != null) {
@@ -772,12 +772,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                     submitToRepoValues[i] = option;
                     submitToRepoLabels[i] = messageLocator.getMessage("assignment2.turnitin.asnnedit.option." + option);
 
-                    if (institutionalRepoName != null && 
+                    if (institutionalRepoName != null &&
                             AssignmentConstants.TII_VALUE_INSTITUTION_REPO.equals(option)) {
                         submitToRepoLabels[i] = institutionalRepoName;
                     }
                 }
-                
+
                 // if this property hasn't been set yet, set the first one in the list as selected
                 String selectedValue;
                 if (assignment.getProperties().containsKey("submit_papers_to")) {
@@ -789,7 +789,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
                 UISelect repo_select = UISelect.make(form, "submit_to_repo_radios", submitToRepoValues,
                         submitToRepoLabels, assignment2OTP + ".properties.submit_papers_to", selectedValue);
-                
+
                 String repo_select_id = repo_select.getFullID();
                 for (int i=0; i < repoOptions.size(); i++) {
                     UIBranchContainer repo_option = UIBranchContainer.make(form, "submit_papers_to:");
@@ -798,7 +798,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
                 }
             }
         }
-        
+
         // When to generate reports
         // although the service allows for a value of "1" --> Generate report immediately but overwrite until due date,
         // this doesn't make sense for assignment2. We limit the UI to 0 - Immediately
@@ -806,12 +806,12 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         String[] reportGenSpeedValues = new String[] {
                 "0", "2"
         };
-        
+
         String[] reportGenSpeedLabels = new String[] {
                 "assignment2.turnitin.asnnedit.generate_originality_reports.immediate",
                 "assignment2.turnitin.asnnedit.generate_originality_reports.on_due_date"
         };
-        
+
        // if this property hasn't been set yet, set the first one in the list as selected
         String selectedValue;
         if (assignment.getProperties().containsKey("report_gen_speed")) {
@@ -819,50 +819,110 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         } else {
             selectedValue = reportGenSpeedValues[0];
         }
-        
+
         UISelect gen_reports_select = UISelect.make(form, "generate_report_radios", reportGenSpeedValues,
                 reportGenSpeedLabels, assignment2OTP + ".properties.report_gen_speed", selectedValue).setMessageKeys();
-        
+
         String gen_reports_select_id = gen_reports_select.getFullID();
-        
+
         UISelectChoice.make(form, "gen_report_immediately", gen_reports_select_id, 0);
         UISelectLabel.make(form, "gen_report_immediately_label", gen_reports_select_id, 0);
 
         UISelectChoice.make(form, "gen_report_on_due_date", gen_reports_select_id, 1);
         UISelectLabel.make(form, "gen_report_on_due_date_label", gen_reports_select_id, 1);
-        
-        UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
+
+        UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox",
                 assignment2OTP + ".properties.s_view_report");
-        
-        
+
+
         // set the checkboxes to default to true
-        boolean checkPaperRepo = assignment.getProperties().containsKey("s_paper_check") ? 
+        boolean checkPaperRepo = assignment.getProperties().containsKey("s_paper_check") ?
                 (Boolean)assignment.getProperties().get("s_paper_check") : true;
-        boolean checkInternetRepo = assignment.getProperties().containsKey("internet_check") ? 
+        boolean checkInternetRepo = assignment.getProperties().containsKey("internet_check") ?
                 (Boolean)assignment.getProperties().get("internet_check") : true;
-        boolean checkJournalRepo = assignment.getProperties().containsKey("journal_check") ? 
+        boolean checkJournalRepo = assignment.getProperties().containsKey("journal_check") ?
                 (Boolean)assignment.getProperties().get("journal_check") : true;
-        boolean checkInstRepo = assignment.getProperties().containsKey("institution_check") ? 
+        boolean checkInstRepo = assignment.getProperties().containsKey("institution_check") ?
                 (Boolean)assignment.getProperties().get("institution_check") : true;
-        
+
         UIBoundBoolean.make(form, "check_against_student_repo_checkbox",
                 assignment2OTP + ".properties.s_paper_check", checkPaperRepo);
-        
+
         UIBoundBoolean.make(form, "check_against_internet_repo_checkbox",
                 assignment2OTP + ".properties.internet_check", checkInternetRepo);
-        
-        UIBoundBoolean.make(form, "check_against_journal_repo_checkbox", 
+
+        UIBoundBoolean.make(form, "check_against_journal_repo_checkbox",
                 assignment2OTP + ".properties.journal_check", checkJournalRepo);
-        
+
         UIBoundBoolean.make(form, "check_against_institution_repo_checkbox",
                 assignment2OTP + ".properties.institution_check", checkInstRepo);
-        
+
         String instRepoText;
         if (institutionalRepoName == null) {
             instRepoText = messageLocator.getMessage("assignment2.turnitin.asnnedit.institution_repository");
         } else {
             instRepoText = institutionalRepoName;
         }
+//erater
+        boolean erater = assignment.getProperties().containsKey("erater") ?
+                (Boolean)assignment.getProperties().get("erater") : false;
+
+        String ets_handbook="2"; //default to highschool
+        try{
+            if(assignment.getProperties().containsKey("ets_handbook")){
+                ets_handbook = assignment.getProperties().get("ets_handbook").toString();
+            }
+        }catch(Exception e){
+        }
+
+        String ets_dictionary="en"; //default to 'both'
+        try{
+            if(assignment.getProperties().containsKey("ets_dictionary")){
+                ets_dictionary = assignment.getProperties().get("ets_dictionary").toString();
+            }
+        }catch(Exception e){
+        }
+        boolean ets_spelling = assignment.getProperties().containsKey("ets_spelling") ?
+                (Boolean)assignment.getProperties().get("ets_spelling") : true;
+        boolean ets_style = assignment.getProperties().containsKey("ets_style") ?
+                (Boolean)assignment.getProperties().get("ets_style") : true;
+        boolean ets_grammar = assignment.getProperties().containsKey("ets_grammar") ?
+                (Boolean)assignment.getProperties().get("ets_grammar") : true;
+        boolean ets_mechanics = assignment.getProperties().containsKey("ets_mechanics") ?
+                (Boolean)assignment.getProperties().get("ets_mechanics") : true;
+        boolean ets_usage = assignment.getProperties().containsKey("ets_usage") ?
+                (Boolean)assignment.getProperties().get("ets_usage") : true;
+
+        UIBoundBoolean.make(form, "erater_checkbox",assignment2OTP + ".properties.erater", erater);
+
+        String[] ets_handbook_options = {
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.advanced"),
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.highschool"),
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.middleschool"),
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.elementary"),
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.englishlearners")
+        };
+        String[] ets_handbook_values = {"1","2","3","4","5"};
+
+        UISelect.make(form, "ets_handbook", ets_handbook_values, ets_handbook_options,
+                assignment2OTP + ".properties.ets_handbook",ets_handbook);
+
+        String[] ets_dictionary_options = {
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.dictionary.us"),
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.dictionary.uk"),
+            messageLocator.getMessage("assignment2.turnitin.assnedit.erater.dictionary.both")
+        };
+        String[] ets_dictionary_values = {"en_US","en_GB","en"};
+
+        UISelect.make(form, "ets_dictionary", ets_dictionary_values, ets_dictionary_options,
+                assignment2OTP + ".properties.ets_dictionary",ets_dictionary);
+
+        UIOutput.make(tofill, "erater_enabled");
+        UIBoundBoolean.make(form, "ets_spelling_checkbox",assignment2OTP + ".properties.ets_spelling", ets_spelling);
+        UIBoundBoolean.make(form, "ets_style_checkbox",assignment2OTP + ".properties.ets_style", ets_style);
+        UIBoundBoolean.make(form, "ets_grammar_checkbox",assignment2OTP + ".properties.ets_grammar", ets_grammar);
+        UIBoundBoolean.make(form, "ets_mechanics_checkbox",assignment2OTP + ".properties.ets_mechanics", ets_mechanics);
+        UIBoundBoolean.make(form, "ets_usage_checkbox",assignment2OTP + ".properties.ets_usage", ets_usage);
         
         UIOutput.make(tofill, "check_institution_repo_text", instRepoText);
     }
@@ -924,11 +984,11 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             ExternalContentReviewLogic externalContentReviewLogic) {
         this.externalContentReviewLogic = externalContentReviewLogic;
     }
-    
+
     public void setLocalTurnitinLogic(LocalTurnitinLogic localTurnitinLogic) {
         this.localTurnitinLogic = localTurnitinLogic;
     }
-    
+
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
     }
