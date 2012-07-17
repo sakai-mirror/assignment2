@@ -379,7 +379,17 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             // never ever stops us from loading an assignment.
             log.error(e);
         }
-
+        try{
+            boolean useGradeMark = serverConfigurationService.getBoolean("turnitin.useGrademark", true);
+             //Check Grade
+            if(useGradeMark){
+                contentReview.getReviewScore(assign.getContextId()+
+                        "#"+assign.getContentReviewRef()+
+                        "#"+assign.getTitle());
+            }
+        }catch(Exception e){
+                log.error(e);
+        }
         if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_RCODE)) {
             assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE,
                     asnnmap.get(AssignmentConstants.TII_RETCODE_RCODE));
