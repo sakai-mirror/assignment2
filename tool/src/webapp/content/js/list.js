@@ -360,6 +360,7 @@ var editFields = jQuery("#asnn-list .asnn-title-cell");
 	              var asnnid = $(".asnnid", viewNode.parentNode).text();
 	              var existsInGradebook = "false";
 
+		      if (oldValue != newValue) {
                   jQuery.ajax({
                       type: "GET",
                       async: false,
@@ -450,6 +451,7 @@ var editFields = jQuery("#asnn-list .asnn-title-cell");
                       that.finish();
                       return false;
                   } // end else
+		      }
               } // end onFinishEdit 
           } // end listeners 
 

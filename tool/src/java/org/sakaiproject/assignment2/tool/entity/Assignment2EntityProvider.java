@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.DeepUtils;
 import org.sakaiproject.assignment2.exception.AssignmentNotFoundException;
+import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
@@ -538,8 +539,18 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         }
 
         String title = (String) params.get("title");
+        String existingGbTitle = null;
         
-        togo = String.valueOf(gradebookLogic.isAssignmentNameDefinedinGradebook(as2.getContextId(), title));
+        try {
+            existingGbTitle = gradebookLogic.getGradebookItemById(as2.getContextId(), as2.getGradebookItemId()).getTitle();
+        } catch (GradebookItemNotFoundException ginfe) {
+            if (log.isDebugEnabled()) log.debug("No gb item exists with id " + as2.getGradebookItemId() + " checking isLinkedAssignmentNameInGradebook");
+        }
+
+        // Make sure the title to change is different than the existing title
+        if (title != null && !title.equals(existingGbTitle)) {
+            togo = String.valueOf(gradebookLogic.isAssignmentNameDefinedinGradebook(as2.getContextId(), title));
+        }
 
         return togo;
     }
