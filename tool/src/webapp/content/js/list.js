@@ -82,19 +82,47 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
       }
   } 
   
+  jQuery.ajax({
+      type: "GET",
+      async: false,
+      url: "/direct/assignment2/getMessageBundleText",
+      data: { 
+          key: "assignment2.list.view_details"
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+      },
+      success: function (data) {
+          viewDetailsLink = data;
+      }
+  });
+  
   // render the details link
   var canDetails = true; // for now this is always true
   if (canDetails) {
     togo.detailslink = {
       target: '/portal/tool/'+sakai.curPlacement+'/view-assignment/'+obj.id+'?fromView=list',
-      linktext: "View Details"    
+      linktext: viewDetailsLink    
     };
   }
+  
+  jQuery.ajax({
+      type: "GET",
+      async: false,
+      url: "/direct/assignment2/getMessageBundleText",
+      data: { 
+          key: "assignment2.list.edit"
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+      },
+      success: function (data) {
+          editLink = data;
+      }
+  });
   
   if (canEdit) {
     togo.editlink = {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
-      linktext: "Edit"
+      linktext: editLink
     };
     
     if (canDetails) {
@@ -102,21 +130,49 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
     }
   }
   
+  jQuery.ajax({
+      type: "GET",
+      async: false,
+      url: "/direct/assignment2/getMessageBundleText",
+      data: { 
+          key: "assignment2.list.duplicate"
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+      },
+      success: function (data) {
+          duplicateLink = data;
+      }
+  });
+  
   if (canAdd) {
     togo.duplink = {
       target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
-      linktext: "Duplicate"
+      linktext: duplicateLink
     };
     if (canEdit || canDetails) {
         togo.sep1 = true;
     }
   }
   
+  jQuery.ajax({
+      type: "GET",
+      async: false,
+      url: "/direct/assignment2/getMessageBundleText",
+      data: { 
+          key: "assignment2.list.matrix_links"
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+      },
+      success: function (data) {
+          matrixLink = data;
+      }
+  });
+  
   if (canEditMatrix) {
     togo.matrixlink = {
       //target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
       target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?helperId=osp.matrix.link&keys=activityRef&values='+obj.ref,
-      linktext: "Create/Edit Matrix Links"
+      linktext: matrixLink
     };
     
     if (canDetails || canEdit || canAdd) {
@@ -126,19 +182,49 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
     // this is the editable title
     togo.titleedit = obj.title;
   }
+  
   if (obj.graded === true && canGrade) {
+      
+      jQuery.ajax({
+          type: "GET",
+          async: false,
+          url: "/direct/assignment2/getMessageBundleText",
+          data: { 
+              key: "assignment2.list.grade"
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+          },
+          success: function (data) {
+              gradeLink = data;
+          }
+      });
+      
       togo.gradelink = {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-          linktext: "Grade"
+          linktext: gradeLink
       };
       if (canDetails || canEdit || canAdd || canEditMatrix) {
         togo.sep3 = true;
       }
   }
   else if (obj.requiresSubmission === true && canGrade) {
+      jQuery.ajax({
+          type: "GET",
+          async: false,
+          url: "/direct/assignment2/getMessageBundleText",
+          data: { 
+              key: "assignment2.list.provide_feedback"
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+          },
+          success: function (data) {
+              feedbackLink = data;
+          }
+      });
+      
       togo.gradelink = {
           target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
-          linktext: "Provide Feedback"
+          linktext: feedbackLink
       };
       if (canDetails || canEdit || canAdd || canEditMatrix) {
           togo.sep3 = true;
@@ -343,6 +429,20 @@ asnn2.setupInlineEdits = function () {
       editableTitle.show();
     }
   });
+  
+  jQuery.ajax({
+      type: "GET",
+      async: false,
+      url: "/direct/assignment2/getMessageBundleText",
+      data: { 
+          key: "assignment2.list.rename.tool_tip"
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+      },
+      success: function (data) {
+          renameToolTip = data;
+      }
+  });
 
 
 var editFields = jQuery("#asnn-list .asnn-title-cell");
@@ -354,7 +454,7 @@ var editFields = jQuery("#asnn-list .asnn-title-cell");
           },
 	      useTooltip: true,
 	      tooltipDelay : 500,
-	      tooltipText : "Click to edit assignment title",
+	      tooltipText : renameToolTip,
 	      listeners: {
               onFinishEdit: function (newValue, oldValue, editNode, viewNode) {
 	              var asnnid = $(".asnnid", viewNode.parentNode).text();
