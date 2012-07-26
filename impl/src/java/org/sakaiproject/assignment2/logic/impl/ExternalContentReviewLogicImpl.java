@@ -464,7 +464,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             contentReview.createAssignment(assign.getContextId(), 
                     this.getTaskId(assign), opts);
         } catch (Exception e) {
-            throw new ContentReviewException("Unknown exception trying to save TII Exception", e);
+            log.warn("Exception saving Turnitin settings", e);
+            throw new ContentReviewException("An exception occurred attempting to save TII settings", e);
         }
     }
     
