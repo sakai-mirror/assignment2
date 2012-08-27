@@ -104,12 +104,10 @@ public class AssignmentActivityImpl implements TaggableActivity {
 		return site;
 	}
 
-	@Override
 	public String getActivityDetailUrlParams() {
 		return "";
 	}
 
-	@Override
 	public boolean getUseDecoration() {
 		return false;
 	}
