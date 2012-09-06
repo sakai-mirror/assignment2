@@ -805,6 +805,17 @@ public class Assignment2 {
         
         return acceptsAttachments;
     }
+    
+    /**
+     * Returns true if this assignment accepts inline submission.
+     *
+     * @return true if the assignment supports inline submissions, false otherwise
+     */
+    public boolean acceptsInlineText(){
+        return submissionType == AssignmentConstants.SUBMIT_INLINE_ONLY ||
+                submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH;
+    }
+    
 
     public boolean isModelAnswerEnabled() {
         return modelAnswerEnabled;
