@@ -91,6 +91,11 @@ public class StudentSubmissionBean {
             messages.addMessage(new TargettedMessage("assignment2.student-submit.error.honor_pledge_required",
                     new Object[] { assignment.getTitle() }, TargettedMessage.SEVERITY_ERROR));
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+      } else if ((assignment.acceptsAttachments() && asv.getSubmissionAttachSet().isEmpty()) &&
+              (assignment.acceptsInlineText() && asv.getSubmittedText().isEmpty())) {
+          messages.addMessage(new TargettedMessage("assignment2.student-submit.error.empty_submission",
+                  new Object[]{assignment.getTitle()}, TargettedMessage.SEVERITY_ERROR));
+          return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }else {
 
             submissionLogic.saveStudentSubmission(assignmentSubmission.getUserId(), assignment, false, 
