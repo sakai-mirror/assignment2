@@ -343,6 +343,31 @@ asnn2subview.initPager = function(numSubmissions, curPageSize, curOrderBy, curAs
     newModel.groupId = jQuery(this).val();
     asnn2subview.pager.model = newModel;
     asnn2subview.pager.events.onModelChange.fire(newModel);
+    
+    var downloadAllLink = jQuery("#download_all_span > a");
+    
+    if (downloadAllLink.length  == 1) {
+        var linkHref = downloadAllLink.attr('href');
+    	
+        var questionMarkIndex = linkHref.indexOf("?");
+    	
+        var newHref = "";
+    	
+        if (questionMarkIndex == -1) {
+            newHref = linkHref;
+        }
+        else {
+            newHref = linkHref.substring(0, questionMarkIndex);
+    	}
+    		
+        if (jQuery.trim(newModel.groupId) == "") {
+             downloadAllLink.attr('href', newHref);
+        }
+        else {
+            downloadAllLink.attr('href', newHref + "?filterGroupId=" + newModel.groupId);    			
+    	}
+    }
+
   });
 
   if (jQuery('#page-replace\\:\\:group_filter-selection').length === 0) {
