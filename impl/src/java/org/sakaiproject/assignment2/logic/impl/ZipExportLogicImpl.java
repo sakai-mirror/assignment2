@@ -89,6 +89,10 @@ public class ZipExportLogicImpl implements ZipExportLogic
      * @see org.sakaiproject.assignment2.tool.handlerhooks.ZipExporterI#getSubmissionsZip(java.io.OutputStream, java.lang.Long)
      */
     public void getSubmissionsZip(OutputStream outputStream, Long assignmentId)	{
+        getSubmissionsZip(outputStream, assignmentId, null);
+    }
+    
+    public void getSubmissionsZip(OutputStream outputStream, Long assignmentId, String filterGroupId)	{
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
         if (log.isDebugEnabled())
             log.debug(this + ": getSubmissionsZip reference=" + assignmentId);
@@ -98,7 +102,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         }
 
         List<AssignmentSubmission> submissions = assignmentSubmissionLogic
-        .getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId(), null);
+        .getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId(), filterGroupId);
 
         zipSubmissions(assignment, submissions, outputStream);
 

@@ -41,6 +41,24 @@ public interface ZipExportLogic
     void getSubmissionsZip(OutputStream outputStream, Long assignmentId);
 
     /**
+     * Zip up the submissions for the given assignment.  Will only include
+     * submissions that the current user is allowed to view or grade. 
+     * Each student has a folder that contains every submission version. Each version
+     * folder contains the submitted text and attachments. It also contains a
+     * "Feedback" folder.  If there are no submitted versions, the student's folder
+     * will only contain a "Feedback" folder for the instructor to provide feedback 
+     * without submission. The "Feedback" folder contains a file for feedback comments and
+     * a file for annotating the submitted text (if it exists).  If assignment is graded, includes a csv file containing 
+     * the grade information.  Only gradable students are include in the grades csv file.
+     * @param outputStream
+     * @param assignmentId
+     * @param filterGroupId
+     * @throws SecurityException if current user is not authorized to access
+     * the given assignment from a grading perspective
+     */
+    void getSubmissionsZip(OutputStream outputStream, Long assignmentId, String filterGroupId);
+
+    /**
      * 
      * @param folderName
      * @param pattern the Pattern for extracting the id compiled using {@link ZipExportLogic#FILE_NAME_REGEX}
