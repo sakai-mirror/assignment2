@@ -23,10 +23,21 @@ package org.sakaiproject.assignment2.tool.params;
 
 public class ZipViewParams extends AssignmentViewParams {
 
+	public String filterGroupId;
+	
+    public ZipViewParams(String viewID, Long assignmentId, String filterGroupId) {
+        super(viewID, assignmentId);
+    	this.filterGroupId = filterGroupId;
+    }
+
     public ZipViewParams(String viewID, Long assignmentId) {
         super(viewID, assignmentId);
+    	this.filterGroupId = null;
     }
 
     public ZipViewParams() {}
 
+    public String getParseSpec() {
+        return super.getParseSpec() + ",filterGroupId";
+    }
 }
