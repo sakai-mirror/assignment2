@@ -111,7 +111,7 @@ public class ZipHandlerHook implements HandlerHook
         response.setHeader("Content-disposition", "inline; filename="+ zipFolderName +".zip");
         response.setContentType("application/zip");
 
-        zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId);
+        zipExporter.getSubmissionsZip(resultsOutputStream, zvp.assignmentId, zvp.filterGroupId);
         
         if (resultsOutputStream != null) {
             try
