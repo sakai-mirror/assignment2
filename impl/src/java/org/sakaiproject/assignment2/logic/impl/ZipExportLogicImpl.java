@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -104,7 +106,7 @@ public class ZipExportLogicImpl implements ZipExportLogic
         List<AssignmentSubmission> submissions = assignmentSubmissionLogic
         .getViewableSubmissionsWithHistoryForAssignmentId(assignment.getId(), filterGroupId);
 
-        zipSubmissions(assignment, submissions, outputStream);
+        zipSubmissions(assignment, submissions, outputStream, filterGroupId);
 
     } // getSubmissionsZip
 
@@ -132,7 +134,13 @@ public class ZipExportLogicImpl implements ZipExportLogic
      * @param outputStream
      */
     protected void zipSubmissions(Assignment2 assignment,
-            List<AssignmentSubmission> submissionsWithHistory, OutputStream outputStream)
+            List<AssignmentSubmission> submissionsWithHistory, OutputStream outputStream) 
+    {
+        zipSubmissions(assignment, submissionsWithHistory, outputStream, null);
+    }
+    
+    protected void zipSubmissions(Assignment2 assignment,
+            List<AssignmentSubmission> submissionsWithHistory, OutputStream outputStream, String filterGroupId)
     {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to zipSubmissions");
@@ -221,6 +229,11 @@ public class ZipExportLogicImpl implements ZipExportLogic
                 // create the grades csv file if assign is graded
                 String gradesCsvFileName = null;
                 if (assignment.isGraded() && assignment.getGradebookItemId() != null) {
+                    
+                    if (filterGroupId != null) {
+                        userIdUserMap = usersOnlyAsMemberOfGroup(assignment, userIdUserMap, filterGroupId);
+                    }
+                    
                     String gradesCSVString = getGradesAsCSVString(currUserId, assignment, userIdUserMap);
 
                     if (gradesCSVString != null && gradesCSVString.length() > 0) {
@@ -281,6 +294,41 @@ public class ZipExportLogicImpl implements ZipExportLogic
         }
     }
 
+    /**
+     * Returns a new UserIdMap that has users that are only members of the group with filterGroupId
+     * @param userIdUserMap
+     * @param filterGroupId
+     */
+    private Map<String, User> usersOnlyAsMemberOfGroup(Assignment2 assignment, Map<String, User> userIdUserMap, String filterGroupId) {
+        if (userIdUserMap == null || filterGroupId == null) {
+            return userIdUserMap;
+        }
+        
+        Map<String, User> newUserIdUserMap = new HashMap<String, User>();
+        
+        Set<String> userIdKeySet = userIdUserMap.keySet();
+        List<String> userGroupMembershipList = null;
+        User user = null;
+        
+        for (String userId: userIdKeySet) {
+            user = userIdUserMap.get(userId);
+            
+            userGroupMembershipList = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
+            
+            if (userGroupMembershipList != null) {
+                for(String groupId: userGroupMembershipList) {
+                    if (filterGroupId.equals(groupId)) {
+                        newUserIdUserMap.put(userId, user);
+                        break;
+                    }
+                }
+            }
+            
+        }
+        
+        return newUserIdUserMap;
+    }
+    
     public String escapeZipEntry(String value, String replaceSpaces) {
         if (value != null) {
             if (replaceSpaces != null) {
