@@ -304,26 +304,24 @@ public class ZipExportLogicImpl implements ZipExportLogic
             return userIdUserMap;
         }
         
+        List<String> userMembershipList = externalLogic.getUsersInGroup(assignment.getContextId(), filterGroupId);
+        
+        if (userMembershipList == null) {
+            return userIdUserMap;
+        }
+        
         Map<String, User> newUserIdUserMap = new HashMap<String, User>();
         
         Set<String> userIdKeySet = userIdUserMap.keySet();
-        List<String> userGroupMembershipList = null;
+
         User user = null;
-        
+
         for (String userId: userIdKeySet) {
             user = userIdUserMap.get(userId);
             
-            userGroupMembershipList = externalLogic.getUserMembershipGroupIdList(userId, assignment.getContextId());
-            
-            if (userGroupMembershipList != null) {
-                for(String groupId: userGroupMembershipList) {
-                    if (filterGroupId.equals(groupId)) {
-                        newUserIdUserMap.put(userId, user);
-                        break;
-                    }
-                }
+            if (userMembershipList.contains(userId)) {
+                newUserIdUserMap.put(userId, user);
             }
-            
         }
         
         return newUserIdUserMap;
