@@ -409,7 +409,8 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
 
         return deep.deepClone(asnn, 3, new String[] {"submissionsSet",
                 "ListOfAssociatedGroupReferences","assignmentGroupSet",
-                "attachmentSet","assignmentAttachmentRefs"});
+                "attachmentSet", "modelAnswerAttachmentSet", 
+                "assignmentAttachmentRefs"});
     }
 
     public void deleteEntity(EntityReference ref, Map<String, Object> params) {
