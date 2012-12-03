@@ -244,8 +244,5 @@
                 <parent.replacedversion>2.10-SNAPSHOT</parent.replacedversion>
              </properties> 
         </profile>
-        <profile>
-            <id>2.10.x</id>
-        </profile>
     </profiles>
 </project>

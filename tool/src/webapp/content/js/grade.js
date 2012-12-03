@@ -101,14 +101,25 @@ asnn2gradeview.isGradingChanged = function()
      * the page. This was taken from fckeditorapi.js - _FormSubmit with minor
      * modifications.
      */
-    for ( var name in FCKeditorAPI.Instances )
-    {
-        var oEditor = FCKeditorAPI.Instances[ name ];
-        if (oEditor.IsDirty()) {
-            gradingChanged = true;
+
+    //Check if there are dirty FCKeditor instances
+    if (typeof FCKeditorAPI != "undefined") {
+        for ( var name in FCKeditorAPI.Instances ) {
+            var oEditor = FCKeditorAPI.Instances[ name ];
+            if (oEditor.IsDirty()) {
+                gradingChanged = true;
+            }
         }
     }
-    
+    //Check if there are dirty CKEditor instances
+    if (typeof CKEDITOR != "undefined") {
+        for(var name in CKEDITOR.instances) {
+            var oEditor=CKEDITOR.instances[name];
+            if(oEditor.checkDirty()) {
+                gradingChanged = true;
+            }
+        }
+    }
     
     var attachments = {};
     jQuery("input[name$='attachments-input']").each(function() {
