@@ -893,7 +893,6 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
         return submissionReference;
     }
 
-    @Override
     public List<Assignment2> getAssignmentsWithLinkedGradebookItemId(final Long gradebookItemId) {
         HibernateCallback hc = new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException ,SQLException {

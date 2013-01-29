@@ -489,11 +489,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 gbItem.setPointsPossible(assignment.getGradebookPointsPossibleDouble());
                 updateGradebook = true;
             }
-            
-            if (! gbItem.getTitle().equals(assignment.getTitle())) {
-                gbItem.setTitle(assignment.getTitle());
-                updateGradebook = true;
-            }
 
             if (updateGradebook) {
                 gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);

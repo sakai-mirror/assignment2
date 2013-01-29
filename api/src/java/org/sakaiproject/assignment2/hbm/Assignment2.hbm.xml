@@ -186,6 +186,7 @@
   	
   	<query name="findAssignmentsByGradebookItemId">
   	<![CDATA[from org.sakaiproject.assignment2.model.Assignment2 assignment
-  	         where assignment.gradebookItemId = :gradebookItemId]]>
+  	         where assignment.gradebookItemId = :gradebookItemId and
+             assignment.removed = false]]>
   	</query>
 </hibernate-mapping>
