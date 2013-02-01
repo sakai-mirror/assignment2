@@ -396,4 +396,10 @@ public class AssignmentConstants {
     }
     
     public static final String CONFIG_ALLOW_GB_SYNC = "assignment2.config.allowgbsync";
+    
+    /**
+     * sakai.property - true if you want to diplay the "Import from Assignments" option that allows
+     * the instructor to import assignments data from the original sakai Assignments tool. Defaults true.
+     */
+    public static final String CONFIG_ALLOW_IMPORT_FROM_ASNN1 = "assignment2.config.allowImportFromAsnn1";
 }

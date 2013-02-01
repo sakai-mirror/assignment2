@@ -24,7 +24,9 @@ package org.sakaiproject.assignment2.tool.producers;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
+import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.tool.params.AssignmentViewParams;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
@@ -95,7 +97,8 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
                     UIOutput.make(tofill, "sep0");
                 }
             }
-            if (add && allGoups) {
+            if (add && allGoups && 
+                    ServerConfigurationService.getBoolean(AssignmentConstants.CONFIG_ALLOW_IMPORT_FROM_ASNN1, true)) {
                 UIOutput.make(tofill, "import_action");
                 UIInternalLink.make(tofill, "import_link", UIMessage.make("assignment2.list.import_assignments"), 
                         new AssignmentViewParams(ImportAssignmentsProducer.VIEW_ID));
