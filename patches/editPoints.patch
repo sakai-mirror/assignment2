@@ -1,6 +1,6 @@
 Index: impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java
 ===================================================================
---- impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (revision 76353)
+--- impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (revision 82511)
 +++ impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (working copy)
 @@ -895,10 +895,4 @@
  		return false;
@@ -15,8 +15,8 @@ Index: impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServ
  }
 Index: impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java
 ===================================================================
---- impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java (revision 76353)
-+++ impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java (working copy)
+--- impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java       (revision 82511)
++++ impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java       (working copy)
 @@ -52,7 +52,6 @@
  import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
  import org.sakaiproject.service.gradebook.shared.GradebookService;
@@ -50,12 +50,13 @@ Index: impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLo
  }
 Index: impl/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentLogicImpl.java
 ===================================================================
---- impl/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentLogicImpl.java (revision 76353)
-+++ impl/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentLogicImpl.java (working copy)
-@@ -481,15 +481,6 @@
+--- impl/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentLogicImpl.java      (revision 82511)
++++ impl/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentLogicImpl.java      (working copy)
+@@ -480,15 +480,6 @@
+                     updateGradebook = true;
                  }
              }
-                         
+-                        
 -            if (assignment.getGradebookPointsPossible() != null && // this needs to be checked because if this is called
 -                                                           // by updateEntity() during an JS inline title rename
 -                                                           // PointsPossible will be null 
@@ -64,14 +65,13 @@ Index: impl/src/java/org/sakaiproject/assignment2/logic/impl/AssignmentLogicImpl
 -                gbItem.setPointsPossible(assignment.getGradebookPointsPossibleDouble());
 -                updateGradebook = true;
 -            }
--            
-             if (! gbItem.getTitle().equals(assignment.getTitle())) {
-                 gbItem.setTitle(assignment.getTitle());
-                 updateGradebook = true;
+ 
+             if (updateGradebook) {
+                 gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);
 Index: api/src/java/org/sakaiproject/assignment2/model/Assignment2.java
 ===================================================================
---- api/src/java/org/sakaiproject/assignment2/model/Assignment2.java (revision 76353)
-+++ api/src/java/org/sakaiproject/assignment2/model/Assignment2.java (working copy)
+--- api/src/java/org/sakaiproject/assignment2/model/Assignment2.java    (revision 82511)
++++ api/src/java/org/sakaiproject/assignment2/model/Assignment2.java    (working copy)
 @@ -76,10 +76,6 @@
      private Set<AssignmentGroup> assignmentGroupSet; 
      private Map properties;
@@ -83,7 +83,7 @@ Index: api/src/java/org/sakaiproject/assignment2/model/Assignment2.java
      
      
      /**
-@@ -839,27 +835,4 @@
+@@ -850,27 +846,4 @@
          this.modelAnswerAttachmentSet = modelAnswerAttachmentSet;
      }
      
@@ -113,7 +113,7 @@ Index: api/src/java/org/sakaiproject/assignment2/model/Assignment2.java
  }
 Index: api/src/java/org/sakaiproject/assignment2/logic/ExternalGradebookLogic.java
 ===================================================================
---- api/src/java/org/sakaiproject/assignment2/logic/ExternalGradebookLogic.java	(revision 76353)
+--- api/src/java/org/sakaiproject/assignment2/logic/ExternalGradebookLogic.java (revision 82511)
 +++ api/src/java/org/sakaiproject/assignment2/logic/ExternalGradebookLogic.java (working copy)
 @@ -33,7 +33,6 @@
  import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -138,8 +138,8 @@ Index: api/src/java/org/sakaiproject/assignment2/logic/ExternalGradebookLogic.ja
  }
 Index: tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Validator.java
 ===================================================================
---- tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Validator.java (revision 76353)
-+++ tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Validator.java (working copy)
+--- tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Validator.java     (revision 82511)
++++ tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Validator.java     (working copy)
 @@ -26,7 +26,6 @@
  import org.sakaiproject.assignment2.model.Assignment2;
  import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
@@ -203,8 +203,8 @@ Index: tool/src/java/org/sakaiproject/assignment2/tool/beans/Assignment2Validato
  
 Index: tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java
 ===================================================================
---- tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java (revision 76353)
-+++ tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java (working copy)
+--- tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java   (revision 82511)
++++ tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProducer.java   (working copy)
 @@ -502,15 +502,6 @@
                  UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning.no_add");
              }
@@ -223,8 +223,8 @@ Index: tool/src/java/org/sakaiproject/assignment2/tool/producers/AssignmentProdu
              // Error indicator if assignment graded but no gb item selected
 Index: tool/src/webapp/content/js/assignment.js
 ===================================================================
---- tool/src/webapp/content/js/assignment.js (revision 76353)
-+++ tool/src/webapp/content/js/assignment.js (working copy)
+--- tool/src/webapp/content/js/assignment.js    (revision 82511)
++++ tool/src/webapp/content/js/assignment.js    (working copy)
 @@ -60,9 +60,6 @@
      update_resubmit_until();
      asnn2.initializeSorting();
@@ -254,8 +254,8 @@ Index: tool/src/webapp/content/js/assignment.js
  
 Index: tool/src/webapp/content/templates/assignment.html
 ===================================================================
---- tool/src/webapp/content/templates/assignment.html (revision 76353)
-+++ tool/src/webapp/content/templates/assignment.html (working copy)
+--- tool/src/webapp/content/templates/assignment.html   (revision 82511)
++++ tool/src/webapp/content/templates/assignment.html   (working copy)
 @@ -250,25 +250,20 @@
                        </span>
                        <ol id="grading_options">
@@ -287,7 +287,7 @@ Index: tool/src/webapp/content/templates/assignment.html
                                  <p class="indent" rsf:id="create_new_gb_item">
 Index: impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java
 ===================================================================
---- impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (revision 79942)
+--- impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (revision 82511)
 +++ impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServiceStub.java (working copy)
 @@ -42,7 +42,6 @@
  import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
