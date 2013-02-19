@@ -590,10 +590,50 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
             
             gradebookItem = gradebookLogic.getGradebookItemById(contextId, Long.valueOf(gradebookItemId));
             
-            message = gradebookItem.getPointsPossible().toString();
+            if (! gradebookItem.isUngraded()) {
+                message = gradebookItem.getPointsPossible().toString();
+            }
         }
 
         return message;
+    }
+    
+    @SuppressWarnings("unchecked")
+    @EntityCustomAction(action="isPointsGradable", viewKey=EntityView.VIEW_LIST)
+    public String isPointsGradable(EntityView view, Map<String, Object> params) {
+        String contextId = null;
+        String gradebookItemId = null;
+        int gradeentrytype = 0;
+        GradebookItem gradebookItem;
+
+        String togo = String.valueOf(Boolean.FALSE);
+        
+        if (params != null && 
+            params.containsKey("contextId") && params.containsKey("gradebookItemId") &&
+            ((contextId = (String) params.get("contextId")) != null) &&
+            ((gradebookItemId = (String) params.get("gradebookItemId")) != null)) {
+            
+            contextId = contextId.trim();
+            
+            gradeentrytype = gradebookLogic.getGradebookGradeEntryType(contextId);
+            
+            gradebookItemId = gradebookItemId.trim();
+            
+            gradebookItem = gradebookLogic.getGradebookItemById(contextId, Long.valueOf(gradebookItemId));
+ 
+            if (gradeentrytype == gradebookLogic.ENTRY_BY_LETTER) {
+            // placeholder in case we want to add something here
+            } 
+            else if (gradeentrytype == gradebookLogic.ENTRY_BY_PERCENT ||
+                     gradeentrytype == gradebookLogic.ENTRY_BY_POINTS) {
+                     
+                     if (! gradebookItem.isUngraded()) {
+                         togo = String.valueOf(Boolean.TRUE);
+                     }
+            }
+        }
+
+        return togo;
     }
 
 }

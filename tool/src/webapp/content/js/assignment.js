@@ -41,17 +41,21 @@ function enableDisableGradebookPoints() {
 	var gradebook_points_label = jQuery("label[id='page-replace\:\:gradebook_points_label']");
 	var gradebook_points = jQuery("input[name='page-replace\:\:gradebook_points']");
 	
+	var isGradable = false;
+	
 	if (jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked ||
-	    jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0) == 0) {
+	    jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0) == 0 ||
+
+	    ! asnn2.isPointsGradable()) {
 		
-	    gradebook_points.val("");
+		gradebook_points.val("");
 	    
 	    gradebook_points.attr("disabled", true);
 	    gradebook_points_label.hide();
 	    gradebook_points.hide();
 	} else {
-	    gradebook_points.removeAttr("disabled");
-	    gradebook_points_label.show();
+        gradebook_points.removeAttr("disabled");
+        gradebook_points_label.show();
 	    gradebook_points.show();
 	}
 }
@@ -447,6 +451,35 @@ var asnn2 = asnn2 || {};
         
 	    jQuery("input[name='page-replace\:\:gradebook_points']").val(points);
         
+    };
+   
+ // ONC-3367
+    asnn2.isPointsGradable = function () {
+        // get the currently selected gb item
+        var gbSelect = jQuery("select[name='page-replace\:\:gradebook_item-selection']").get(0).value;
+        var gbRadio = jQuery("input[type='radio'][id='page-replace\:\:select_graded']").get(0).checked;
+        var answer = false;
+
+        if (gbSelect != "0" && gbRadio) {
+            jQuery.ajax({
+                type: "GET",
+                async: false,
+                url: "/direct/assignment2/isPointsGradable",
+                data: { 
+                    contextId: asnn2.contextId,
+                    gradebookItemId: gbSelect
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                },
+                success: function (data) {
+                	if (data != null && data.toLowerCase() == "true") {
+                		answer = true;
+                	}
+                }
+            });
+        }
+            
+            return answer;
     };
     
     /**
