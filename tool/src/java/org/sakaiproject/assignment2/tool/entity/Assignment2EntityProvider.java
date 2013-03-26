@@ -2,6 +2,7 @@ package org.sakaiproject.assignment2.tool.entity;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -634,6 +635,29 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         }
 
         return togo;
+    }
+    
+    /**
+     * Custom action to allow deleting multiple assignments
+     * @param view
+     */
+    @EntityCustomAction(action = "deleteAssignments", viewKey = EntityView.VIEW_NEW)
+    public void deleteAssignments(EntityView view) {
+        String assignIds = (String) requestStorage.getStoredValue("delete-ids");
+        if (assignIds != null && !"".equals(assignIds)) {
+            assignIds = assignIds.trim();
+            if (!"".equals(assignIds)) {
+                List<String> assignIdList = Arrays.asList(assignIds.split(","));
+                for (String assignId : assignIdList) {
+                    Assignment2 asnn = assignmentLogic.getAssignmentById(new Long(assignId));
+                    assignmentLogic.deleteAssignment(asnn);
+                }
+            } else {
+                throw new IllegalArgumentException("No ids to delete (string had only whitespace).");
+            }
+        } else {
+            throw new IllegalArgumentException("No ids to delete (blank or null).");
+        }
     }
 
 }
