@@ -121,7 +121,7 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
                 // later on
                 if (parts.size() < 4) {
                     while (parts.size() < 4) {
-                        parts.add("");
+                        parts.add(" ");
                     }
                 }
 
