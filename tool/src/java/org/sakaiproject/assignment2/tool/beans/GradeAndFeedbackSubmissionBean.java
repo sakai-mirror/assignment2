@@ -158,9 +158,9 @@ public class GradeAndFeedbackSubmissionBean {
     
     public WorkFlowResult processActionGradeSubmitOption()
     {
-        if (WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_NEXT.equals(submitOption) 
-          || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_PREV.equals(submitOption) 
-          || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_RETURNTOLIST.equals(submitOption))
+        if (WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_NEXT.toString().equals(submitOption) 
+          || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_PREV.toString().equals(submitOption) 
+          || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_RETURNTOLIST.toString().equals(submitOption))
         {
             return processActionSaveAndReleaseFeedbackForSubmission();
         }
