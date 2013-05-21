@@ -12,9 +12,9 @@ function a2SetMainFrameHeight() {
 groups_toggle = function() {
     el = jQuery("input[type='radio'][value='false'][name='page-replace\:\:access_select-selection']").get(0);
     if (el && el.checked) {
-        jQuery('li#groups_table_li').hide();
+        jQuery('div#groups_table_li').hide();
     } else {
-        jQuery('li#groups_table_li').show();
+        jQuery('div#groups_table_li').show();
     }
 };
 

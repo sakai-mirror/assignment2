@@ -107,6 +107,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     }
 
     String reqStar = "<span class=\"reqStar\">*</span>";
+    String reqStarInline = "<span class=\"reqStarInline\">*</span>";
 
     private TextInputEvolver richTextEvolver;
     private MessageLocator messageLocator;
@@ -287,7 +288,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
 
         UIVerbatim title_label = UIVerbatim.make(form, "title_label", messageLocator.getMessage("assignment2.assignment_add.assignment_title",
-                new Object[]{ reqStar }));
+                new Object[]{ reqStarInline }));
         UIInput title = UIInput.make(form, "title", assignment2OTP + ".title");
 
         UIVerbatim.make(form, "open_date_label", messageLocator.getMessage("assignment2.assignment_add.open_date",

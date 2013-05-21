@@ -127,8 +127,7 @@ form ol {
 	padding:0;
 }
 
-form li, .asnn_subsection {
-	list-style: none;
+form li, .asnn_subsection, .liItem {
 	margin: 0 .5em .5em 15px;
 	padding-top: 2px;
 }
@@ -137,7 +136,7 @@ form li.activefield {
    background-color: #f1f5f8;
 }
 
-form li label {
+form li label, .liItem label {
 	/* display: block;
 	float: left; */
 	margin-right: .5em;
@@ -145,7 +144,7 @@ form li label {
 	width: 14em;
 }
 
-li label.block {
+li label.block, .liItem label.block {
 	display: block;
 	float: none;
 	width: auto;
@@ -162,7 +161,7 @@ fieldset fieldset.indent {
     margin-left: 14.5em;	
 }
 
-fieldset fieldset.indent li {
+fieldset fieldset.indent li, fieldset fieldset.indent .liItem {
 	margin: 0 .5em .5em 0;
 }
 
@@ -172,7 +171,7 @@ fieldset fieldset legend {
 	margin-left: 0;
 }
 
-form fieldset fieldset li {
+form fieldset fieldset li, form fieldset fieldset .liItem {
 	margin-bottom: 0;
 	margin-left: 0;
 	padding: 0;
@@ -200,11 +199,11 @@ form fieldset fieldset label {
 	margin-left: 3em;
 }
 
-li p.instruction {
+li p.instruction, .liItem p.instruction {
 	margin-left: 14.5em;
 }
 
-li fieldset ol li p.instruction {
+li fieldset ol li p.instruction, .liItem fieldset ol li p.instruction {
 	margin-left: 0;	
 }
 
@@ -559,7 +558,7 @@ ul#assignmentList li.row div.overlayMessage .success {
    background-color: #fff;
 }
    
-#override_settings_container ol {
+#override_settings_container {
     margin:10px 0 0 20px;
 }
    
@@ -567,7 +566,7 @@ ul#assignmentList li.row div.overlayMessage .success {
     margin:0;
 }
    
-#override_settings_container li {
+.override_settings_container_item {
     margin-top: 5px;
 }
 
@@ -919,16 +918,11 @@ a.tagDescription {
 }
 #tooltip h3, #tooltip div { margin: 0; }
 
-/* There is some abuse of html and css in a2. for instance, lists are used
- * all over the place and there is a style put on all lists within a form
- * that removes the styling. This also overrides user-input text in the fck
- * editor, so use this class to restore defaults */
-.restoreDefaultStyles ul li {
-    list-style-type: disc;
-    margin-left:15px;
+
+.listCorrection ol li {
+	margin-left:20px;
 }
 
-.restoreDefaultStyles ol li {
-    list-style-type: decimal;
-    margin-left:20px;
+.attachList {
+	list-style: none;
 }

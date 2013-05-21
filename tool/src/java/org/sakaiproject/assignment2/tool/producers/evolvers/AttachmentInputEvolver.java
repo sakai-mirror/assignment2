@@ -86,7 +86,7 @@ public class AttachmentInputEvolver {
         }
 
         UIBranchContainer core = UIBranchContainer.make(togo, CORE_ID);
-        core.decorate(new UIFreeAttributeDecorator("class", getAttachmentListClassName(elementId)));
+        core.decorate(new UIFreeAttributeDecorator("class", getAttachmentListClassName(elementId) + " attachList"));
         
         int limit = Math.max(0, value.length);
         for (int i=0; i < limit; ++i) {

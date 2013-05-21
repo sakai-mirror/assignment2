@@ -84,29 +84,27 @@
       <input id="override_settings" rsf:id="override_settings" type="checkbox" />
       <label for="override_settings" rsf:id="msg=assignment2.assignment_grade.override_settings">Override assignment-level settings?</label>
       <div id="override_settings_container">
-          <ol>
-              <li>
-                  <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
-              </li>
-              <li>
-                  <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
-                  <select rsf:id="resubmission_additional"></select>
-              </li>
-              <li>
-                  <span rsf:id="original_due_date">Original Due Date: 3/25/09 5:00 PM!!!!!!!!!!!!!!!</span>
-              </li>
-              <li rsf:id="resubmission_dates">
-                
-                  <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
-                  <label for="require_accept_until" rsf:id="extend_accept_until">Set Accept Until Date? Blah</label>
-                  <span id="accept_until_container">
-                      <span id="resubmission_due_section">
-                        <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
-                      </span>
-                      <span id="resubmission_due_read_only"></span>
-                  </span>                      
-              </li>
-          </ol>
+          <div class="override_settings_container_item liItem">
+              <span rsf:id="resubmission_curr_submissions">This assignment has 2 submissions.</span>
+          </div>
+          <div class="override_settings_container_item liItem">
+              <label rsf:id="msg=assignment2.assignment_grade.resubmission_allow_number">Additional Allowed Submissions Blah</label>
+              <select rsf:id="resubmission_additional"></select>
+          </div>
+          <div class="override_settings_container_item liItem">
+              <span rsf:id="original_due_date">Original Due Date: 3/25/09 5:00 PM!!!!!!!!!!!!!!!</span>
+          </div>
+          <div class="override_settings_container_item liItem" rsf:id="resubmission_dates">
+            
+              <input id="require_accept_until" rsf:id="require_accept_until" type="checkbox" />
+              <label for="require_accept_until" rsf:id="extend_accept_until">Set Accept Until Date? Blah</label>
+              <span id="accept_until_container">
+                  <span id="resubmission_due_section">
+                    <input id="accept_until" rsf:id="accept_until:" value="12/31/2007"/>
+                  </span>
+                  <span id="resubmission_due_read_only"></span>
+              </span>                      
+          </div>
         </div>
       </div>
       <div rsf:id="resubmit_no_change">
@@ -172,7 +170,7 @@
           </li>
         </ol>
         <!-- editable view of attachments -->
-        <ol rsf:id="attachment_list:">
+        <ol class="attachList" rsf:id="attachment_list:">
           <li></li>
         </ol>
         <span class="indnt1" rsf:id="add_attach">
