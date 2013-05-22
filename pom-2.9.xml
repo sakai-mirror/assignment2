@@ -241,7 +241,7 @@
         <profile>
             <id>2.9.x</id>
             <properties>
-                <parent.replacedversion>2.9-SNAPSHOT</parent.replacedversion>
+                <parent.replacedversion>2.9.1</parent.replacedversion>
              </properties> 
         </profile>
     </profiles>
