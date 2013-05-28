@@ -12,7 +12,10 @@ Index: impl/src/test/org/sakaiproject/assignment2/logic/test/stubs/GradebookServ
 -    {
 -        return  PointsPossibleValidation.VALID;
 -    }
- }
+ 
+     @Override
+     public Map getCalculatedCourseGrade(String arg0, boolean arg1) {
+
 Index: impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java
 ===================================================================
 --- impl/src/java/org/sakaiproject/assignment2/logic/impl/ExternalGradebookLogicImpl.java       (revision 82511)
@@ -266,17 +269,17 @@ Index: tool/src/webapp/content/js/assignment.js
  
 Index: tool/src/webapp/content/templates/assignment.html
 ===================================================================
---- tool/src/webapp/content/templates/assignment.html   (revision 82511)
+--- tool/src/webapp/content/templates/assignment.html   (revision 83808)
 +++ tool/src/webapp/content/templates/assignment.html   (working copy)
-@@ -250,25 +250,20 @@
+@@ -248,14 +248,14 @@
                        </span>
-                       <ol id="grading_options">
-                         <li>
+                       <div id="grading_options">
+                         <div class="liItem">
 -                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();enableDisableGradebookPoints();"/> 
 +                            <input rsf:id="select_ungraded" id="select_ungraded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();"/> 
                              <label for="select_ungraded" rsf:id="select_ungraded_label">This assignment is ungraded</label>
-                         </li>
-                         <li>
+                         </div>
+                         <div class="liItem">
 -                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();enableDisableGradebookPoints();asnn2.populateGradebookPoints()"/> 
 +                            <input rsf:id="select_graded" id="select_graded" name="graded" type="radio" onclick="asnn2.showHideGradeSettingError();"/> 
                              <label for="select_graded" rsf:id="select_graded_label">This assignment is graded</label>
@@ -286,10 +289,10 @@ Index: tool/src/webapp/content/templates/assignment.html
                                      <option value="">Select a Gradebook Item</option>
                                      <option value="GB Item 1">GB Item 1</option>
                                      <option value="GB Item 2">GB Item 2</option>
-                                     <option value="GB Item 3">GB Item 3</option>
+@@ -263,10 +263,6 @@
                                      <option value="GB Item 4">GB Item 4</option>
                                  </select>
--                                &nbsp;
+                                 &nbsp;
 -                                <span>
 -                                    <label for="gradebook_points" id="gradebook_points_label" rsf:id="gradebook_points_label">Points:</label>
 -                                    <input id="gradebook_points" rsf:id="gradebook_points" size="8" value="0" />
