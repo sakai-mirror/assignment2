@@ -306,7 +306,6 @@
             </activation>
         </profile>
         <profile>
-        <profile>
             <id>2.8.x</id>
         </profile>
     </profiles>
