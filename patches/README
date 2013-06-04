@@ -13,3 +13,5 @@ remove-taggable-functionality-stub-false.patch.txt - This patches several
   to use the OSP integration with those versions can manually upgrade 
   their taggable versions and remove this patch.
 
+springUpdate.patch - This patch removes the changes needed for the
+Sakai Spring 2->3 upgrade.

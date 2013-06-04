@@ -1,0 +1,195 @@
+Index: impl/pom.xml
+===================================================================
+--- impl/pom.xml	(revision 83811)
++++ impl/pom.xml	(revision 83859)
+@@ -64,13 +64,29 @@
+         </dependency>
+         <dependency>
+             <groupId>org.hibernate</groupId>
+-            <artifactId>hibernate</artifactId>
++            <artifactId>hibernate-core</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>org.springframework</groupId>
+-            <artifactId>spring</artifactId>
++            <artifactId>spring-core</artifactId>
+         </dependency>
+         <dependency>
++            <groupId>org.springframework</groupId>
++            <artifactId>spring-orm</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework</groupId>
++            <artifactId>spring-beans</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework</groupId>
++            <artifactId>spring-tx</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework</groupId>
++            <artifactId>spring-context</artifactId>
++        </dependency>
++        <dependency>
+             <groupId>uk.org.ponder</groupId>
+             <artifactId>ponderutilcore</artifactId>
+             <version>1.2.4</version>
+Index: api/src/java/org/sakaiproject/assignment2/hbm/SubmissionAttachmentBase.hbm.xml
+===================================================================
+--- api/src/java/org/sakaiproject/assignment2/hbm/SubmissionAttachmentBase.hbm.xml	(revision 83811)
++++ api/src/java/org/sakaiproject/assignment2/hbm/SubmissionAttachmentBase.hbm.xml	(revision 83859)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+-          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+     <class
+@@ -44,4 +44,4 @@
+     	</subclass>
+     	
+     </class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+Index: api/src/java/org/sakaiproject/assignment2/hbm/AssignmentAttachment.hbm.xml
+===================================================================
+--- api/src/java/org/sakaiproject/assignment2/hbm/AssignmentAttachment.hbm.xml	(revision 83811)
++++ api/src/java/org/sakaiproject/assignment2/hbm/AssignmentAttachment.hbm.xml	(revision 83859)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+-          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+     <class name="org.sakaiproject.assignment2.model.AssignmentAttachmentBase" table="A2_ASSIGN_ATTACH_T">
+@@ -41,4 +41,4 @@
+         </subclass>
+         
+     </class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+Index: api/src/java/org/sakaiproject/assignment2/hbm/AssignmentSubmission.hbm.xml
+===================================================================
+--- api/src/java/org/sakaiproject/assignment2/hbm/AssignmentSubmission.hbm.xml	(revision 83811)
++++ api/src/java/org/sakaiproject/assignment2/hbm/AssignmentSubmission.hbm.xml	(revision 83859)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+-          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+     <class name="org.sakaiproject.assignment2.model.AssignmentSubmission" table="A2_SUBMISSION_T">
+@@ -127,4 +127,4 @@
+              		submission.assignment.removed = true]]>
+   	</query>
+   	
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+Index: api/src/java/org/sakaiproject/assignment2/hbm/AssignmentGroup.hbm.xml
+===================================================================
+--- api/src/java/org/sakaiproject/assignment2/hbm/AssignmentGroup.hbm.xml	(revision 83811)
++++ api/src/java/org/sakaiproject/assignment2/hbm/AssignmentGroup.hbm.xml	(revision 83859)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+-          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+     <class name="org.sakaiproject.assignment2.model.AssignmentGroup" table="A2_ASSIGN_GROUP_T">
+@@ -25,4 +25,4 @@
+         </property>
+               
+     </class>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+Index: api/src/java/org/sakaiproject/assignment2/hbm/Assignment2.hbm.xml
+===================================================================
+--- api/src/java/org/sakaiproject/assignment2/hbm/Assignment2.hbm.xml	(revision 83811)
++++ api/src/java/org/sakaiproject/assignment2/hbm/Assignment2.hbm.xml	(revision 83859)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+-          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+     <class name="org.sakaiproject.assignment2.model.Assignment2" table="A2_ASSIGNMENT_T">
+@@ -189,4 +189,4 @@
+   	         where assignment.gradebookItemId = :gradebookItemId and
+              assignment.removed = false]]>
+   	</query>
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+Index: api/src/java/org/sakaiproject/assignment2/hbm/AssignmentSubmissionVersion.hbm.xml
+===================================================================
+--- api/src/java/org/sakaiproject/assignment2/hbm/AssignmentSubmissionVersion.hbm.xml	(revision 83811)
++++ api/src/java/org/sakaiproject/assignment2/hbm/AssignmentSubmissionVersion.hbm.xml	(revision 83859)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+-          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
++          "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+ <hibernate-mapping>
+     <class name="org.sakaiproject.assignment2.model.AssignmentSubmissionVersion" table="A2_SUBMISSION_VERSION_T">
+@@ -172,4 +172,4 @@
+              and submissionVersion.submittedDate != null]]>
+   	</query>
+ 	
+-</hibernate-mapping>
+\ No newline at end of file
++</hibernate-mapping>
+Index: tool/pom.xml
+===================================================================
+--- tool/pom.xml	(revision 83811)
++++ tool/pom.xml	(revision 83859)
+@@ -19,24 +19,6 @@
+ 	</description>
+     <packaging>war</packaging>
+ 
+-    <properties>
+-        <rsfutil.version>0.7.5</rsfutil.version> 
+-        <sakairsf.components.version>0.7.5</sakairsf.components.version> 
+-        <sakairsf.version>0.7.7</sakairsf.version>
+-    </properties>
+-
+-    <repositories>
+-        <repository>
+-            <id>caret-dev</id>
+-            <name>Caret Dev Repo</name>
+-            <layout>default</layout>
+-            <url>http://www2.caret.cam.ac.uk/maven2dev</url>
+-            <snapshots>
+-                <enabled>true</enabled>
+-            </snapshots>
+-        </repository>
+-    </repositories>
+-
+     <dependencies>
+         <dependency>
+             <groupId>uk.org.ponder</groupId>
+@@ -134,10 +116,14 @@
+         </dependency>
+         <dependency>
+             <groupId>org.springframework</groupId>
+-            <artifactId>spring</artifactId>
++            <artifactId>spring-core</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>org.springframework</groupId>
++            <artifactId>spring-beans</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework</groupId>
+             <artifactId>spring-webmvc</artifactId>
+         </dependency>
+ 

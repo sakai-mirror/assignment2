@@ -57,7 +57,8 @@ Building for 2.8.x
 ````````````````````````````````````````````
 
 For Sakai branches 2.8.x you will need to run the script prepare_for_28_sakai.sh. 
-This will patch A2 to remove the inline edit points and OSP/taggable functionality.
+This will patch A2 to remove the inline edit points, OSP/taggable functionality
+and the Spring 2->3 Sakai upgrade.
 
 After patching, calling maven w/ the -f option followed my pom-2.8.xml will allow
 building vs a Sakai 2.8.x setup.
@@ -68,8 +69,11 @@ mvn -f pom-2.8.xml clean install sakai:deploy
 Building for 2.9.x
 ````````````````````````````````````````````
 
-No patching is required.  Just issue the maven commend with the -f option for the
-2.9 pom.
+For Sakai branches 2.9.x you will need to run the script prepare_for_29_sakai.sh.
+This will patch A2 to remove the Spring 2->3 Sakai upgrade.
+
+After patching, calling maven w/ the -f option followed my pom-2.9.xml will allow
+building vs a Sakai 2.9.x setup.
 
 mvn -f pom-2.9.xml clean install sakai:deploy
 
