@@ -52,7 +52,6 @@ import org.sakaiproject.service.gradebook.shared.GradebookFrameworkService;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.InvalidGradeException;
-import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -415,10 +414,6 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         
         assignmentGbItem.setDueDate(gbItem.getDueDate());
         
-       if (isPointsPossibleValid(contextId, gbItem)  == PointsPossibleValidation.VALID) {
-            assignmentGbItem.setPoints(gbItem.getPointsPossible());
-        }
-
         String oldName = assignmentGbItem.getName();
         
         
@@ -937,11 +932,4 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         return safeAssignmentName;
     }
 
-    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, GradebookItem gradebookItem)
-    {
-        Assignment assignment = gradebookService.getAssignment(gradebookUid, gradebookItem.getGradebookItemId());
-        
-        return gradebookService.isPointsPossibleValid(gradebookUid, assignment, gradebookItem.getPointsPossible());
-    }
-    
 }

@@ -76,10 +76,6 @@ public class Assignment2 {
     private Set<AssignmentGroup> assignmentGroupSet; 
     private Map properties;
 
-    /* This variable is NOT persisted to the database.  It is simply used to carry-over the gradebook
-     * points possible value on the Edit Assignment page
-     */
-    private String gradebookPointsPossible;
     
     
     /**
@@ -850,27 +846,4 @@ public class Assignment2 {
         this.modelAnswerAttachmentSet = modelAnswerAttachmentSet;
     }
     
-    public String getGradebookPointsPossible() {
-        return gradebookPointsPossible;
-    }
-    
-    public void setGradebookPointsPossible(String gradebookPointsPossible) {
-        this.gradebookPointsPossible = gradebookPointsPossible;
-    }
-
-    /**
-     * This method throws an exception if value isn't convertible into a double.
-     * null is okay
-     * @return
-     * @throws java.lang.NumberFormatException
-     */
-    public Double getGradebookPointsPossibleDouble() throws java.lang.NumberFormatException {
-        Double points = null;
-        
-        if (gradebookPointsPossible != null) {
-            points = Double.parseDouble(gradebookPointsPossible);
-        }
-        
-        return points;
-    }
 }

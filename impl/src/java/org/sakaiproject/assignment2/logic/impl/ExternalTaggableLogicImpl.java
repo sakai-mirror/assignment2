@@ -77,7 +77,7 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		Map<String, List<TaggingHelperInfo>> returnMap = new HashMap<String, List<TaggingHelperInfo>>();
 		for (TaggingProvider provider : getProviders()) {
 			Map<String, TaggingHelperInfo> providerMap = new HashMap<String, TaggingHelperInfo>();
-			providerMap = provider.getActivityHelperInfo(siteId, activityRefs);
+// SWG 2.7.x hack			providerMap = provider.getActivityHelperInfo(siteId, activityRefs);
 			for (String key : providerMap.keySet()) {
 				returnMap.get(key).add(providerMap.get(key));
 			}			
@@ -99,7 +99,7 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		
 		List<TaggingProvider> providers = getProviders();
 		for (TaggingProvider provider : providers) {
-			canGetActivity = provider.allowGetActivity(activityRef, currentUser, taggedItem);
+// SWG 2.7.x hack			canGetActivity = provider.allowGetActivity(activityRef, currentUser, taggedItem);
 			if (canGetActivity) 
 				break;
 		}
@@ -111,7 +111,7 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 		boolean canGetItem = false;
 		List<TaggingProvider> providers = getProviders();
 		for (TaggingProvider provider : providers) {
-			canGetItem = provider.allowGetItem(activityRef, itemRef, currentUser, taggedItem);
+// SWG 2.7.x			canGetItem = provider.allowGetItem(activityRef, itemRef, currentUser, taggedItem);
 			if (canGetItem) 
 				break;
 		}

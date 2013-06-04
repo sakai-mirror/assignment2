@@ -480,15 +480,6 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                     updateGradebook = true;
                 }
             }
-                        
-            if (assignment.getGradebookPointsPossible() != null && // this needs to be checked because if this is called
-                                                           // by updateEntity() during an JS inline title rename
-                                                           // PointsPossible will be null 
-                    gbItem.getPointsPossible() != assignment.getGradebookPointsPossibleDouble()) {
-                
-                gbItem.setPointsPossible(assignment.getGradebookPointsPossibleDouble());
-                updateGradebook = true;
-            }
 
             if (updateGradebook) {
                 gradebookLogic.updateGbItemInGradebook(assignment.getContextId(), gbItem);

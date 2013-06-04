@@ -64,9 +64,6 @@ jQuery(document).ready(function() {
     update_resubmit_until();
     asnn2.initializeSorting();
     
-    if (jQuery("input[name='page-replace\:\:gradebook_points']").size() > 0) {
-        enableDisableGradebookPoints();
-    }
 });
 
 function slide_submission(img) {
@@ -494,8 +491,6 @@ var asnn2 = asnn2 || {};
         } else {
             jQuery("input[type='radio'][id='page-replace\:\:select_ungraded']").get(0).checked = true;
         }
-        
-        enableDisableGradebookPoints();
     };
 
     /**
@@ -515,7 +510,6 @@ var asnn2 = asnn2 || {};
         asnn2.populateTitleWithGbItemName();
         asnn2.populateDueDateWithGBItemDueDate();
         asnn2.showHideGradeSettingError();
-        asnn2.populateGradebookPoints();
 
     };
 

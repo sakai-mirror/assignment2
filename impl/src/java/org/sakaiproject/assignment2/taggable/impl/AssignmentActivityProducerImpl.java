@@ -84,6 +84,16 @@ AssignmentActivityProducer {
         Assignment2 assignment = (Assignment2) activity.getObject();
         return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment);
     }
+    
+    // Sakai 2.7.x hack
+    public boolean allowGetItems(TaggableActivity one, TaggingProvider two, boolean three) {
+    	return false;
+    }
+    
+    // Sakai 2.7.x hack
+    //public boolean allowGetItems(String one, String[] two, String three, String four) {
+    //	return false;
+    //}
 
     public boolean allowRemoveTags(TaggableActivity activity) {
         Assignment2 assignment = (Assignment2) activity.getObject();
@@ -150,6 +160,10 @@ AssignmentActivityProducer {
                 new AssignmentActivityImpl(
                         assignmentSubmission.getAssignment(), this));
     }
+    
+    public TaggableItem getItem(String one, TaggingProvider two, boolean three) {
+    	return null;
+    }
 
     public String getName() {
         return assignmentBundleLogic.getString("service_name");
@@ -214,6 +228,11 @@ AssignmentActivityProducer {
         Assignment2 assignment = (Assignment2) activity.getObject();
         return assignmentPermissionLogic.isUserAllowedToManageSubmissionsForAssignment(null, assignment);
     }
+    
+    // 2.7.x build hack
+    public boolean allowGetItems(String one, String[] two, String three, String four) {
+    	return false;
+    }
 
     public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)
     {
@@ -259,7 +278,17 @@ AssignmentActivityProducer {
     {
        return getItems(activity, provider, getMyItemsOnly, taggedItem, true);
     }
+    
+    // Sakai 2.7.x hack
+    public List<TaggableItem> getItems(TaggableActivity one, String two, TaggingProvider four, boolean five) {
+    	return null;
+    }
 
+    // Sakai 2.7.x hack
+    public List<TaggableItem> getItems(TaggableActivity one, TaggingProvider two, boolean three) {
+    	return null;
+    }
+    
     private List<TaggableItem> getItems(TaggableActivity activity, TaggingProvider provider,
             boolean getMyItemsOnly, String taggedItem, boolean checkPerms)
     {
@@ -273,7 +302,7 @@ AssignmentActivityProducer {
          */
         boolean allowed = false;
         if (checkPerms) {
-           allowed = provider.allowGetItems(activity.getReference(), new String[]{}, externalLogic.getCurrentUserId(), taggedItem);
+// Sakai 2.7.x hack           allowed = provider.allowGetItems(activity.getReference(), new String[]{}, externalLogic.getCurrentUserId(), taggedItem);
         }
         else {
            allowed = true;
@@ -307,7 +336,7 @@ AssignmentActivityProducer {
         
         boolean allowed = false;
         if (checkPerms) {
-           allowed =provider.allowGetItems(activity.getReference(), new String[]{}, externalLogic.getCurrentUserId(), taggedItem);
+// SWG 2.7.x compile           allowed =provider.allowGetItems(activity.getReference(), new String[]{}, externalLogic.getCurrentUserId(), taggedItem);
         }
         else {
            allowed = true;
@@ -345,6 +374,18 @@ AssignmentActivityProducer {
     {
     	return hasSubmissions(activity);
     }
+    
+    // Sakai 2.7.x hack
+    public boolean hasSubmissions(TaggableActivity one, String two, TaggingProvider three, boolean four) {
+    	return false;
+    }
+    
+    // Sakai 2.7.x hack
+    public boolean hasSubmissions(TaggableActivity one, TaggingProvider two, boolean three) {
+    	return false;
+    }
+    
+    
 
     public boolean hasSubmissions(TaggableActivity activity, String userId,
     		TaggingProvider provider, boolean getMyItemsOnly, String taggedItem)

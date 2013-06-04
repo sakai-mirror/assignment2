@@ -103,8 +103,8 @@ public class AsnnTagsRenderer implements BasicProducer {
                         UIOutput.make(providerContainer, "tag_header");
                         UIOutput.make(providerContainer, "provider-heading", provider.getName());
                         UIOutput.make(providerContainer, "provider-instruction", provider.getSimpleTextLabel());
-                        UIOutput description = UIOutput.make(providerContainer, "provider-description", provider.getHelpLabel());
-                        description.decorate(new UIFreeAttributeDecorator("title", provider.getHelpDescription()));
+                        UIOutput description = UIOutput.make(providerContainer, "provider-description", ""); // Hack 2.7.x compile provider.getHelpLabel());
+                        description.decorate(new UIFreeAttributeDecorator("title", "")); // Hack 2.7.x compile provider.getHelpDescription()));
                     }
                     
                     

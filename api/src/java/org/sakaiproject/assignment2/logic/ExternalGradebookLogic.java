@@ -33,7 +33,6 @@ import org.sakaiproject.assignment2.exception.NoGradebookDataExistsException;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.service.gradebook.shared.Assignment;
-import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.site.api.Group;
 
 /**
@@ -512,12 +511,4 @@ public interface ExternalGradebookLogic {
      */
     public String getFreeAssignmentName(String gradebookUid, String assignmentTitle);
 
-    /**
-     * 
-     * @param gradebookUid
-     * @param gradebookItem
-     * @return
-     */
-    public PointsPossibleValidation isPointsPossibleValid(String gradebookUid, GradebookItem gradebookItem);
-    
 }

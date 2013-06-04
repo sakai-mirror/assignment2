@@ -502,26 +502,6 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             } else {
                 UIMessage.make(tofill, "grading_warning", "assignment2.assignment_add.grading_warning.no_add");
             }
-
-            String pointsPossibleString = messageLocator.getMessage("assignment2.details.gradebook.points_possible");
-            
-            if (externalGradebookLogic.getGradebookGradeEntryType(assignment.getContextId()) == externalGradebookLogic.ENTRY_BY_PERCENT) {
-                pointsPossibleString = messageLocator.getMessage("assignment2.details.gradebook.percent_possible");
-            }
-            
-            if (assignment.getGradebookItemId() != null && externalGradebookLogic.gradebookItemExists(assignment.getGradebookItemId())) {
-                
-                GradebookItem gradebookItem = externalGradebookLogic.getGradebookItemById(assignment.getContextId(), assignment.getGradebookItemId());
-                
-                if (! gradebookItem.isUngraded()) {
-                    assignment.setGradebookPointsPossible(gradebookItem.getPointsPossible().toString());
-                }
-            }
-
-
-            UIOutput.make(form, "gradebook_points_label", pointsPossibleString);
-
-            UIInput.make(form, "gradebook_points", assignment2OTP + ".gradebookPointsPossible");
             
             UIVerbatim.make(tofill, "contextId", "asnn2.contextId = \"" + externalLogic.getCurrentContextId() + "\";");
             

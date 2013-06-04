@@ -26,7 +26,6 @@ import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 
-import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 
 import uk.org.ponder.messageutil.TargettedMessage;
@@ -89,52 +88,6 @@ public class Assignment2Validator  {
                 valid = false;
             }
         
-            try {
-                assignment.getGradebookPointsPossibleDouble();
-            }
-            catch (NumberFormatException e) {
-                messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
-                        new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));    
-                valid = false;
-            }
-            
-            // if the double convert attempt fails we don't want/need for the following to execute
-            if (valid) {
-                // check if the points possible is valid        
-                GradebookItem gbItem = new GradebookItem();
-                gbItem.setGradebookItemId(assignment.getGradebookItemId());
-                gbItem.setTitle(assignment.getTitle());
-                gbItem.setPointsPossible(assignment.getGradebookPointsPossibleDouble());
-
-                PointsPossibleValidation result =  
-                    externalGradebookLogic.isPointsPossibleValid(assignment.getContextId(),
-                                                                 gbItem);
-                if (result != PointsPossibleValidation.VALID) {
-                    switch(result) {
-                    case INVALID_DECIMAL: {
-                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
-                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
-                        break;
-                    }
-                    case INVALID_NULL_VALUE: {
-                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
-                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
-                        break;
-                    }
-                    case INVALID_NUMERIC_VALUE: {
-                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
-                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
-                        break;
-                    }
-                    default: {
-                        messages.addMessage(new TargettedMessage("assignment2.assignment_add.invalid_gradebook_points", 
-                                new Object[] {}, "Assignment2."+ key + ".gradebookPoints"));
-                    }
-                    } // end switch
-
-                    valid = false;
-                } // end if result !=
-            } // end if valid
         } // end if isGraded()
 
 
