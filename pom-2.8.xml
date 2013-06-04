@@ -306,11 +306,6 @@
             </activation>
         </profile>
         <profile>
-            <id>2.8.x</id>
-            <properties>
-                <parent.replacedversion>2.8-SNAPSHOT</parent.replacedversion>
-             </properties> 
-        </profile>
         <profile>
             <id>2.8.x</id>
         </profile>
