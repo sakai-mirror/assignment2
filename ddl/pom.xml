@@ -6,6 +6,7 @@
         <artifactId>assignment2</artifactId>
         <groupId>org.sakaiproject.assignment2</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../${pomName}</relativePath>
     </parent>
 
     <name>Sakai Assignment2 DB DDL generator</name>

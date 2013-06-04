@@ -31,6 +31,7 @@
         <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
         <sakai.message.group>org.sakaiproject.message</sakai.message.group>
         <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
+        <pomName>pom.xml</pomName>
     </properties>
     
     <scm>
@@ -240,9 +241,6 @@
         </profile>
         <profile>
             <id>2.10.x</id>
-            <properties>
-                <parent.replacedversion>2.10-SNAPSHOT</parent.replacedversion>
-             </properties> 
         </profile>
     </profiles>
 </project>

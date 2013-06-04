@@ -31,6 +31,7 @@
         <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
         <sakai.message.group>org.sakaiproject.message</sakai.message.group>
         <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
+        <pomName>pom-2.9.xml</pomName>
     </properties>
     
     <scm>
@@ -240,9 +241,6 @@
         </profile>
         <profile>
             <id>2.9.x</id>
-            <properties>
-                <parent.replacedversion>2.9.1</parent.replacedversion>
-             </properties> 
         </profile>
     </profiles>
 </project>
