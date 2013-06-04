@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-       <artifactId>master</artifactId>
-	   <groupId>org.sakaiproject</groupId>
-       <version>2.10-SNAPSHOT</version>
+        <artifactId>sakai-edu-tool</artifactId>
+        <groupId>org.sakaiproject.purepoms</groupId>
+        <version>2.8.6</version>
     </parent>
-    
+ 
     <name>sakai-assignment2 base pom</name>
     <groupId>org.sakaiproject.assignment2</groupId>
     <artifactId>assignment2</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.2.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <modules>
@@ -31,7 +31,6 @@
         <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
         <sakai.message.group>org.sakaiproject.message</sakai.message.group>
         <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
-        <pomName>pom.xml</pomName>
     </properties>
     
     <scm>
@@ -238,9 +237,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-        </profile>
-        <profile>
-            <id>2.10.x</id>
         </profile>
     </profiles>
 </project>
