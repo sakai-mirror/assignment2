@@ -7,7 +7,6 @@
         <artifactId>assignment2</artifactId>
         <groupId>org.sakaiproject.assignment2</groupId>
         <version>1.1-SNAPSHOT</version>
-        <relativePath>../${pomName}</relativePath>
     </parent>
 
     <name>sakai-assignment2-assembly</name>

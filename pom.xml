@@ -31,7 +31,6 @@
         <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
         <sakai.message.group>org.sakaiproject.message</sakai.message.group>
         <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
-        <pomName>pom.xml</pomName>
     </properties>
     
     <scm>
