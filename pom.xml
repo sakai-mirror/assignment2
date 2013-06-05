@@ -13,7 +13,7 @@
     <name>sakai-assignment2 base pom</name>
     <groupId>org.sakaiproject.assignment2</groupId>
     <artifactId>assignment2</artifactId>
-    <version>1.1.2.8-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <modules>
@@ -26,11 +26,13 @@
     
     <properties>
         <sakai.generic-dao.version>0.9.8</sakai.generic-dao.version>
-        <sakai.taggable.group>org.sakaiproject.taggable</sakai.taggable.group>
+        <sakai.taggable.group>org.sakaiproject</sakai.taggable.group>
         <sakai.calendar.group>org.sakaiproject.calendar</sakai.calendar.group>
         <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
         <sakai.message.group>org.sakaiproject.message</sakai.message.group>
         <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
+        <sakai.sakai-mock.version>2.6.3</sakai.sakai-mock.version>
+        <sakai.archive.group>org.sakaiproject</sakai.archive.group>
     </properties>
     
     <scm>
@@ -135,6 +137,61 @@
                 <artifactId>sakai-assignment2-impl</artifactId>
                 <groupId>${project.groupId}</groupId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${sakai.taggable.group}</groupId>
+                <artifactId>sakai-taggable-api</artifactId>
+                <version>2.8.3</version>
+            </dependency>
+            <dependency>
+                <groupId>${sakai.archive.group}</groupId>
+                <artifactId>sakai-archive-api</artifactId>
+                <version>2.6.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sakaiproject.scheduler</groupId>
+                <artifactId>scheduler-api</artifactId>
+                <version>2.8.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sakaiproject.contentreview</groupId>
+                <artifactId>contentreview-model-api</artifactId>
+                <version>2.8.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sakaiproject.contentreview</groupId>
+                <artifactId>contentreview-service-api</artifactId>
+                <version>2.8.8</version> 
+            </dependency>
+            <dependency>
+                <groupId>org.sakaiproject.entitybroker</groupId>
+                <artifactId>entitybroker-api</artifactId>
+                <version>1.4.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sakaiproject.entitybroker</groupId>
+                <artifactId>entitybroker-utils</artifactId>
+                <version>1.4.6</version>
+            </dependency>
+            <dependency>
+                <groupId>${sakai.announcement.group}</groupId>
+                <artifactId>sakai-announcement-api</artifactId>
+                <version>2.8.3</version>
+            </dependency>
+            <dependency>
+                <groupId>${sakai.message.group}</groupId>
+                <artifactId>sakai-message-api</artifactId>
+                <version>2.8.3</version>
+            </dependency>
+            <dependency>
+                <groupId>${sakai.calendar.group}</groupId>
+                <artifactId>sakai-calendar-api</artifactId>
+                <version>2.8.3</version>
+            </dependency>
+            <dependency>
+                <groupId>${sakai.assignment.group}</groupId>
+                <artifactId>sakai-assignment-api</artifactId>
+                <version>2.8.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

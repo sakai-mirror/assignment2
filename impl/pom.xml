@@ -110,8 +110,8 @@
             <version>1.2.1</version>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject.common</groupId>
-            <artifactId>archive-api</artifactId>
+            <groupId>${sakai.archive.group}</groupId>
+            <artifactId>sakai-archive-api</artifactId>
         </dependency>
         <!-- for importing from the original assignments tool -->
         <dependency>

@@ -45,8 +45,8 @@
         </dependency>
         <!-- for Importable -->
         <dependency>
-            <groupId>org.sakaiproject.common</groupId>
-            <artifactId>archive-api</artifactId>
+            <groupId>${sakai.archive.group}</groupId>
+            <artifactId>sakai-archive-api</artifactId>
         </dependency>
         <!-- for scheduled notifications -->
         <dependency>
