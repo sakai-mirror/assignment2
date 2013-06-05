@@ -31,8 +31,8 @@
         <sakai.announcement.group>org.sakaiproject</sakai.announcement.group>
         <sakai.message.group>org.sakaiproject</sakai.message.group>
         <sakai.assignment.group>org.sakaiproject</sakai.assignment.group>
-        <sakai.sakai-mock.group>org.sakaiproject</sakai.sakai-mock.group>
-        <sakai.sakai-mock.version>2.6.3</sakai.sakai-mock.version>
+        <sakai.sakai-mock.group>org.sakaiproject.mock</sakai.sakai-mock.group>
+        <sakai.sakai-mock.version>2.8.5</sakai.sakai-mock.version>
         <sakai.archive.group>org.sakaiproject.common</sakai.archive.group>
         <sakai.contentreview.group>org.sakaiproject.contentreview</sakai.contentreview.group>
     </properties>
