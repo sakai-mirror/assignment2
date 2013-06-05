@@ -46,7 +46,7 @@
         <!-- for Importable -->
         <dependency>
             <groupId>${sakai.archive.group}</groupId>
-            <artifactId>sakai-archive-api</artifactId>
+            <artifactId>archive-api</artifactId>
         </dependency>
         <!-- for scheduled notifications -->
         <dependency>
@@ -56,7 +56,7 @@
         <!-- end for scheduled notifications -->
 
         <dependency>
-            <groupId>org.sakaiproject.contentreview</groupId>
+            <groupId>${sakai.contentreview.group}</groupId>
             <artifactId>contentreview-model-api</artifactId>
         </dependency>
 

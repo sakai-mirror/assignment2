@@ -102,7 +102,7 @@
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject.contentreview</groupId>
+            <groupId>${sakai.contentreview.group}</groupId>
             <artifactId>contentreview-model-api</artifactId>
         </dependency>
         <dependency>

@@ -111,7 +111,7 @@
         </dependency>
         <dependency>
             <groupId>${sakai.archive.group}</groupId>
-            <artifactId>sakai-archive-api</artifactId>
+            <artifactId>archive-api</artifactId>
         </dependency>
         <!-- for importing from the original assignments tool -->
         <dependency>
@@ -130,11 +130,11 @@
         </dependency>
         <!-- for content review integration -->
         <dependency>
-            <groupId>org.sakaiproject.contentreview</groupId>
+            <groupId>${sakai.contentreview.group}</groupId>
             <artifactId>contentreview-model-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject.contentreview</groupId>
+            <groupId>${sakai.contentreview.group}</groupId>
             <artifactId>contentreview-service-api</artifactId>
         </dependency>
         <!-- testing dependencies -->
@@ -190,7 +190,7 @@
             <version>1.2_Java1.3</version>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject.mock</groupId>
+            <groupId>${sakai.sakai-mock.group}</groupId>
             <artifactId>sakai-mock</artifactId>
             <version>${sakai.sakai-mock.version}</version>
             <scope>test</scope>
