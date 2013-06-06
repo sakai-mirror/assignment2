@@ -887,7 +887,6 @@ public class GradebookServiceStub implements GradebookService {
         return null;
     }
 
-	@Override
 	public boolean checkStudentsNotSubmitted(String arg0)
 	{
 		// TODO Auto-generated method stub
@@ -895,7 +894,6 @@ public class GradebookServiceStub implements GradebookService {
 	}
 	
 
-    @Override
     public Map getCalculatedCourseGrade(String arg0, boolean arg1) {
         // TODO Auto-generated method stub
         return null;
