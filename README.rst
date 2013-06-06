@@ -51,7 +51,7 @@ sure that the database is using case sensitive searching.
 Tools needed
 ````````````
 
-You will need to have maven2, subversion and patch installed on your system.
+You will need to have maven2 or 3 installed on your system.
 
 Building for 2.8.x
 ````````````````````````````````````````````
@@ -66,8 +66,6 @@ Use the sakai-2.9.x branch.
 
 Building for 2.10.x/trunk
 ````````````````````````````````````````````
-This should build as normal.
-
 mvn clean install sakai:deploy
 
 
