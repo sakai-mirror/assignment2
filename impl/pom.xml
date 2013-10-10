@@ -216,7 +216,6 @@
         <dependency>
             <groupId>org.sakaiproject.mock</groupId>
             <artifactId>sakai-mock</artifactId>
-            <version>${sakai.sakai-mock.version}</version>
             <scope>test</scope>
         </dependency>
 

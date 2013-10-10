@@ -905,4 +905,10 @@ public class GradebookServiceStub implements GradebookService {
         // TODO Auto-generated method stub
         return null;
     }
+
+
+    public Map getImportCourseGrade(String gradebookUid, boolean useDefault) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
