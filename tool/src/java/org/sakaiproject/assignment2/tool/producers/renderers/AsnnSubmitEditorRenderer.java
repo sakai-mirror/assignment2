@@ -234,7 +234,7 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
             asnnInstructionsRenderer.makeInstructions(joint, "assignment-instructions-edit:", assignment, false, false, false, optionalParamMap);
             
             // render the assignment tags
-            tagsRenderer.makeTagInformation(joint, "tagging-info-edit:", assignment, false, false, false);
+            tagsRenderer.makeTagInformation(joint, "tagging-info-edit:", assignment, assignmentSubmission, false, false, false);
         }
 
         // Because the flow might not be starting on the initial view, the

@@ -1,10 +1,11 @@
 <div rsf:id="assn2-assignment-tags-widget:">
 
+	<div rsf:id="script-area"></div>
     <div rsf:id="provider-section:">
         <div rsf:id="provider_toggle_section:">
         <!-- this is for the collapsible toggle for displaying the tag info from this provider -->
         </div>
-        <div rsf:id="provider_details" class="toggleSubsection">
+        <div rsf:id="provider_details:" class="toggleSubsection">
             <div id="tag_header">
                 <h3 rsf:id="provider-heading" style="display: inline;">Provider 1</h3>
                 <a class="tagDescription" href="" onclick="return false;" rsf:id="provider-description">What is this??</a>
@@ -12,18 +13,49 @@
             </div>
             
             <p class="instruction indnt1" rsf:id="provider-instruction">instructions</p>
-                        
-            <table class="tagTable indnt1">
-                <tr>
-                    <th rsf:id="tag-heading:">Site</th>
-                </tr>
-                <tr rsf:id="tag-data-row:">
-                    <td rsf:id="tag-data:">EPORT 101</td>
-                </tr>
-            </table>
-            
+
+            <div rsf:id="record:">
+                <table rsf:id="table:even" class="tagTable indnt1">
+                    <tr>
+                        <th rsf:id="tag-headings:">tag header</th>
+                    </tr>
+                    <tr>
+                        <td class="tagTableGray" rsf:id="tag-data:">tag data</td>
+                    </tr>
+                </table>
+                <table rsf:id="table:odd" class="tagTable indnt2">
+                    <tr>
+                        <th rsf:id="provider-headings:">provider headers</th>
+                    </tr>
+                    <tr rsf:id="provider-data-row:">
+                        <td rsf:id="provider-data:">provider data</td>
+                    </tr>
+                </table>
+            </div>
+
             <script type="text/javascript">
               //<![CDATA[
+              
+              function A2_callUrl(url) {
+                  jQuery.ajax({
+                      type: "GET",
+                      url: url,
+                      async: false
+                    });                              
+
+                  window.location.reload();        
+              }
+              
+              function closeModalReload() {
+              	tb_remove();
+            	window.location.reload();
+              }
+
+              function tb_close() {
+                  jQuery("#portalMask", parent.document).remove(); // gets rid of gray mask for IE
+
+              }
+              
               jQuery(document).ready(function(){
                  $('#tag_header a').tooltip({
                      track: true,
@@ -35,5 +67,7 @@
             </script>
         </div>
     </div>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
 </div>
 

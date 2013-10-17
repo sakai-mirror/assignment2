@@ -891,18 +891,24 @@ h3.mainHeading {
     margin-top: 15px;
 }
 .tagTable {
-    width: 98%;
+    width: 90%;
     border-collapse: collapse;
     margin: 10px 0px;
 }
 .tagTable th, td {
     padding: 3px;
+    width: 200px;
 }
 .tagTable th {
     font-weight: bold;
     text-align: left;
     border-bottom: #C0C0C0 solid 3px;
 }
+
+.tagTableGray {
+	    background-color: #eee;
+}
+	 
 a.tagDescription {
     font-size:0.9em;
     margin-left: 7px;

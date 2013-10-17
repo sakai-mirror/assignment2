@@ -145,7 +145,10 @@ public class LocalPermissionLogic {
 
         } else if (FinishedHelperProducer.VIEWID.equals(viewId)) {
             return Boolean.TRUE;
-
+            
+        } else if (FinishUiModalProducer.VIEW_ID.equals(viewId)) {
+            return Boolean.TRUE;
+            
         } else if (GradeProducer.VIEW_ID.equals(viewId)) {
             if (viewParams instanceof GradeViewParams)
             {

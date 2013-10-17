@@ -119,6 +119,26 @@ AssignmentActivityProducer {
     }
 
     public TaggableActivity getActivity(String activityRef,
+            TaggingProvider provider, String taggedItem) {
+        // We aren't picky about the provider, so ignore that argument.
+        TaggableActivity activity = null;
+        if (checkReference(activityRef)) {
+            Reference ref = entityManager.newReference(activityRef);
+            try {
+                Map<String, Object> optionParam = new HashMap<String, Object>();
+                optionParam.put(AssignmentConstants.TAGGABLE_REF_KEY, taggedItem);
+                Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(Long.valueOf(ref.getId()), optionParam);
+                activity = new AssignmentActivityImpl(assignment, this);
+            } catch (AssignmentNotFoundException anfe) {
+                logger.warn("No assignment found for activityRef: " + activityRef);
+            } catch (SecurityException se) {
+                logger.warn("User attempted to access assignment2 activity without permission: " + activityRef);
+            }
+        }
+        return activity;
+    }
+
+    public TaggableActivity getActivity(String activityRef,
             TaggingProvider provider) {
         // We aren't picky about the provider, so ignore that argument.
         TaggableActivity activity = null;
