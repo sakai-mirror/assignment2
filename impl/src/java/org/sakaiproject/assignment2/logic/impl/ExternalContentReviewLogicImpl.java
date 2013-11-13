@@ -380,6 +380,19 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             log.error(e);
         }
         
+        boolean useGradeMark = serverConfigurationService.getBoolean(AssignmentConstants.TII_PROP_GRADEMARK_ENABLED, false);
+        //Check Grade
+        if(useGradeMark){
+            try {
+                contentReview.getReviewScore(assign.getContextId()+
+                        "#"+assign.getContentReviewRef()+
+                        "#"+assign.getTitle());
+
+            }catch(Exception e){
+                log.error(e);
+            }
+        }
+        
         if (asnnmap.containsKey(AssignmentConstants.TII_RETCODE_RCODE)) {
             assign.getProperties().put(AssignmentConstants.TII_RETCODE_RCODE, 
                     asnnmap.get(AssignmentConstants.TII_RETCODE_RCODE));
@@ -410,6 +423,33 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                     assign, AssignmentConstants.TII_API_PARAM_INSTITUTION_CHECK);
             setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_SVIEWREPORTS, 
                     assign, AssignmentConstants.TII_API_PARAM_S_VIEW_REPORT);
+
+            //erater
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ERATER,
+                    assign, AssignmentConstants.TII_API_PARAM_ERATER);
+
+            //Handbook
+            if(asnnobj.containsKey(AssignmentConstants.TII_RETCODE_ETS_HANDBOOK)){
+                assign.getProperties().put(AssignmentConstants.TII_API_PARAM_ETS_HANDBOOK,
+                        asnnobj.get(AssignmentConstants.TII_API_PARAM_ETS_HANDBOOK));
+            }
+
+            //Dictionary
+            if(asnnobj.containsKey(AssignmentConstants.TII_RETCODE_ETS_DICTIONARY)){
+                assign.getProperties().put(AssignmentConstants.TII_API_PARAM_ETS_DICTIONARY,
+                        asnnobj.get(AssignmentConstants.TII_RETCODE_ETS_DICTIONARY));
+            }
+
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_SPELLING,
+                    assign, AssignmentConstants.TII_API_PARAM_ETS_SPELLING);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_GRAMMAR,
+                    assign, AssignmentConstants.TII_API_PARAM_ETS_GRAMMAR);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_MECHANICS,
+                    assign, AssignmentConstants.TII_API_PARAM_ETS_MECHANICS);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_USAGE,
+                    assign, AssignmentConstants.TII_API_PARAM_ETS_USAGE);
+            setTurnitinBooleanOption(asnnobj, AssignmentConstants.TII_RETCODE_ETS_STYLE,
+                    assign, AssignmentConstants.TII_API_PARAM_ETS_STYLE);
         }
         
     }
@@ -427,7 +467,9 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         Map opts = new HashMap();
         
         String[] tiioptKeys = new String[] { "submit_papers_to", "report_gen_speed",
-                "s_paper_check", "internet_check", "journal_check", "institution_check", "s_view_report"
+                "s_paper_check", "internet_check", "journal_check", "institution_check", "s_view_report",
+                "erater","ets_handbook","ets_dictionary","ets_spelling","ets_style","ets_grammar",
+                "ets_mechanics","ets_usage"
         };
 
         for (Object key: assign.getProperties().keySet()) {

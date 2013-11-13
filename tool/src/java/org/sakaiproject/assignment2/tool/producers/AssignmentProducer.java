@@ -41,6 +41,7 @@ import org.sakaiproject.assignment2.logic.GradebookItem;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentGroup;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
+import org.sakaiproject.component.api.ServerConfigurationService;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -124,6 +125,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     private Assignment2Creator assignment2Creator;
     private ExternalContentReviewLogic externalContentReviewLogic;
     private LocalTurnitinLogic localTurnitinLogic;
+    private ServerConfigurationService serverConfigurationService;
 
     // Assignment Authoring Scope Flow Bean
     private AssignmentAuthoringFlowBean assignmentAuthoringFlowBean;
@@ -877,6 +879,71 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         }
         
         UIOutput.make(tofill, "check_institution_repo_text", instRepoText);
+        
+        // erater
+        if (serverConfigurationService.getBoolean(AssignmentConstants.TII_PROP_ERATER_SERVICE_ENABLED, false)) {
+            UIOutput.make(tofill, "erater_available");
+            boolean erater = assignment.getProperties().containsKey("erater") ?
+                    (Boolean)assignment.getProperties().get("erater") : false;
+    
+            String ets_handbook="2"; //default to highschool
+            try{
+                if(assignment.getProperties().containsKey("ets_handbook")){
+                    ets_handbook = assignment.getProperties().get("ets_handbook").toString();
+                }
+            }catch(Exception e){
+            }
+    
+            String ets_dictionary="en"; //default to 'both'
+            try{
+                if(assignment.getProperties().containsKey("ets_dictionary")){
+                    ets_dictionary = assignment.getProperties().get("ets_dictionary").toString();
+                }
+            }catch(Exception e){
+            }
+            boolean ets_spelling = assignment.getProperties().containsKey("ets_spelling") ?
+                    (Boolean)assignment.getProperties().get("ets_spelling") : true;
+            boolean ets_style = assignment.getProperties().containsKey("ets_style") ?
+                    (Boolean)assignment.getProperties().get("ets_style") : true;
+            boolean ets_grammar = assignment.getProperties().containsKey("ets_grammar") ?
+                    (Boolean)assignment.getProperties().get("ets_grammar") : true;
+            boolean ets_mechanics = assignment.getProperties().containsKey("ets_mechanics") ?
+                    (Boolean)assignment.getProperties().get("ets_mechanics") : true;
+            boolean ets_usage = assignment.getProperties().containsKey("ets_usage") ?
+                    (Boolean)assignment.getProperties().get("ets_usage") : true;
+    
+            UIBoundBoolean.make(form, "erater_checkbox",assignment2OTP + ".properties.erater", erater);
+    
+            String[] ets_handbook_options = {
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.advanced"),
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.highschool"),
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.middleschool"),
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.elementary"),
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.handbook.englishlearners")
+            };
+            String[] ets_handbook_values = {"1","2","3","4","5"};
+    
+            UISelect.make(form, "ets_handbook", ets_handbook_values, ets_handbook_options,
+                    assignment2OTP + ".properties.ets_handbook",ets_handbook);
+    
+            String[] ets_dictionary_options = {
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.dictionary.us"),
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.dictionary.uk"),
+                messageLocator.getMessage("assignment2.turnitin.assnedit.erater.dictionary.both")
+            };
+            String[] ets_dictionary_values = {"en_US","en_GB","en"};
+    
+            UISelect.make(form, "ets_dictionary", ets_dictionary_values, ets_dictionary_options,
+                    assignment2OTP + ".properties.ets_dictionary",ets_dictionary);
+    
+            UIOutput.make(tofill, "erater_enabled");
+            UIBoundBoolean.make(form, "ets_spelling_checkbox",assignment2OTP + ".properties.ets_spelling", ets_spelling);
+            UIBoundBoolean.make(form, "ets_style_checkbox",assignment2OTP + ".properties.ets_style", ets_style);
+            UIBoundBoolean.make(form, "ets_grammar_checkbox",assignment2OTP + ".properties.ets_grammar", ets_grammar);
+            UIBoundBoolean.make(form, "ets_mechanics_checkbox",assignment2OTP + ".properties.ets_mechanics", ets_mechanics);
+            UIBoundBoolean.make(form, "ets_usage_checkbox",assignment2OTP + ".properties.ets_usage", ets_usage);
+            
+        }
     }
 
     public ViewParameters getViewParameters() {
@@ -943,5 +1010,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
     
     public void setAssignmentPermissionLogic(AssignmentPermissionLogic permissionLogic) {
         this.permissionLogic = permissionLogic;
+    }
+    
+    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
     }
 }

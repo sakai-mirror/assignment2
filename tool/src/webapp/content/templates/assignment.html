@@ -362,6 +362,61 @@
                       <label for="check_against_institution_repo_checkbox" rsf:id="check_institution_repo_text">Institution-specific repository!</label>
                   </div>
               </div>
+              
+
+              <div rsf:id="erater_available">
+                  <div class="liItem">
+                      <input type="checkbox" rsf:id="erater_checkbox" id="erater_checkbox" />
+                      <label for="erater_checkbox" rsf:id="msg=assignment2.turnitin.assnedit.erater.use_erater" id="">Use ETS e-rater</label>
+                      <span class="inlineMessage messageConfirmation" style="display: none;" id="tii_erater_warning" rsf:id="msg=assignment2.turnitin.assnedit.erater.warning">ensure e-rater is enabled on your Turnitin account</span>
+                  </div>
+    
+                  <div id="erater_enabled" class="liItem" rsf:id="erater_enabled" style="clear:both; display: none;">
+         
+                      <div class="liItem">
+                          <div style="clear:both" class="asnnOption">
+                              <label class="" rsf:id="msg=assignment2.turnitin.assnedit.erater.handbook.title">ETS Handbook</label>
+                              <select rsf:id="ets_handbook">
+                              </select>
+                          </div>
+                      </div>
+                      <div class="liItem">
+                          <div style="clear:both" class="asnnOption">
+                              <label class="" rsf:id="msg=assignment2.turnitin.assnedit.erater.dictionary.title">e-rater Dictionary</label>
+                              <select rsf:id="ets_dictionary">
+                              </select>
+                          </div>
+                      </div>
+    
+                      <div class="liItem">
+                          <span rsf:id="msg=assignment2.turnitin.assnedit.erater.categories.title">e-rater Categories:</span>
+                      </div>
+    
+                      <div class="liItem">
+    
+                          <div class="liItem">
+                              <input type="checkbox" rsf:id="ets_spelling_checkbox" id="ets_spelling_checkbox" />
+                              <label for="ets_spelling_checkbox" rsf:id="msg=assignment2.turnitin.assnedit.erater.categories.spelling">Spelling</label>
+                          </div>
+                          <div class="liItem">
+                              <input type="checkbox" rsf:id="ets_style_checkbox" id="ets_style_checkbox" />
+                              <label for="ets_style_checkbox"  rsf:id="msg=assignment2.turnitin.assnedit.erater.categories.style">Style</label>
+                          </div>
+                          <div class="liItem">
+                              <input type="checkbox" rsf:id="ets_grammar_checkbox" id="ets_grammar_checkbox" />
+                              <label for="ets_grammar_checkbox"  rsf:id="msg=assignment2.turnitin.assnedit.erater.categories.grammar">Grammar</label>
+                          </div>
+                          <div class="liItem">
+                              <input type="checkbox" rsf:id="ets_mechanics_checkbox" id="ets_mechanics_checkbox" />
+                              <label for="ets_mechanics_checkbox"  rsf:id="msg=assignment2.turnitin.assnedit.erater.categories.mechanics">Mechanics</label>
+                          </div>
+                          <div class="liItem">
+                              <input type="checkbox" rsf:id="ets_usage_checkbox" id="ets_usage_checkbox" />
+                              <label for="ets_usage_checkbox"  rsf:id="msg=assignment2.turnitin.assnedit.erater.categories.usage">Usage</label>
+                          </div>
+                      </div>
+                  </div> 
+              </div>
            </div>
         </div>
     </fieldset>
@@ -497,12 +552,21 @@ jQuery(document).ready(function(){
     // Init TII area
     var tii_options = jQuery('#page-replace\\:\\:tii_properties').get(0);
     var tii = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+    var erater_options = jQuery('#page-replace\\:\\:erater_enabled').get(0);
+    var erater_checkbox = jQuery("input[name='page-replace\:\:erater_checkbox']").get(0);
     jQuery(tii).click(function(){
         asnn2.showHideByCheckbox(this, tii_options);
         asnn2editpage.tii_attachWarning(); // display the warning about text submissions if appropriate
     });
     // initialize the TII display
     asnn2.showHideByCheckbox(tii, tii_options);
+
+    jQuery(erater_checkbox).click(function(){
+        asnn2.showHideByCheckbox(this, erater_options);
+        asnn2editpage.tii_eraterWarning();
+    });
+
+    asnn2.showHideByCheckbox(erater_checkbox, erater_options);
 
     // we may also need to display/hide tii options based upon the submission type setting
     if (tii_content) {

@@ -1374,7 +1374,26 @@ var asnn2editpage = asnn2editpage || {};
             }
         }
     };
-    
+
+    asnn2editpage.tii_eraterWarning = function() {
+        var tii_content = jQuery('#page-replace\\:\\:tii_content_review_area').get(0);
+        if (tii_content) {
+            // check to see if tii is enabled
+            var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
+
+            var eraterCheckbox = jQuery("input[name='page-replace\:\:erater_checkbox']").get(0);
+
+            var eraterWarning = jQuery("#page-replace\\:\\:tii_erater_warning");
+            if (useTiiOption && useTiiOption.checked) {
+                if (eraterCheckbox && eraterCheckbox.checked) {
+                    eraterWarning.show();
+                } else {
+                    eraterWarning.hide();
+                }
+            }
+        }
+    };
+
 })(jQuery, asnn2editpage);
 
 var asnn2listpage = asnn2listpage || {};

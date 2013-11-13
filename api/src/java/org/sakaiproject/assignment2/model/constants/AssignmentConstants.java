@@ -318,6 +318,34 @@ public class AssignmentConstants {
     public static final String TII_API_PARAM_JOURNAL_CHECK = "journal_check";
     public static final String TII_API_PARAM_INSTITUTION_CHECK = "institution_check";
     public static final String TII_API_PARAM_S_VIEW_REPORT = "s_view_report";
+    
+    /**
+     * sakai.property to make the grademark (paid) service option available
+     */
+    public static final String TII_PROP_GRADEMARK_ENABLED = "turnitin.useGrademark";
+    
+    //erater
+    /**
+     * sakai.property to make the erater (paid) service options available
+     */
+    public static final String TII_PROP_ERATER_SERVICE_ENABLED = "turnitin.erater.enabled";
+    public static final String TII_RETCODE_ERATER= "erater";
+    public static final String TII_RETCODE_ETS_HANDBOOK= "ets_handbook";
+    public static final String TII_RETCODE_ETS_DICTIONARY= "ets_dictionary";
+    public static final String TII_RETCODE_ETS_SPELLING= "ets_spelling";
+    public static final String TII_RETCODE_ETS_STYLE= "ets_style";
+    public static final String TII_RETCODE_ETS_GRAMMAR= "ets_grammar";
+    public static final String TII_RETCODE_ETS_MECHANICS= "ets_mechanics";
+    public static final String TII_RETCODE_ETS_USAGE= "ets_usage";
+
+    public static final String TII_API_PARAM_ERATER = "erater";
+    public static final String TII_API_PARAM_ETS_HANDBOOK = "ets_handbook";
+    public static final String TII_API_PARAM_ETS_DICTIONARY = "ets_dictionary";
+    public static final String TII_API_PARAM_ETS_SPELLING = "ets_spelling";
+    public static final String TII_API_PARAM_ETS_STYLE = "ets_style";
+    public static final String TII_API_PARAM_ETS_GRAMMAR = "ets_grammar";
+    public static final String TII_API_PARAM_ETS_MECHANICS = "ets_mechanics";
+    public static final String TII_API_PARAM_ETS_USAGE = "ets_usage";
 
     /*
      * Assignment 2 Event Codes Below
