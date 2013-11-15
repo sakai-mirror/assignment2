@@ -282,7 +282,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
             }
 
             // Create/Edit Matrix Links
-            asnnmap.put("canMatrixLink", siteAssociated && canEdit);
+            asnnmap.put("canMatrixLink", siteAssociated && canEdit && taggableLogic.isProducerEnabled());
 
             List<String> viewableStudents = assignmentViewableStudentsMap.get(asnn);
             

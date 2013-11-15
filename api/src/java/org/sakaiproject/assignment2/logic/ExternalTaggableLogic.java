@@ -33,6 +33,12 @@ public interface ExternalTaggableLogic {
 	 * @return
 	 */
 	public boolean isSiteAssociated(String context);
+	
+	/**
+	 * Is the producer enabled?
+	 * @return
+	 */
+	public boolean isProducerEnabled();
 
 	/**
 	 * Gets the producer indicated by the bean id of {@link #ACTIVITY_PRODUCER_ID}

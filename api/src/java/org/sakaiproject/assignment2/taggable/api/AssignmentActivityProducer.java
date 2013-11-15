@@ -39,6 +39,11 @@ public interface AssignmentActivityProducer extends TaggableActivityProducer {
      */
     public static final String PRODUCER_ID = AssignmentActivityProducer.class
     .getName();
+    
+    /**
+     * The key used to look up a value in the ServerConfigurationService if this producer should be enabled
+     */
+    public static final String PRODUCER_ENABLED_KEY = "assignment2.activityProducer.enabled";
 
     /**
      * Method to wrap the given assignment as a taggable activity.

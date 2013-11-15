@@ -8,7 +8,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment2.logic.ExternalTaggableLogic;
+import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.taggable.api.TaggableActivityProducer;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
@@ -39,6 +41,10 @@ public class ExternalTaggableLogicImpl implements ExternalTaggableLogic {
 
 	public boolean isTaggable() {
 		return getTaggingManager().isTaggable();
+	}
+	
+	public boolean isProducerEnabled() {
+		return ServerConfigurationService.getBoolean(AssignmentActivityProducer.PRODUCER_ENABLED_KEY, true);
 	}
 
 	public TaggableActivityProducer getMyProducer() {

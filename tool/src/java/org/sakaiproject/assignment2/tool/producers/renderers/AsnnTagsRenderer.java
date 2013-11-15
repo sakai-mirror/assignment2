@@ -93,7 +93,7 @@ public class AsnnTagsRenderer implements BasicProducer {
         
         String exitUrl = getFullToolUrl() + "/finish-ui-modal";
                 
-        if (!taggableLogic.isSiteAssociated(assignment.getContextId())) {
+        if (!taggableLogic.isSiteAssociated(assignment.getContextId()) || !taggableLogic.isProducerEnabled()) {
             return;
         }
         

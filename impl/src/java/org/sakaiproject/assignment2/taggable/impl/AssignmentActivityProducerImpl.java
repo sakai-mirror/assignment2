@@ -48,6 +48,7 @@ import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
@@ -177,8 +178,10 @@ AssignmentActivityProducer {
 
     public void init() {
         logger.info("init()");
-
-        taggingManager.registerProducer(this);
+        if (ServerConfigurationService.getBoolean(PRODUCER_ENABLED_KEY, true)) {
+        	logger.info("Enabling AssignmentActivityProducerImpl");
+        	taggingManager.registerProducer(this);
+        }
     }
 
     protected String parseAuthor(String itemRef) {
