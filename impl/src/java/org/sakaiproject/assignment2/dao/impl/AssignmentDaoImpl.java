@@ -404,8 +404,7 @@ public class AssignmentDaoImpl extends HibernateGeneralGenericDao implements Ass
                 List<AssignmentSubmissionVersion> versions = new ArrayList<AssignmentSubmissionVersion>();
 
                 if (versionIds != null && !versionIds.isEmpty()) {
-                    String hql = "from AssignmentSubmissionVersion as version where version.id in (:versionIdList)";
-                    Query query = session.createQuery(hql);
+                    Query query = session.getNamedQuery("findAssignmentSubmissionVersionsByIds");
 
                     versions = queryWithParameterList(query, "versionIdList", versionIds);
                 }

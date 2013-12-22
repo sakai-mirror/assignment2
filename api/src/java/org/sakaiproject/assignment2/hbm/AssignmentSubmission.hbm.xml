@@ -16,7 +16,7 @@
         <!--  This maps to the A2_ASSIGNMENT_T table -->
         <many-to-one name="assignment" column="ASSIGNMENT_ID"
         	class="org.sakaiproject.assignment2.model.Assignment2"
-        	not-null="true" unique-key="ASSIGN_ID_USER_ID" lazy="false" 
+        	not-null="true" unique-key="ASSIGN_ID_USER_ID"
         	index="A2_SUBMISSION_ASSIGN_I" />
 
         <!-- The userId of the user associated with this submission -->
@@ -93,6 +93,7 @@
     				 left join fetch submission.submissionHistorySet versions
     				 left join fetch versions.feedbackAttachSet
     				 left join fetch versions.submissionAttachSet
+    				 left join fetch submission.assignment
              where submission.userId = :studentId and
              		submission.assignment = :assignment]]>
   	</query>
@@ -101,16 +102,19 @@
     				 left join fetch submission.submissionHistorySet versions
     				 left join fetch versions.feedbackAttachSet
     				 left join fetch versions.submissionAttachSet
+    				 left join fetch submission.assignment
              where submission.userId in (:studentIdList) and
              		submission.assignment = :assignment]]>
   	</query>
   	<query name="findSubmissionByIdWithHistory">
   	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+  	                 left join fetch submission.assignment
     				 left join fetch submission.submissionHistorySet versions
              where submission.id = :submissionId]]>
   	</query>
   	<query name="findSubmissionsForStudentWithVersionHistoryAndAttach">
   	<![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmission submission
+  	                 left join fetch submission.assignment
     				 left join fetch submission.submissionHistorySet versions
     				 left join fetch versions.feedbackAttachSet
     				 left join fetch versions.submissionAttachSet
@@ -122,6 +126,7 @@
     				 left join fetch submission.submissionHistorySet versions
     				 left join fetch versions.feedbackAttachSet
     				 left join fetch versions.submissionAttachSet
+    				 left join fetch submission.assignment
              where submission.userId = :studentId and
              		submission.assignment.contextId = :contextId and
              		submission.assignment.removed = true]]>

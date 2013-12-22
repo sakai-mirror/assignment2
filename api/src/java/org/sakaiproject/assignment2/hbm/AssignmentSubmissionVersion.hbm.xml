@@ -17,7 +17,7 @@
         <!--  This maps to the A2_SUBMISSION_T table -->
         <many-to-one name="assignmentSubmission" column="SUBMISSION_ID"
         	class="org.sakaiproject.assignment2.model.AssignmentSubmission"
-        	not-null="true" lazy="false" index="A2_SUB_VERSION_SUB_I" 
+        	not-null="true" index="A2_SUB_VERSION_SUB_I" 
         	unique-key="SUBMISSION_ID_VERSION_NUM" />
         <!-- the date and time of submission -->
         <property name="submittedDate" type="java.util.Date">
@@ -108,6 +108,7 @@
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
              left join fetch submissionVersion.submissionAttachSet
              left join fetch submissionVersion.feedbackAttachSet
+             left join fetch submissionVersion.assignmentSubmission
              where submissionVersion.id = :submissionVersionId]]>
   	</query>
 
@@ -140,8 +141,10 @@
 
   	<query name="findVersionHistoryForSubmission">
     <![CDATA[from org.sakaiproject.assignment2.model.AssignmentSubmissionVersion submissionVersion
+             left join fetch submissionVersion.assignmentSubmission
              left join fetch submissionVersion.submissionAttachSet
              left join fetch submissionVersion.feedbackAttachSet
+             left join fetch submissionVersion.assignmentSubmission.assignment
              where submissionVersion.assignmentSubmission = :submission
              order by submissionVersion.submittedVersionNumber desc]]>
   	</query>
@@ -171,5 +174,11 @@
              and submission.userId in (:studentIdList)
              and submissionVersion.submittedDate != null]]>
   	</query>
+  	
+  	<query name="findAssignmentSubmissionVersionsByIds">
+    <![CDATA[from AssignmentSubmissionVersion as version 
+             left join fetch version.assignmentSubmission
+             where version.id in (:versionIdList)]]>
+    </query>
 	
 </hibernate-mapping>
