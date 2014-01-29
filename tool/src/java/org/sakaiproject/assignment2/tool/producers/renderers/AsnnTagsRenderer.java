@@ -139,7 +139,7 @@ public class AsnnTagsRenderer implements BasicProducer {
                                 tempColumnName = column.getDisplayName();
                             }
                             else {
-                                tempColumnName = "";
+                                tempColumnName = " ";
                             }
                             
                             UIOutput.make(tableEven, "tag-headings:", tempColumnName);
