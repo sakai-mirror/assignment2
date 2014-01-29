@@ -925,7 +925,7 @@ a.tagDescription {
 #tooltip h3, #tooltip div { margin: 0; }
 
 
-.listCorrection ol li {
+.listCorrection ol li, .listCorrection ul li {
 	margin-left:20px;
 }
 
