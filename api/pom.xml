@@ -36,7 +36,7 @@
             <artifactId>sakai-kernel-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>${sakai.taggable.group}</groupId>
+            <groupId>org.sakaiproject.taggable</groupId>
             <artifactId>sakai-taggable-api</artifactId>
         </dependency>
         <dependency>

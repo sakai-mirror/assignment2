@@ -7,7 +7,7 @@
     <parent>
        <artifactId>master</artifactId>
        <groupId>org.sakaiproject</groupId>
-       <version>2.10-SNAPSHOT</version>
+       <version>10.0-SNAPSHOT</version>
        <relativePath>../master/pom.xml</relativePath>
     </parent>
     
@@ -24,15 +24,6 @@
         <module>tool</module>
     </modules>
     
-    <properties>
-        <sakai.generic-dao.version>0.9.8</sakai.generic-dao.version>
-        <sakai.taggable.group>org.sakaiproject.taggable</sakai.taggable.group>
-        <sakai.calendar.group>org.sakaiproject.calendar</sakai.calendar.group>
-        <sakai.announcement.group>org.sakaiproject.announcement</sakai.announcement.group>
-        <sakai.message.group>org.sakaiproject.message</sakai.message.group>
-        <sakai.assignment.group>org.sakaiproject.assignment</sakai.assignment.group>
-    </properties>
-    
     <scm>
         <connection>scm:svn:https://source.sakaiproject.org/contrib/assignment2/trunk/</connection>
         <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/assignment2/trunk/</developerConnection>
@@ -46,69 +37,6 @@
             <url>scpexe://source.sakaiproject.org/var/www/html/release/assignment2/${project.version}</url>
         </site>
     </distributionManagement>
-    
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven2-central-repo</id>
-            <name>Maven2 Central Repo</name>
-            <url>http://repo1.maven.org/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>Sakai Plugin Repo</id>
-            <url>http://source.sakaiproject.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-    
-    <repositories>
-        <repository>
-            <id>sakai-maven</id>
-            <name>Sakai Maven Repo</name>
-            <layout>default</layout>
-            <url>http://source.sakaiproject.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>sakai-maven2-snapshots</id>
-            <name>Sakai Maven Repo</name>
-            <layout>default</layout>
-            <url>http://source.sakaiproject.org/maven2-snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>default</id>
-            <name>Maven Repository Switchboard</name>
-            <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     
     <!-- handles the management of all related dependencies -->
     <dependencyManagement>
@@ -210,8 +138,8 @@
             </plugin>
             <plugin>
                 <!-- jxr source code cross linking -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
                 <configuration>
                     <linkJavadoc>true</linkJavadoc>
                     <javadocDir>apidocs</javadocDir>
@@ -227,7 +155,7 @@
             </activation>
         </profile>
         <profile>
-            <id>2.10.x</id>
+            <id>10.x</id>
         </profile>
     </profiles>
 </project>

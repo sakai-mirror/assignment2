@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.sakaiproject</groupId>
             <artifactId>generic-dao</artifactId>
-            <version>0.9.17</version>
+            <version>${generic-dao.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -114,17 +114,17 @@
 
         <!-- Required for announcements integration -->
         <dependency>
-            <groupId>${sakai.announcement.group}</groupId>
+            <groupId>org.sakaiproject.announcement</groupId>
             <artifactId>sakai-announcement-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>${sakai.message.group}</groupId>
+            <groupId>org.sakaiproject.message</groupId>
             <artifactId>sakai-message-api</artifactId>
         </dependency>
 
         <!-- Schedule/Calendar integration -->
         <dependency>
-            <groupId>${sakai.calendar.group}</groupId>
+            <groupId>org.sakaiproject.calendar</groupId>
             <artifactId>sakai-calendar-api</artifactId>
         </dependency>
 
@@ -140,11 +140,11 @@
         </dependency>
         <!-- for importing from the original assignments tool -->
         <dependency>
-            <groupId>${sakai.assignment.group}</groupId>
+            <groupId>org.sakaiproject.assignment</groupId>
             <artifactId>sakai-assignment-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>${sakai.taggable.group}</groupId>
+            <groupId>org.sakaiproject.taggable</groupId>
             <artifactId>sakai-taggable-api</artifactId>
         </dependency>
         <!-- for upload/download all -->
@@ -171,9 +171,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.5</version>
         </dependency>
         <dependency>
             <groupId>dom4j</groupId>
@@ -192,7 +191,6 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.3</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -204,8 +202,11 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -218,8 +219,6 @@
             <artifactId>sakai-mock</artifactId>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>
