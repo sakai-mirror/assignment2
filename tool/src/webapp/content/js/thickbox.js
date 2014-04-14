@@ -340,14 +340,6 @@ function tb_remove() {
 	//jQuery("#" + iframeId, parent.document).css("z-index", "0");
 	document.onkeydown = "";
 	document.onkeyup = "";
-	
-	// add close handler so we can do cleanup stuff should a user click the close window "X"
-	// User defines a function named tb_close() and it will be called if it exists
-	
-	if (window.tb_close != undefined) {
-		tb_close();
-	}
-	
 	return false;
 }
 

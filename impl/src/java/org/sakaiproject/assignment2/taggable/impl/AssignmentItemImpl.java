@@ -32,7 +32,6 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.taggable.api.EvaluateableItem;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.user.api.User;
@@ -40,7 +39,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 
-public class AssignmentItemImpl implements TaggableItem, EvaluateableItem {
+public class AssignmentItemImpl implements TaggableItem {
 
     private static final Log logger = LogFactory
     .getLog(AssignmentItemImpl.class);
@@ -90,9 +89,7 @@ public class AssignmentItemImpl implements TaggableItem, EvaluateableItem {
             sb.append(' ');
             sb.append(user.getLastName());
             sb.append(' ');
-            sb.append(activity.getTitle());
-            sb.append(' ');
-            sb.append(rb.getString("assignment2.student-submit.assignment_submission"));
+            sb.append(rb.getString("gen.submission"));
         } catch (UserNotDefinedException unde) {
             logger.error(unde.getMessage(), unde);
         }
