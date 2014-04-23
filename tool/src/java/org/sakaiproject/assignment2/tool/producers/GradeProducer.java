@@ -443,8 +443,13 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 
                 // things get tricky if the num submissions allowed is less than the curr number of submissions
                 // (hopefully no one would do that but just in case!)
-                int numSubmissionsSelectValue = current_times_submitted_already > numSubmissionsAllowed ? current_times_submitted_already : numSubmissionsAllowed;
-
+                int numSubmissionsSelectValue;
+                if (AssignmentConstants.UNLIMITED_SUBMISSION == numSubmissionsAllowed) {
+                    numSubmissionsSelectValue = AssignmentConstants.UNLIMITED_SUBMISSION;
+                } else {
+                    numSubmissionsSelectValue = current_times_submitted_already > numSubmissionsAllowed ? current_times_submitted_already : numSubmissionsAllowed;
+                }
+                    
                 UISelect.make(form, "resubmission_additional", number_submissions_values, number_submissions_options, 
                         asOTP + ".numSubmissionsAllowed", numSubmissionsSelectValue + "");
 
