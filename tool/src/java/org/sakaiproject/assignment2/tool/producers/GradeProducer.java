@@ -158,8 +158,6 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
         AssignmentSubmission as = submissionLogic.getCurrentSubmissionByAssignmentIdAndStudentId(assignmentId, userId, null);
         Assignment2 assignment = assignmentLogic.getAssignmentByIdWithAssociatedData(assignmentId);
         
-        makeSaveGradingDialog(tofill);
-        
         // the "Return to List" link
         UIInternalLink.make(tofill, "returnToList_link", messageLocator.getMessage("assignment2.assignment_grade.returnToList", new Object[] { assignment.getTitle()}), 
                 new ViewSubmissionsViewParams(ViewSubmissionsProducer.VIEW_ID, assignment.getId()));

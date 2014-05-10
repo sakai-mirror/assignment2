@@ -437,6 +437,7 @@
       <property name="notificationBean" ref="notificationBean" />
       <property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic" />
       <property name="externalEventLogic" ref="org.sakaiproject.assignment2.logic.ExternalEventLogic" />
+      <property name="externalLogic" ref="org.sakaiproject.assignment2.logic.ExternalLogic" />
    </bean>
    
    <!-- For Students completing a submission. -->

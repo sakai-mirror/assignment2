@@ -31,6 +31,7 @@ import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentSubmissionLogic;
 import org.sakaiproject.assignment2.logic.ExternalEventLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
+import org.sakaiproject.assignment2.logic.ExternalLogic;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.AssignmentSubmission;
 import org.sakaiproject.assignment2.model.AssignmentSubmissionVersion;
@@ -80,6 +81,11 @@ public class GradeAndFeedbackSubmissionBean {
     private ExternalEventLogic eventLogic;
     public void setExternalEventLogic(ExternalEventLogic eventLogic) {
         this.eventLogic = eventLogic;
+    }
+    
+    private ExternalLogic externalLogic;
+    public void setExternalLogic(ExternalLogic externalLogic) {
+        this.externalLogic = externalLogic;
     }
 
     private Map<String, AssignmentSubmission> OTPMap;
@@ -313,7 +319,7 @@ public class GradeAndFeedbackSubmissionBean {
         }
         
         
-        messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {}, TargettedMessage.SEVERITY_INFO));
+        messages.addMessage(new TargettedMessage("assignment2.assignment_grade.save_confirmation", new Object[] {externalLogic.getUserDisplayName(userId)}, TargettedMessage.SEVERITY_INFO));
         return WorkFlowResult.valueOf(submitOption);
     }
 

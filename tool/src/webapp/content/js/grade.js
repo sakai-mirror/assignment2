@@ -57,6 +57,16 @@ asnn2gradeview.set_accept_until_on_submission_level = function() {
 }
 
 /**
+ * Save feedback when user hits Next/Previous/Return to List when grading
+ */
+asnn2gradeview.saveFeedback = function(direction, contUrl) {
+	var formSubmit = document.getElementById("page-replace::submit");
+    var option = document.getElementById("page-replace::submitOption");
+    option.value="INSTRUCTOR_FEEDBACK_SUBMIT_" + direction;
+    formSubmit.click();
+}
+
+/**
  * Save/Release/Clear grading information for submission and navigate
  *
  * This function uses the asnn2 dialog utility.
