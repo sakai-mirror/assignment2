@@ -273,7 +273,7 @@ public class StudentViewAssignmentRenderer {
                         // of the screen
                         asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false, optionalParamMap);
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
-                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, assignmentSubmission, true, true, false);
+                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }
                     else if (submissionIsOpen) {
                         // just display the details b/c the editor will display the instructions
@@ -283,7 +283,7 @@ public class StudentViewAssignmentRenderer {
                         // of the screen
                         asnnInstructionsRenderer.makeInstructions(joint, "asnn-instructions-bottom:", assignment, true, true, false, optionalParamMap);
                         asnnDetailsRenderer.fillComponents(joint, "asnn-details-bottom:", assignmentSubmission, false, true, false);
-                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, assignmentSubmission, true, true, false);
+                        tagsRenderer.makeTagInformation(joint, "asnn-tags-bottom:", assignment, true, true, false);
                     }
                 }
             }
