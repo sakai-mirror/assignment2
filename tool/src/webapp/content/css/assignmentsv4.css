@@ -791,7 +791,11 @@ a.fl-pager-currentPage {
 }
 
 #pager-top, #pager-bottom {
-  padding: 10px;
+  padding: 0px 10px;
+}
+
+#bottom-pager-area {
+	padding: 10px;
 }
 
 #page-list, #page-list-bottom {
