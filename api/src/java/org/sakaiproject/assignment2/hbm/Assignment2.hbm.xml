@@ -95,6 +95,10 @@
         <property name="contentReviewEnabled" type="boolean">
         	<column name="CONTENT_REVIEW_ENABLED" />
         </property>
+       	<!-- true if content review allows students to view their own reports -->
+        <property name="contentReviewStudentViewReport" type="java.lang.Boolean">
+        	<column name="CONTENT_REVIEW_STU_VIEW_REPORT" />
+        </property>
         <!-- a reference for the content review service item associated with this
              assignment -->
         <property name="contentReviewRef" type="java.lang.String" >

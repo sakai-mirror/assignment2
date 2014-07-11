@@ -583,7 +583,7 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
                 UIOutput.make(versionContainer, "submitted_attachments_fieldset");
 
                 if (contentReviewEnabled && version.getSubmissionAttachSet() != null && !version.getSubmissionAttachSet().isEmpty()) {
-                    contentReviewLogic.populateReviewProperties(assignment, version.getSubmissionAttachSet(), true);
+                    contentReviewLogic.populateReviewProperties(assignment, version.getSubmissionAttachSet(), true, version.getAssignmentSubmission().getUserId());
                 }
 
                 attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(versionContainer, "submitted_attachment_list:", params.viewID, 

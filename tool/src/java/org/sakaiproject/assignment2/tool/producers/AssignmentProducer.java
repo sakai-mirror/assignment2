@@ -723,10 +723,21 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
      */
     private void renderTurnitinArea(UIContainer tofill, String assignment2OTP,
             Assignment2 assignment, UIForm form) {
-        Map props = assignment.getProperties();
+      Map props = assignment.getProperties();
 
-        UIOutput.make(tofill, "tii_content_review_area");
+      UIOutput.make(tofill, "tii_content_review_area");
         
+      String contentReviewServiceName = externalContentReviewLogic.getServiceName();
+      boolean isTII = AssignmentConstants.CONTENT_REVIEW_NAME_TII.equals(contentReviewServiceName);
+      UIOutput.make(tofill, "assignment2.contentreview.asnnedit.title", contentReviewServiceName);
+        
+      UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
+      UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
+              assignment2OTP + ".contentReviewStudentViewReport");
+      UIOutput.make(tofill, "tii_enabled_area");
+      UIOutput.make(tofill, "contentReview_properties");
+      UIMessage.make(tofill, "assignment2.turnitin.asnnedit.use_turnitin", "assignment2.turnitin.asnnedit.use_turnitin", new Object[] {contentReviewServiceName});
+      if(isTII){
         // If a Turnitin assignment has already been created for this assignment,
         // then we except there to be some sort of return code from the call
         // that would have been made to populate the properties.
@@ -745,7 +756,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             }
         }
 
-        UIOutput.make(tofill, "tii_enabled_area");
+        
         UIOutput.make(tofill, "tii_properties");
         
         // add the supported formats link, if specified in sakai.properties
@@ -754,7 +765,6 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             UILink.make(tofill, "tii_supported_formats", messageLocator.getMessage("assignment2.turnitin.asnnedit.supported_formats"), supportedFormatsUrl);
         }
 
-        UIBoundBoolean.make(form, "use_tii", assignment2OTP + ".contentReviewEnabled");
 
         // Submit papers to repository
         List<String> repoOptions = localTurnitinLogic.getSubmissionRepositoryOptions();
@@ -845,8 +855,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
         UISelectChoice.make(form, "gen_report_on_due_date", gen_reports_select_id, 1);
         UISelectLabel.make(form, "gen_report_on_due_date_label", gen_reports_select_id, 1);
         
-        UIBoundBoolean.make(form, "allow_students_to_see_originality_checkbox", 
-                assignment2OTP + ".properties.s_view_report");
+        
         
         
         // set the checkboxes to default to true
@@ -944,6 +953,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
             UIBoundBoolean.make(form, "ets_usage_checkbox",assignment2OTP + ".properties.ets_usage", ets_usage);
             
         }
+      }
     }
 
     public ViewParameters getViewParameters() {

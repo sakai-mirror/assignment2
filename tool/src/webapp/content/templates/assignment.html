@@ -293,7 +293,7 @@
 	</fieldset>
 	
 	<fieldset rsf:id="tii_content_review_area" id="">
-        <legend rsf:id="msg=assignment2.turnitin.asnnedit.title">Turnitin</legend>
+        <legend rsf:id="assignment2.contentreview.asnnedit.title" class="contentReviewName">Turnitin</legend>
 
         <div rsf:id="tii_errors" class="generalErrors">
           <div style="display:inline">
@@ -306,15 +306,30 @@
         <div id="tii_enabled_area" rsf:id="tii_enabled_area" style="clear:both">
             <div class="asnnOptionsSubsection">
               <input type="checkbox" rsf:id="use_tii" id="use_tii" />
-              <label for="use_tii" rsf:id="msg=assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
+              <label for="use_tii" rsf:id="assignment2.turnitin.asnnedit.use_turnitin" id="">Use Turnitin</label>
               <a rsf:id="tii_supported_formats" class="supported_formats_link" target="_blank">Supported Formats!</a>
               <span class="inlineMessage messageConfirmation" style="display: none;" id="tii_attach_warning" rsf:id="msg=assignment2.turnitin.asnnedit.attachment.warning">Turnitin supports attachments only. Reports will not be generated for text-only submissions!!</span>
             </div>
             
         </div>
+        <div id="contentReview_properties" rsf:id="contentReview_properties" style="clear:both; display: none;">
+          <div class="asnnOptionsSubsection">
+              <div class="liItem">
+              	  <div class="liItem">
+                      <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
+                      <label for="allow_students_to_see_originality_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</label>
+                  </div>
+              </div>
+           </div>
+        </div>
         <div id="tii_properties" rsf:id="tii_properties" style="clear:both; display: none;">
           <div class="asnnOptionsSubsection">
-              
+              <div class="liItem">
+              	  <div class="liItem">
+                      <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
+                      <label for="allow_students_to_see_originality_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</label>
+                  </div>
+              </div>
               <div class="liItem" rsf:id="submit_to_options">
                 <div rsf:id="msg=assignment2.turnitin.asnnedit.submit_papers_to" class="asnnOption">Submit papers to </div>
                 <span rsf:id="submit_to_repo_radios" />
@@ -337,10 +352,6 @@
                   <div class="liItem">
                       <input rsf:id="gen_report_on_due_date" id="gen_report_on_due_date" name="gen_reports" type="radio" onchange="asnn2.showHideGradeSettingError();"/> 
                       <label for="gen_report_on_due_date" rsf:id="gen_report_on_due_date_label">On due date!</label><span rsf:id="msg=assignment2.turnitin.asnnedit.generate_originality_reports.no_due_date" id="gen_reports_no_due_date" class="messageConfirmation">No due date was set!</span>
-                  </div>
-                  <div class="liItem">
-                      <input type="checkbox" rsf:id="allow_students_to_see_originality_checkbox" id="allow_students_to_see_originality_checkbox" />
-                      <label for="allow_students_to_see_originality_checkbox" rsf:id="msg=assignment2.turnitin.asnnedit.allow_students_to_see_originality_reports">Allow students to see originality reports</label>
                   </div>
               </div>
               <div class="liItem">
@@ -550,16 +561,19 @@ jQuery(document).ready(function(){
     jQuery("input[name='page-replace\:\:title']").focus();
 
     // Init TII area
+    var contentReview_options = jQuery('#page-replace\\:\\:contentReview_properties').get(0);
     var tii_options = jQuery('#page-replace\\:\\:tii_properties').get(0);
     var tii = jQuery("input[name='page-replace\:\:use_tii']").get(0);
     var erater_options = jQuery('#page-replace\\:\\:erater_enabled').get(0);
     var erater_checkbox = jQuery("input[name='page-replace\:\:erater_checkbox']").get(0);
     jQuery(tii).click(function(){
         asnn2.showHideByCheckbox(this, tii_options);
+        asnn2.showHideByCheckbox(this, contentReview_options);
         asnn2editpage.tii_attachWarning(); // display the warning about text submissions if appropriate
     });
     // initialize the TII display
     asnn2.showHideByCheckbox(tii, tii_options);
+    asnn2.showHideByCheckbox(tii, contentReview_options);
 
     jQuery(erater_checkbox).click(function(){
         asnn2.showHideByCheckbox(this, erater_options);

@@ -123,7 +123,7 @@ public class AsnnSubmissionVersionRenderer implements BasicProducer {
             if (submissionType == AssignmentConstants.SUBMIT_ATTACH_ONLY || submissionType == AssignmentConstants.SUBMIT_INLINE_AND_ATTACH) {
                 if (asnnSubVersion.getSubmissionAttachSet() != null && !asnnSubVersion.getSubmissionAttachSet().isEmpty()){
                     if (assignment.isContentReviewEnabled() && contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
-                        contentReviewLogic.populateReviewProperties(assignment, asnnSubVersion.getSubmissionAttachSet(), false);
+                        contentReviewLogic.populateReviewProperties(assignment, asnnSubVersion.getSubmissionAttachSet(), false, asnnSubVersion.getAssignmentSubmission().getUserId());
                     }
                     UIMessage.make(joint, "submission-attachments-header", "assignment2.student-submit.submitted_attachments");
                     attachmentListRenderer.makeAttachmentFromSubmissionAttachmentSet(joint, "submission-attachment-list:", viewParameters.viewID, 

@@ -505,6 +505,7 @@
 	<!-- Validators -->
 	<bean id="assignment2Validator" class="org.sakaiproject.assignment2.tool.beans.Assignment2Validator">
     	<property name="externalGradebookLogic" ref="org.sakaiproject.assignment2.logic.ExternalGradebookLogic"></property>
+    	<property name="externalContentReviewLogic" ref="org.sakaiproject.assignment2.logic.ExternalContentReviewLogic"></property>
 	</bean>
 
     <!-- ASNN-521 -->

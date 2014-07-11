@@ -211,9 +211,11 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                         // content review settings
                         if (contentReviewAvailable) {
                             newAssignment.setContentReviewEnabled(assignDef.isContentReviewEnabled());
+                            newAssignment.setContentReviewStudentViewReport(assignDef.isContentReviewStudentViewReport());
                             newAssignment.setProperties(assignDef.getProperties());
                         } else {
                             newAssignment.setContentReviewEnabled(false);
+                            newAssignment.setContentReviewStudentViewReport(false);
                         }
 
                         // if this item is graded, we need to link it up to a 

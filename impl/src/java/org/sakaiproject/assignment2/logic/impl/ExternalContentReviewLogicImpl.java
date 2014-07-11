@@ -26,10 +26,12 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -88,7 +90,8 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         if (contentReview != null) {
             // check and see if Turnitin was enabled
             String turnitinEnabled = serverConfigurationService.getString(AssignmentConstants.TII_ENABLED, "false");
-            if ("true".equals(turnitinEnabled)) {
+            String contentReviewEnabled = serverConfigurationService.getString(AssignmentConstants.CONTENT_REVIEW_ENABLED, "false");
+            if ("true".equals(turnitinEnabled) || "true".equals(contentReviewEnabled)) {
                 // we need to see if it was enabled at the site level
                 Site site = externalLogic.getSite(siteId);
                 if (site != null && contentReview.isSiteAcceptable(site)) {
@@ -107,20 +110,32 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         return isContentReviewAvailable(siteId);
     }
 
-    public void reviewAttachment(String userId, Assignment2 assign, String attachmentReference) {
-        if (assign == null || attachmentReference == null) {
+    public void reviewAttachment(String userId, Assignment2 assign, Set<SubmissionAttachment> attachments) {
+        if (assign == null || attachments == null) {
             throw new IllegalArgumentException("Null assignment or contentId passed to " +
-                    "reviewAttachments. assign: " + " contentId: " + attachmentReference);
+                    "reviewAttachments. assign: " + " contentId: ");
         }
 
         try
         {
-            contentReview.queueContent(userId, assign.getContextId(), getTaskId(assign), attachmentReference);
+        	List<ContentResource> resources = new ArrayList<ContentResource>();
+        	for(SubmissionAttachment attach : attachments){
+        		ContentResource resource = contentLogic.getContentResource(attach.getAttachmentReference());
+        		if(resource != null){
+        			resources.add(resource);
+        		}
+        	}
+        	
+            if (resources.size() > 0) {
+            	contentReview.queueContent(userId, assign.getContextId(), getTaskId(assign), resources);
+            }else{
+            	throw new IllegalArgumentException("contentId passed to reviewAttachments is invalid and can't be found; contentId: ");
+            }
         }
         catch (QueueException e)
         {
             // this is thrown if this attachment has already been queued
-            log.warn("Attempt to queue content via the ContentReviewService that has already been queued. Content id:" + attachmentReference);
+            log.warn("Attempt to queue content via the ContentReviewService that has already been queued. Content id:");
         }
     }
 
@@ -186,7 +201,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
     
-    public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView) {
+    public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView, String userId) {
         if (assignment == null) {
             throw new IllegalArgumentException("Null assignment passed to populateReviewProperties");
         }
@@ -203,8 +218,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                     populateAssignmentPropertiesFromAssignment(assignment);
                 }
 
-                if (assignment.getProperties() != null && assignment.getProperties().containsKey("s_view_report") && 
-                        (Boolean)assignment.getProperties().get("s_view_report")) {
+                if (assignment.isContentReviewStudentViewReport()) {
                     populateReports = true;
                 } else {
                     populateReports = false;
@@ -237,11 +251,32 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                         {
                             Long status = contentReview.getReviewStatus(attach.getAttachmentReference());
                             reviewItem.setStatus(status);
+                            if(!"TurnItIn".equalsIgnoreCase(contentReview.getServiceName())){
+                            	//look up score if it exist
+                            	int reviewScore = contentReview.getReviewScore(attach.getAttachmentReference(), getTaskId(assignment), userId);
+                            	reviewItem.setReviewScore(reviewScore);
+                            	if(reviewItem.getStatus() == null && reviewScore >= 0){
+                            		//found the score, set status to 3l
+                            		reviewItem.setStatus(3l);
+                            	}
+                            }
                         }
                         catch (QueueException e)
                         {
                             if (log.isDebugEnabled()) log.debug("Attempt to retrieve status for attachment that has not been queued");
                             // this attachment has not been submitted so leave ContentReviewItem empty
+                            ContentResource resource = contentLogic.getContentResource(attach.getAttachmentReference());
+                            if(resource != null){
+                                try {
+                                    contentReview.queueContent(userId, assignment.getContextId(), getTaskId(assignment), Arrays.asList(resource));
+                                } catch (QueueException e1) {
+                                    if (log.isDebugEnabled()) log.debug("Attempt to re-queue but failed", e);
+                                }
+                            }
+                        } catch (ReportException e) {
+                            if (log.isDebugEnabled()) log.debug("Report exception, requeueing", e);
+                        } catch (Exception e) {
+                            if (log.isDebugEnabled()) log.debug("Attempt to retrieve status for attachment that has not been queued", e);
                         }
                     }
 
@@ -274,7 +309,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                 } 
                 
                 // now retrieve the report url if status shows it exists
-                String reportUrl = getReportUrl(attach.getAttachmentReference(), instructorView);
+                String reportUrl = getReportUrl(attach.getAttachmentReference(), assign, instructorView);
                 if (reportUrl != null) {
                     reviewInfo.setReviewUrl(reportUrl);
                 }
@@ -286,7 +321,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
     
-    public String getReportUrl(String attachmentReference, boolean instructorView) {
+    public String getReportUrl(String attachmentReference, Assignment2 assign, boolean instructorView) {
         if (attachmentReference == null) {
             throw new IllegalArgumentException("Null attachmentReference passed to getReportUrl");
         }
@@ -296,7 +331,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         if (instructorView) {
             try
             {
-                reportUrl = contentReview.getReviewReportInstructor(attachmentReference);
+                reportUrl = contentReview.getReviewReportInstructor(attachmentReference, getTaskId(assign));
             }
             catch (QueueException e)
             {
@@ -313,7 +348,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         } else {
             try
             {
-                reportUrl = contentReview.getReviewReportStudent(attachmentReference);
+                reportUrl = contentReview.getReviewReportStudent(attachmentReference, getTaskId(assign));
             }
             catch (QueueException e)
             {
@@ -379,14 +414,16 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
             // never ever stops us from loading an assignment.
             log.error(e);
         }
-        
+        if(asnnmap == null){
+        	asnnmap = new HashMap();
+        }
         boolean useGradeMark = serverConfigurationService.getBoolean(AssignmentConstants.TII_PROP_GRADEMARK_ENABLED, false);
         //Check Grade
         if(useGradeMark){
             try {
                 contentReview.getReviewScore(assign.getContextId()+
                         "#"+assign.getContentReviewRef()+
-                        "#"+assign.getTitle());
+                        "#"+assign.getTitle(), getTaskId(assign), null);
 
             }catch(Exception e){
                 log.error(e);
@@ -457,6 +494,10 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     private void setTurnitinBooleanOption(Map asnnobj, String mapname, Assignment2 assign, String propname) {
         if (asnnobj.containsKey(mapname) && asnnobj.get(mapname).equals("1")) {
             assign.getProperties().put(propname, new Boolean(true));
+            if(AssignmentConstants.TII_API_PARAM_S_VIEW_REPORT.equals(propname)){
+            	//this handles old assignments that relied on TII for this setting (instead of sakai's db)
+            	assign.setContentReviewStudentViewReport(true);
+            }
         }
         else {
             assign.getProperties().put(propname, new Boolean(false));
@@ -503,6 +544,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
         
         try {
+        	opts.put("title", assign.getTitle());
             contentReview.createAssignment(assign.getContextId(), 
                     this.getTaskId(assign), opts);
         } catch (Exception e) {
@@ -529,6 +571,10 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
     
     public void setExternalLogic(ExternalLogic externalLogic) {
         this.externalLogic = externalLogic;
+    }
+    
+    public String getServiceName(){
+    	return contentReview.getServiceName();
     }
 
 }

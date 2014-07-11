@@ -234,10 +234,12 @@ public class AssignmentAuthoringBean {
                 // we need to turn off turnitin since assignment doesn't accept submissions. the
                 // turnitin section was hidden via javascript
                 assignment.setContentReviewEnabled(false);
+                assignment.setContentReviewStudentViewReport(false);
             } else if (!assignment.acceptsAttachments()) {
                 // double check that this assignment is set up to accept attachments. if not, turn TII off
                 // (this is done via javascript in the UI)
                 assignment.setContentReviewEnabled(false);
+                assignment.setContentReviewStudentViewReport(false);
             }
         }
     

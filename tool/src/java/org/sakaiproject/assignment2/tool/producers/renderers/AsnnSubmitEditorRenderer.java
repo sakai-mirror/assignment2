@@ -341,10 +341,10 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
                 attachSection.decorate(new UIFreeAttributeDecorator("class", "messageConfirmation"));
             }
             
-            if (assignment.getProperties().containsKey("s_view_report") && (Boolean)assignment.getProperties().get("s_view_report")) {
-                UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_and_student");
+            if (assignment.isContentReviewStudentViewReport()) {
+                UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_and_student", new Object[]{contentReviewLogic.getServiceName()});
             } else {
-                UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_only");
+                UIMessage.make(joint, "plagiarism_check", "assignment2.turnitin.submit.warning.inst_only", new Object[]{contentReviewLogic.getServiceName()});
             }
             
             String fileRequirementsUrl = localTurnitinLogic.getSupportedFormatsUrl();

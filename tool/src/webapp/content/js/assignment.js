@@ -1310,7 +1310,8 @@ var asnn2editpage = asnn2editpage || {};
         
         // validate the turnitin options ASNN-516
         var useTiiOption = jQuery("input[name='page-replace\:\:use_tii']").get(0);
-        if (useTiiOption && useTiiOption.checked) {
+        var contentReviewName = jQuery(".contentReviewName").html();
+        if (useTiiOption && useTiiOption.checked && "TurnItIn" === contentReviewName) {
           // see if at least one checkbox was checked for the "check against" option
           if (jQuery("input[name='page-replace\:\:check_against_student_repo_checkbox']").is(':checked') ||
               jQuery("input[name='page-replace\:\:check_against_internet_repo_checkbox']").is(':checked') ||

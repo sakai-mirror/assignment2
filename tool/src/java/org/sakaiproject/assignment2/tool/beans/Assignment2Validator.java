@@ -21,11 +21,11 @@
 
 package org.sakaiproject.assignment2.tool.beans;
 
+import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
-
 import org.sakaiproject.service.gradebook.shared.GradebookService.PointsPossibleValidation;
 import org.sakaiproject.assignment2.logic.GradebookItem;
 
@@ -52,6 +52,11 @@ public class Assignment2Validator  {
     public void setExternalGradebookLogic(ExternalGradebookLogic externalGradebookLogic) {
         this.externalGradebookLogic = externalGradebookLogic;
     }  
+    
+    private ExternalContentReviewLogic externalContentReviewLogic;
+    public void setExternalContentReviewLogic(ExternalContentReviewLogic externalContentReviewLogic){
+    	this.externalContentReviewLogic = externalContentReviewLogic;
+    }
 
     /**
      * Validates the Assignment2 object. Currently checks to make sure there
@@ -159,7 +164,7 @@ public class Assignment2Validator  {
         }
         
         // Validate the turnitin options ASNN-516
-        if (assignment.isContentReviewEnabled()) {     
+        if (assignment.isContentReviewEnabled() && AssignmentConstants.CONTENT_REVIEW_NAME_TII.equals(externalContentReviewLogic.getServiceName())) {     
             // check to see if the user wants to generate reports related to due date
             // but there is no due date
             if (assignment.getProperties().containsKey("report_gen_speed") && 

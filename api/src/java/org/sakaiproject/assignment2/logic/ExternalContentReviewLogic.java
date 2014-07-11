@@ -23,6 +23,7 @@ package org.sakaiproject.assignment2.logic;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.assignment2.model.Assignment2;
 import org.sakaiproject.assignment2.model.SubmissionAttachment;
@@ -62,9 +63,9 @@ public interface ExternalContentReviewLogic {
      * calling this method
      * @param userId if null, assumes current user
      * @param assign the assignment that this attachment is associated with
-     * @param attachmentReference the reference for the attachment in content hosting
+     * @param attachments the reference for the attachments in content hosting
      */
-    public void reviewAttachment(String userId, Assignment2 assign, String attachmentReference);
+    public void reviewAttachment(String userId, Assignment2 assign, Set<SubmissionAttachment> attachments);
     
     /**
      * 
@@ -92,17 +93,18 @@ public interface ExternalContentReviewLogic {
      * pass instructorView = false and the assignment is set up with the option 
      * prohibiting students from viewing the reports, the properties will not be populated
      */
-    public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView);
+    public void populateReviewProperties(Assignment2 assignment, Collection<SubmissionAttachment> attachments, boolean instructorView, String userId);
 
     /**
      * 
      * @param attachmentReference
      * @param instructorView true if you want the report for an instructor. false if
      * you want the report for the student
+     * @param assign
      * @return the url of the review report for the given attachmentReference. Returns
      * null if url cannot be retrieved
      */
-    public String getReportUrl(String attachmentReference, boolean instructorView);
+    public String getReportUrl(String attachmentReference, Assignment2 assign, boolean instructorView);
     
     /**
      * 
@@ -122,4 +124,10 @@ public interface ExternalContentReviewLogic {
     public void createAssignment(Assignment2 assing);
     
     public void populateAssignmentPropertiesFromAssignment(Assignment2 assign);
+    
+    /**
+     * returns content review service name
+     * @return
+     */
+    public String getServiceName();
 }

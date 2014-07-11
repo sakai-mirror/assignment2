@@ -60,6 +60,7 @@ public class Assignment2 {
     private String eventId;
     private int numSubmissionsAllowed;
     private boolean contentReviewEnabled;
+    private Boolean contentReviewStudentViewReport;
     private String contentReviewRef;
     private boolean modelAnswerEnabled;
     private String modelAnswerText;
@@ -873,4 +874,17 @@ public class Assignment2 {
         
         return points;
     }
+
+	public Boolean isContentReviewStudentViewReport() {
+		if(contentReviewStudentViewReport == null){
+			return false;
+		}else{
+			return contentReviewStudentViewReport;
+		}
+	}
+
+	public void setContentReviewStudentViewReport(
+			Boolean contentReviewStudentViewReport) {
+		this.contentReviewStudentViewReport = contentReviewStudentViewReport;
+	}
 }

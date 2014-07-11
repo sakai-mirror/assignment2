@@ -52,6 +52,7 @@ public class AssignmentDefinition implements Serializable {
     private int submissionType;
     private boolean requiresSubmission;
     private boolean contentReviewEnabled;
+    private boolean contentReviewStudentViewReport;
 
     private List<String> groupRestrictionGroupTitles;
     private List<String> attachmentReferences;
@@ -308,5 +309,14 @@ public class AssignmentDefinition implements Serializable {
     {
         this.properties = properties;
     }
+
+	public boolean isContentReviewStudentViewReport() {
+		return contentReviewStudentViewReport;
+	}
+
+	public void setContentReviewStudentViewReport(
+			boolean contentReviewStudentViewReport) {
+		this.contentReviewStudentViewReport = contentReviewStudentViewReport;
+	}
 
 }

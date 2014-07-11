@@ -242,12 +242,18 @@ public class AssignmentConstants {
    
     public static final String PROP_REVIEW_INFO = "content_review_info";
     
+    /**
+     * The ContentReviewService name for the Turnitin service
+     */
+    public static final String CONTENT_REVIEW_NAME_TII = "TurnItIn";
+    
     /* These properties are specific to content review implementation using Turnitin */
     
     /**
      * Set this property to true if you want to turn on the Turnitin option for assignment2
      */
     public static final String TII_ENABLED = "turnitin.enable.assignment2";
+    public static final String CONTENT_REVIEW_ENABLED = "assignment2.useContentReview";
     
     /**
      * This property is specific to Turnitin implementation of ContentReview.

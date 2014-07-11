@@ -283,6 +283,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
             if (!externalContentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
                 if (log.isDebugEnabled()) log.debug("Content review turned off b/c not available in this site");
                 assignment.setContentReviewEnabled(false);
+                assignment.setContentReviewStudentViewReport(false);
             }
         }
 
@@ -457,6 +458,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
                 // we don't want TII enabled to be left as true
                 if (newIntegration) {
                     assignment.setContentReviewEnabled(false);
+                    assignment.setContentReviewStudentViewReport(false);
                     assignment.setContentReviewRef(null);
                     dao.update(assignment);
                 }
@@ -1091,6 +1093,7 @@ public class AssignmentLogicImpl implements AssignmentLogic{
         assignDef.setGraded(assignment.isGraded());
         assignDef.setRequiresSubmission(assignment.isRequiresSubmission());
         assignDef.setContentReviewEnabled(assignment.isContentReviewEnabled());
+        assignDef.setContentReviewStudentViewReport(assignment.isContentReviewStudentViewReport());
 
         // if it is graded, we need to retrieve the name of the associated gb item
         if (assignment.isGraded() && assignment.getGradebookItemId() != null &&

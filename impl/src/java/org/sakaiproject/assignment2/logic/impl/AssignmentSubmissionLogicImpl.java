@@ -395,11 +395,15 @@ public class AssignmentSubmissionLogicImpl implements AssignmentSubmissionLogic{
         // ASNN-516 now let's run these attachments through the content review service, if appropriate
         if (!version.isDraft() && assignment.isContentReviewEnabled() && subAttachSet != null) {
             if (contentReviewLogic.isContentReviewAvailable(assignment.getContextId())) {
+            	Set<SubmissionAttachment> attachments = new HashSet<SubmissionAttachment>();
                 for (SubmissionAttachment att : subAttachSet) {
                     if (contentReviewLogic.isAttachmentAcceptableForReview(att.getAttachmentReference())) {
                         if (log.isDebugEnabled()) log.debug("Adding attachment " + att.getAttachmentReference() + " to review queue for student " + userId);
-                        contentReviewLogic.reviewAttachment(userId, assignment, att.getAttachmentReference());
+                        attachments.add(att);
                     }
+                }
+                if(attachments.size() > 0){
+                    contentReviewLogic.reviewAttachment(userId, assignment, attachments);
                 }
             }
         }

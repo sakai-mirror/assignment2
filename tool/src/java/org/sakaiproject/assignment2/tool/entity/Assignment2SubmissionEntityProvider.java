@@ -524,16 +524,13 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware{
         
         if (submissions != null && !submissions.isEmpty()) {
             // collect all of the attachments for review
-            List<SubmissionAttachment> attachToReview = new ArrayList<SubmissionAttachment>();
             for (AssignmentSubmission submission : submissions) {
                 AssignmentSubmissionVersion currVersion = submission.getCurrentSubmissionVersion();
                 if (currVersion != null && currVersion.getSubmissionAttachSet() != null) {
-                    attachToReview.addAll(currVersion.getSubmissionAttachSet());
+                    // populate the review properties on the attachments
+                    contentReviewLogic.populateReviewProperties(assign, currVersion.getSubmissionAttachSet(), true, submission.getUserId());
                 }
             }
-            
-            // populate the review properties on the attachments
-            contentReviewLogic.populateReviewProperties(assign, attachToReview, true);
         }
     }
 
