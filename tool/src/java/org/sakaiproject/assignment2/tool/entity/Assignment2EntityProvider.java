@@ -191,12 +191,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         // first, we need to check authz or the gradebook will throw a security exception when
         // we try to retrieve the gb info
         boolean userMayViewGbItems = gradebookLogic.isCurrentUserAbleToEdit(context) || gradebookLogic.isCurrentUserAbleToGrade(context);
-        List<Long> existingGbItemIds = new ArrayList<Long>();
+        Map<Long, GradebookItem> gbItemIdToItemMap = new HashMap<Long, GradebookItem>();
         if (userMayViewGbItems) {
             List<GradebookItem> existingGbItems = gradebookLogic.getAllGradebookItems(context, false);
             if (existingGbItems != null) {
                 for (GradebookItem gbItem : existingGbItems) {
-                    existingGbItemIds.add(gbItem.getGradebookItemId());
+                    gbItemIdToItemMap.put(gbItem.getGradebookItemId(), gbItem);
                 }
             }
         }
@@ -246,6 +246,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
             asnnmap.put("sortIndex", asnn.getSortIndex());
             asnnmap.put("requiresSubmission", asnn.isRequiresSubmission());
             asnnmap.put("draft", asnn.isDraft());
+            
+            // add gradebook info, if applicable
+            if (asnn.isGraded() && asnn.getGradebookItemId() != null) {
+                GradebookItem gbItem = gbItemIdToItemMap.get(asnn.getGradebookItemId());
+                if (gbItem != null) {
+                    asnnmap.put("gradebookItemName", gbItem.getTitle());
+                    asnnmap.put("gradebookItemPointsPossible", gbItem.getPointsPossible());
+                    asnnmap.put("gradebookItemId", asnn.getGradebookItemId());
+                }
+            }
 
             // Permissions for this particular assignment
             boolean canEdit= false;
@@ -277,7 +287,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
             // In case assignment has a gradebook item, but that gradebook item
             // no longer exists. don't include this flag unless the user may edit the assignment
             if (canEdit && userMayViewGbItems && asnn.isGraded() && (asnn.getGradebookItemId() == null || 
-                    !existingGbItemIds.contains(asnn.getGradebookItemId()))) {
+                    !gbItemIdToItemMap.containsKey(asnn.getGradebookItemId()))) {
                 asnnmap.put("gbItemMissing", true);
             }
 
@@ -404,6 +414,16 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         // TODO use the service methods
         List<Assignment2> assignList = new ArrayList<Assignment2>();
         assignList.add(asnn);
+        
+        if (asnn.isGraded() && asnn.getGradebookItemId() != null && gradebookLogic.gradebookItemExists(asnn.getGradebookItemId())) {
+            GradebookItem gradebookItem = gradebookLogic.getGradebookItemById(asnn.getContextId(), asnn.getGradebookItemId());
+            asnn.setGradebookItemName(gradebookItem.getTitle());
+
+            if (!gradebookItem.isUngraded()) {
+                asnn.setGradebookPointsPossible(gradebookItem.getPointsPossible().toString());
+            }
+        }
+        
         filterRestrictedAssignmentInfo(assignList, asnn.getContextId());
 
         DeepUtils deep = DeepUtils.getInstance();

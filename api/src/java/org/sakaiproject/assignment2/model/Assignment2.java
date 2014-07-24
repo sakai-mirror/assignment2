@@ -77,10 +77,11 @@ public class Assignment2 {
     private Set<AssignmentGroup> assignmentGroupSet; 
     private Map properties;
 
-    /* This variable is NOT persisted to the database.  It is simply used to carry-over the gradebook
-     * points possible value on the Edit Assignment page
+    /* These variables are NOT persisted to the database.  They are simply used to carry-over the gradebook
+     * points possible value on the Edit Assignment page and for the entitybroker feed
      */
     private String gradebookPointsPossible;
+    private String gradebookItemName;
     
     
     /**
@@ -873,6 +874,14 @@ public class Assignment2 {
         }
         
         return points;
+    }
+    
+    public String getGradebookItemName() {
+        return gradebookItemName;
+    }
+
+    public void setGradebookItemName(String gradebookItemName) {
+        this.gradebookItemName = gradebookItemName;
     }
 
 	public Boolean isContentReviewStudentViewReport() {
