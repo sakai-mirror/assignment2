@@ -322,7 +322,7 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
 
         Boolean require_date = (assignment.getAcceptUntilDate() != null);
-        UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "AssignmentAuthoringOptionsFlowBean.requireAcceptUntil}", require_date);
+        UIBoundBoolean require = UIBoundBoolean.make(form, "require_accept_until", "AssignmentAuthoringOptionsFlowBean.requireAcceptUntil", require_date);
         require.mustapply = true;
 
         UIOutput require_container = UIOutput.make(form, "accept_until_container");
