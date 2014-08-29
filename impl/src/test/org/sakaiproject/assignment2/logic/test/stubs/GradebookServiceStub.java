@@ -39,6 +39,7 @@ import org.sakaiproject.service.gradebook.shared.CommentDefinition;
 import org.sakaiproject.service.gradebook.shared.ConflictingAssignmentNameException;
 import org.sakaiproject.service.gradebook.shared.ConflictingExternalIdException;
 import org.sakaiproject.service.gradebook.shared.GradeDefinition;
+import org.sakaiproject.service.gradebook.shared.GradebookInformation;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.StaleObjectModificationException;
@@ -908,6 +909,16 @@ public class GradebookServiceStub implements GradebookService {
 
 
     public Map getImportCourseGrade(String gradebookUid, boolean useDefault) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getAverageCourseGrade(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public GradebookInformation getGradebookInformation(String arg0) {
         // TODO Auto-generated method stub
         return null;
     }
