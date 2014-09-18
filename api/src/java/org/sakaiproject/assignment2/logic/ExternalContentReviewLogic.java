@@ -104,7 +104,7 @@ public interface ExternalContentReviewLogic {
      * @return the url of the review report for the given attachmentReference. Returns
      * null if url cannot be retrieved
      */
-    public String getReportUrl(String attachmentReference, Assignment2 assign, boolean instructorView);
+    public String getReportUrl(String attachmentReference, Assignment2 assign, boolean instructorView, String userId);
     
     /**
      * 

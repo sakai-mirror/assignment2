@@ -280,7 +280,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                         }
                     }
 
-                    populateProperties(assignment, reviewItem, attach, instructorView);
+                    populateProperties(assignment, reviewItem, attach, instructorView, userId);
                 }
             }
         }
@@ -292,7 +292,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
      * @param attach
      * @param instructorView true if this is for the instructor view. false if for student view
      */
-    private void populateProperties(Assignment2 assign, ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView) {
+    private void populateProperties(Assignment2 assign, ContentReviewItem reviewItem, SubmissionAttachment attach, boolean instructorView, String userId) {
         if (assign == null) {
             throw new IllegalArgumentException("Null assign passed to populateProperties");
         }
@@ -309,7 +309,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
                 } 
                 
                 // now retrieve the report url if status shows it exists
-                String reportUrl = getReportUrl(attach.getAttachmentReference(), assign, instructorView);
+                String reportUrl = getReportUrl(attach.getAttachmentReference(), assign, instructorView, userId);
                 if (reportUrl != null) {
                     reviewInfo.setReviewUrl(reportUrl);
                 }
@@ -321,7 +321,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         }
     }
     
-    public String getReportUrl(String attachmentReference, Assignment2 assign, boolean instructorView) {
+    public String getReportUrl(String attachmentReference, Assignment2 assign, boolean instructorView, String userId) {
         if (attachmentReference == null) {
             throw new IllegalArgumentException("Null attachmentReference passed to getReportUrl");
         }
@@ -331,7 +331,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         if (instructorView) {
             try
             {
-                reportUrl = contentReview.getReviewReportInstructor(attachmentReference, getTaskId(assign));
+                reportUrl = contentReview.getReviewReportInstructor(attachmentReference, getTaskId(assign), userId);
             }
             catch (QueueException e)
             {
@@ -348,7 +348,7 @@ public class ExternalContentReviewLogicImpl implements ExternalContentReviewLogi
         } else {
             try
             {
-                reportUrl = contentReview.getReviewReportStudent(attachmentReference, getTaskId(assign));
+                reportUrl = contentReview.getReviewReportStudent(attachmentReference, getTaskId(assign), userId);
             }
             catch (QueueException e)
             {
