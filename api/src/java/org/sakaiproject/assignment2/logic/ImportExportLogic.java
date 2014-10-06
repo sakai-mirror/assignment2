@@ -22,6 +22,7 @@
 package org.sakaiproject.assignment2.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.assignment2.service.model.AssignmentDefinition;
 
@@ -65,7 +66,7 @@ public interface ImportExportLogic {
      * @param toContext
      * @param fromAssignmentToolXml
      */
-    public void mergeAssignmentToolDefinitionXml(String toContext, String fromAssignmentToolXml);
+    public Map<String, String> mergeAssignmentToolDefinitionXml(String toContext, String fromAssignmentToolXml);
 
     /**
      * Will convert data from the original Assignments tool in the given fromContext
@@ -85,5 +86,14 @@ public interface ImportExportLogic {
      * @param contextId
      */
     public void cleanToolForImport(String contextId);
+
+    /**
+     * Update URLs in insstructions to refer to items in new site
+     * transversalMap is produced by siteManage during copy, showing mapping
+     * of entities in old site to new site
+     * @param toContext
+     * @param transversalMap
+     */
+    public void updateEntityReferences(String toContext, Map<String, String> transversalMap);
 
 }

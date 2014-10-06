@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,6 +56,7 @@ import org.sakaiproject.assignment2.model.constants.AssignmentConstants;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.util.cover.LinkMigrationHelper;
 
 
 /**
@@ -149,7 +151,10 @@ public class ImportExportLogicImpl implements ImportExportLogic {
         return assignList;
     }
 
-    public void mergeAssignmentToolDefinitionXml(String toContext, String fromAssignmentToolXml) {
+    public Map<String, String> mergeAssignmentToolDefinitionXml(String toContext, String fromAssignmentToolXml) {
+
+	Map<String, String> transversalMap = new HashMap<String, String>();
+
         AssignmentToolDefinition toolDefinition = 
             (AssignmentToolDefinition)VersionedExternalizable.fromXml(fromAssignmentToolXml);
 
@@ -326,6 +331,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                             assignmentLogic.saveAssignment(newAssignment, false);
                             if (log.isDebugEnabled()) log.debug("New assignment " + 
                                     newAssignment.getTitle() + " added in site " + toContext);
+			    transversalMap.put("assignment2/" + assignDef.getId(), "assignment2/" + newAssignment.getId());
                         } catch (AnnouncementPermissionException ape) {
                             log.warn("No announcements were added because the user does not have permission in the announcements tool");
                         } catch (CalendarPermissionException cpe) {
@@ -337,7 +343,7 @@ public class ImportExportLogicImpl implements ImportExportLogic {
                 }
             }
         }
-
+	return transversalMap;
     }
 
     public String getAssignmentToolDefinitionXmlFromOriginalAssignmentsTool(String fromContext, String toContext) {
@@ -565,4 +571,24 @@ public class ImportExportLogicImpl implements ImportExportLogic {
             }
         }
     }
+
+    public void updateEntityReferences(String toContext, Map<String, String> transversalMap) {
+	if(transversalMap != null && transversalMap.size() > 0){
+	    Set<Entry<String, String>> entrySet = (Set<Entry<String, String>>) transversalMap.entrySet();
+
+	    List<Assignment2> assignments = dao.getAssignmentsWithGroupsAndAttachments(toContext);
+	    for (Assignment2 assignment: assignments) {
+
+		String instructions = assignment.getInstructions();
+		if (instructions != null && instructions.length() > 0) {
+		    String newInstructions = LinkMigrationHelper.migrateAllLinks(entrySet, instructions);
+		    if (!instructions.equals(newInstructions)) {
+			assignment.setInstructions(newInstructions);
+			assignmentLogic.saveAssignment(assignment, false);
+		    }
+		}
+	    }
+	}
+    }
+
 }

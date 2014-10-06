@@ -23,11 +23,13 @@ package org.sakaiproject.assignment2.logic.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entity.api.ContextObserver;
 import org.sakaiproject.entity.api.EntityTransferrer;
+import org.sakaiproject.entity.api.EntityTransferrerRefMigrator;
 import org.sakaiproject.importer.api.HandlesImportable;
 import org.sakaiproject.importer.api.Importable;
 
@@ -38,7 +40,7 @@ import org.sakaiproject.assignment2.logic.ImportExportLogic;
  * Implements the Sakai EntityProducer approach to integration of tool-specific
  * storage with site management.
  */
-public class AssignmentEntityProducer extends BaseEntityProducer implements ContextObserver, EntityTransferrer, HandlesImportable {
+public class AssignmentEntityProducer extends BaseEntityProducer implements ContextObserver, EntityTransferrer, EntityTransferrerRefMigrator, HandlesImportable {
     private static final Log log = LogFactory.getLog(AssignmentEntityProducer.class);
 
     private String[] toolIdArray;
@@ -78,17 +80,29 @@ public class AssignmentEntityProducer extends BaseEntityProducer implements Cont
     }
 
     public void transferCopyEntities(String fromContext, String toContext, List ids) {
+	transferCopyEntitiesRefMigrator(fromContext, toContext, ids);
+    }
+
+    public Map<String, String> transferCopyEntitiesRefMigrator(String fromContext, String toContext, List ids) {
         String fromAssignment2ToolXml = importExportLogic.getAssignmentToolDefinitionXML(fromContext);
-        importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
+        return importExportLogic.mergeAssignmentToolDefinitionXml(toContext, fromAssignment2ToolXml);
     }
 
     public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup) {
+	transferCopyEntitiesRefMigrator(fromContext, toContext, ids, cleanup);
+    }
+
+    public Map<String, String> transferCopyEntitiesRefMigrator(String fromContext, String toContext, List ids, boolean cleanup) {
         if (cleanup) {
             // we need to remove all assignments in the current site
             importExportLogic.cleanToolForImport(toContext);
         }
 
-        transferCopyEntities(fromContext, toContext, ids);
+        return transferCopyEntitiesRefMigrator(fromContext, toContext, ids);
+    }
+
+    public void updateEntityReferences(String toContext, Map<String, String> transversalMap){
+        importExportLogic.updateEntityReferences(toContext, transversalMap);
     }
 
     private ExternalGradebookLogic gradebookLogic;
