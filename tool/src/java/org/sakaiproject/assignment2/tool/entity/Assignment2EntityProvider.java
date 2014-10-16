@@ -19,6 +19,8 @@ import org.sakaiproject.assignment2.exception.GradebookItemNotFoundException;
 import org.sakaiproject.assignment2.logic.AssignmentBundleLogic;
 import org.sakaiproject.assignment2.logic.AssignmentLogic;
 import org.sakaiproject.assignment2.logic.AssignmentPermissionLogic;
+import org.sakaiproject.assignment2.logic.AttachmentInformation;
+import org.sakaiproject.assignment2.logic.ExternalContentLogic;
 import org.sakaiproject.assignment2.logic.ExternalContentReviewLogic;
 import org.sakaiproject.assignment2.logic.ExternalGradebookLogic;
 import org.sakaiproject.assignment2.logic.ExternalLogic;
@@ -81,6 +83,12 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     private ExternalGradebookLogic gradebookLogic;
     public void setExternalGradebookLogic(ExternalGradebookLogic gradebookLogic) {
         this.gradebookLogic = gradebookLogic;
+    }
+    
+    // Dependency
+    private ExternalContentLogic contentLogic;
+    public void setExternalContentLogic(ExternalContentLogic contentLogic) {
+    	this.contentLogic = contentLogic;
     }
 
     // Dependency
@@ -177,6 +185,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     @EntityCustomAction(action="sitelist", viewKey=EntityView.VIEW_LIST)
     public List getAssignmentListForSite(EntityView view) {        
         String context = (String) requestStorage.getStoredValue("siteid");
+        // if true, will return the attachment type for attachments associated with each assignment
+        String attachmentTypeString = (String) requestStorage.getStoredValue("attachmenttype");
+        boolean includeAttachmentType = attachmentTypeString != null && "true".equalsIgnoreCase(attachmentTypeString);
 
         DateFormat df = externalLogic.getDateFormat(null, null, assignmentBundleLogic.getLocale(), true);
 
@@ -335,9 +346,20 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
 
             List attachstogo = new ArrayList();
             for (AssignmentAttachment attach: asnn.getAttachmentSet()) {
+            	String attachmentType = null;
+            	
                 Map attachprops = new HashMap();
                 attachprops.put("id", attach.getId());
                 attachprops.put("attachmentReference", attach.getAttachmentReference());
+                
+                // add the mime type for the attachment, if the parameter was set
+                if (includeAttachmentType) {
+            		AttachmentInformation attachInfo = contentLogic.getAttachmentInformation(attach.getAttachmentReference());
+            		if (attachInfo != null) {
+            			attachprops.put("attachmentType", attachInfo.getContentType());
+            		}
+            	}
+                
                 attachstogo.add(attachprops);
             }
             asnnmap.put("attachments", attachstogo);
