@@ -236,7 +236,8 @@
 <script type="text/javascript">
 //<![CDATA[
 
-jQuery(document).ready(function(){
+document.addEventListener("DOMContentLoaded", function(event) { 
+//jQuery(document).ready(function(){
 	var change = false;
     // initialize the toggles on the page
     jQuery("div.toggleHeader").click(function () { 
@@ -290,7 +291,6 @@ jQuery(document).ready(function(){
         jQuery('.success').fadeOut("slow");
     }   
     setTimeout(fadeSuccessMsg,10000);
-    
     
 });
 

@@ -16,17 +16,27 @@
  * @author sgithens
  * 
  */
-		  
+
 var tb_pathToImage = "/sakai-assignment2-tool/content/images/loadingAnimation.gif";
 
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
-jQuery(document).ready(function(){   
+
+// for some reason this doesn't work. I conjecture that jquery is reloaded
+// and loses the events set up. Thus we use a lower-level approach. Won't work in IE 8
+//jQuery(document).ready(function(){   
+
+var thick_inline = false;
+document.addEventListener("DOMContentLoaded", function(event) { 
+	thick_inline = (jQuery("body.portalBody").size() > 0);
 	setTimeout(function(){tb_init('a.thickbox, area.thickbox, input.thickbox');}, 100); //pass where to apply thickbox
 	imgLoader = new Image();// preload image
 	imgLoader.src = tb_pathToImage;
-});
+    });
+
+//    });
+
 
 //add thickbox to href & area elements that have a class of .thickbox
 function tb_init(domChunk){
@@ -46,6 +56,13 @@ function tb_init(domChunk){
 }
 
 function tb_show(caption, url, imageGroup, tagName) {//function called when the user clicks on a thickbox link
+    // for inline case, url is /portal/site ... Don't want to show decoration in iframe, so
+    // use /portal/tool...
+    if (url.indexOf('/portal/site/') >= 0) {
+	var i = url.indexOf('/portal/site/');
+	var j = url.indexOf('/tool/',i);
+	url = url.substring(0, i+7) + url.substring(j);
+    }
 
 	try {
 		if (typeof document.body.style.maxHeight === "undefined") {//if IE 6
@@ -62,7 +79,8 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 			}
       //Add portalMask to main portal
       ////
-		asnn2util.turnOnPortalOverlay();
+			if (!thick_inline)
+			    asnn2util.turnOnPortalOverlay();
 		//jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
 		//jQuery("#portalMask", parent.document).click(tb_remove);
 		//jQuery("#TB_overlay").click(tb_remove);
@@ -384,6 +402,8 @@ function tb_detectMacXFF() {
 }
 
 function getPageScrollTop(){
+    if (thick_inline)
+	return 0;
       var yScrolltop;
       if (parent.pageYOffset) {
          yScrolltop = parent.pageYOffset;

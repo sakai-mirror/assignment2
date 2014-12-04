@@ -52,6 +52,10 @@ asnn2.addCommonAsnnListReadOnlyRenderObjects = function (togo, obj) {
   }
 };
 
+var pathprefix = '/portal/tool/'+sakai.curPlacement;
+if (window.location.pathname.indexOf('/portal/site/') == 0) 
+  pathprefix = '/portal/site/'+sakai.curContext+'/tool/'+sakai.curPlacement;
+
 /**
  * This function fits a transform, and expects to take the raw filtered data
  * from the Assignment Entity feed and builds a component tree for the 
@@ -73,7 +77,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   if (asnn2.pageState.canManageSubmissions) {
       if (obj.requiresSubmission === true && canGrade) {
         togo.inAndNewLink = {
-          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+	  target: pathprefix+'/viewSubmissions/'+obj.id,
           linktext: obj.inAndNew
         };
       }
@@ -100,7 +104,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   var canDetails = true; // for now this is always true
   if (canDetails) {
     togo.detailslink = {
-      target: '/portal/tool/'+sakai.curPlacement+'/view-assignment/'+obj.id+'?fromView=list',
+      target: pathprefix+'/view-assignment/'+obj.id+'?fromView=list',
       linktext: viewDetailsLink    
     };
   }
@@ -121,7 +125,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   
   if (canEdit) {
     togo.editlink = {
-      target: '/portal/tool/'+sakai.curPlacement+'/assignment/'+obj.id,
+      target: pathprefix+'/assignment/'+obj.id,
       linktext: editLink
     };
     
@@ -146,7 +150,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   
   if (canAdd) {
     togo.duplink = {
-      target: '/portal/tool/'+sakai.curPlacement+'/assignment?duplicatedAssignmentId='+obj.id,
+      target: pathprefix+'/assignment?duplicatedAssignmentId='+obj.id,
       linktext: duplicateLink
     };
     if (canEdit || canDetails) {
@@ -171,7 +175,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
   if (canEditMatrix) {
     togo.matrixlink = {
       //target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?values=%2Fassignment%2Fa%2Fusedtools%2F2a4f82db-0b4b-4be6-b7cf-fe9c3debcf6a&helperId=osp.matrix.link&keys=activityRef',
-      target: '/portal/tool/'+sakai.curPlacement+'/TaggableHelperProducer?helperId=osp.matrix.link&keys=activityRef&values='+obj.ref,
+      target: pathprefix+'/TaggableHelperProducer?helperId=osp.matrix.link&keys=activityRef&values='+obj.ref,
       linktext: matrixLink
     };
     
@@ -200,7 +204,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
       });
       
       togo.gradelink = {
-          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          target: pathprefix+'/viewSubmissions/'+obj.id,
           linktext: gradeLink
       };
       if (canDetails || canEdit || canAdd || canEditMatrix) {
@@ -223,7 +227,7 @@ asnn2.buildListRenderTreeFromData = function (obj, index) {
       });
       
       togo.gradelink = {
-          target: '/portal/tool/'+sakai.curPlacement+'/viewSubmissions/'+obj.id,
+          target: pathprefix+'/viewSubmissions/'+obj.id,
           linktext: feedbackLink
       };
       if (canDetails || canEdit || canAdd || canEditMatrix) {

@@ -1,3 +1,9 @@
+var inIframe = true;
+if (typeof iframeId == 'undefined') {
+    iframeId = "container";
+    inIframe = false;
+}
+
 function a2SetMainFrameHeight() {
     if (iframeId != "") {
         if (arguments[0] != null) {
@@ -285,18 +291,30 @@ var asnn2util = asnn2util || {};
         }
 
         dialogOptions = {
-            resizable: false,
-            width: dialogWidth,
-            modal: true,
-            // ASNN-712 Browsers aren't giving the same widths across
-            // scenerios, setting to a constant padding.
-            position: [20,dialogYOption],
-            overlay: {
-                opacity: 0.5,
-                background: "#eee"
-            }
+	    resizable: false,
+	    width: dialogWidth,
+	    modal: true,
+	    //            // ASNN-712 Browsers aren't giving the same widths across
+	    //            // scenerios, setting to a constant padding.
+	    position: [20,dialogYOption],
+	    overlay: {
+		opacity: 0.5,
+		background: "#eee"
+	    }
         };
-        asnn2util.turnOnPortalOverlay();
+	 // in inline view, the default position is fine
+	if (!inIframe) 
+	    dialogOptions = {
+		resizable: false,
+		width: dialogWidth,
+		modal: true,
+		overlay: {
+		    opacity: 0.5,
+		    background: "#eee"
+		}
+	    };
+	if (inIframe)
+	     asnn2util.turnOnPortalOverlay();
         dialogObj.dialog(dialogOptions).show();
     };
 
@@ -1497,6 +1515,8 @@ var asnn2listpage = asnn2listpage || {};
         // http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e/list
         // http://149.166.143.211:10080/portal/tool/a5a78a8d-9098-4f01-a634-dc93c791a04e?panel=Main
         var toolurlPat = /\/portal\/tool\/[^?/] * /;
+	if (window.location.pathname.indexOf('/portal/site/') == 0) 
+	    toolurlPat = /\/portal\/site\/[^?/]*\/tool\/[^?/] * /;
 
         var urlprefix = document.location.toString().match(toolurlPat);
 

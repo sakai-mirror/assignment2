@@ -388,11 +388,15 @@ asnn2subview.alignGrading = function() {
     }
 };
 
+var pathprefix = '/portal/tool/'+sakai.curPlacement;
+if (window.location.pathname.indexOf('/portal/site/') == 0) 
+  pathprefix = '/portal/site/'+sakai.curContext+'/tool/'+sakai.curPlacement;
+
 asnn2subview.filteredRowTransform = function(obj, idx) {
     var row = obj;
     var togo = [
       { ID: "student-grade-link",
-        target: '/portal/tool/'+sakai.curPlacement+'/grade/'+asnn2.curAsnnId+'/'+row.studentId+'?viewSubPageIndex='+asnn2subview.pager.model.pageIndex,
+        target: pathprefix+'/grade/'+asnn2.curAsnnId+'/'+row.studentId+'?viewSubPageIndex='+asnn2subview.pager.model.pageIndex,
         linktext: row.studentName
       }
     ];
