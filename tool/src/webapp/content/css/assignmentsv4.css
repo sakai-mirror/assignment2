@@ -1,5 +1,7 @@
-/* portal.css currently sets label to display:block. reverse it but only for our content */
-#content label {
+/* portal.css currently sets label to display:block. reverse it but only for our content 
+   need to do it separately for inline and iframe version */
+
+#content label, body[onload] label, .ui-dialog label {
   display: inline;
 }
 
