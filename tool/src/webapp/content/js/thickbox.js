@@ -29,7 +29,7 @@ var tb_pathToImage = "/sakai-assignment2-tool/content/images/loadingAnimation.gi
 
 var thick_inline = false;
 document.addEventListener("DOMContentLoaded", function(event) { 
-	thick_inline = (jQuery("body.portalBody").size() > 0);
+	thick_inline = (jQuery("body.Mrphs-portalBody").size() > 0);
 	setTimeout(function(){tb_init('a.thickbox, area.thickbox, input.thickbox');}, 100); //pass where to apply thickbox
 	imgLoader = new Image();// preload image
 	imgLoader.src = tb_pathToImage;
