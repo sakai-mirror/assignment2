@@ -141,6 +141,15 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
         return PREFIX;
     }
 
+    public boolean checkCsrf(String csrf) {
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+        if (sessionToken != null && sessionToken.toString().equals(csrf)) {
+            return true;
+        }
+	else
+	    return false;
+    }
+
     /**
      * TODO: Change this so it's not a GET
      * 
@@ -407,6 +416,10 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
 
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
+
+	if (!checkCsrf((String)params.get("csrf")))
+	    return;
+
         Assignment2 assignment = (Assignment2) entity;
 
         Assignment2 tosave = assignmentLogic.getAssignmentByIdWithAssociatedData(assignment.getId());
@@ -457,6 +470,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     }
 
     public void deleteEntity(EntityReference ref, Map<String, Object> params) {
+	if (!checkCsrf((String)params.get("csrf")))
+	    return;
+
         Assignment2 asnn = assignmentLogic.getAssignmentById(new Long(ref.getId()));
         assignmentLogic.deleteAssignment(asnn);
     }
@@ -685,6 +701,9 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
      */
     @EntityCustomAction(action = "deleteAssignments", viewKey = EntityView.VIEW_NEW)
     public void deleteAssignments(EntityView view) {
+	if (!checkCsrf((String) requestStorage.getStoredValue("csrf")))
+	    return;
+
         String assignIds = (String) requestStorage.getStoredValue("delete-ids");
         if (assignIds != null && !"".equals(assignIds)) {
             assignIds = assignIds.trim();

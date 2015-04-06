@@ -252,6 +252,9 @@ public class GradeProducer implements ViewComponentProducer, NavigationCaseRepor
          * Begin the Form
          */
         UIForm form = UIForm.make(tofill, "form");
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+	if (sessionToken != null)
+	    UIInput.make(form, "csrf", "GradeAndFeedbackSubmissionBean.csrfToken", sessionToken.toString());
 
         // if this assignment requires non-electronic submission, there is no submission status
         if (assignment.getSubmissionType() == AssignmentConstants.SUBMIT_NON_ELECTRONIC) {

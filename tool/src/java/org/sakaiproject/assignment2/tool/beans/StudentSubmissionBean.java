@@ -68,10 +68,18 @@ public class StudentSubmissionBean {
         this.asEntityBeanLocator = entityBeanLocator;
     }
 
+    private String csrfToken;
+    public void setCsrfToken(String data) {
+	csrfToken = data;
+    }
+
     /*
      * STUDENT FUNCTIONS
      */
     public WorkFlowResult processActionSubmit(){
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+
         if (assignmentId == null ) {
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
         }
@@ -136,6 +144,9 @@ public class StudentSubmissionBean {
     }
 
     public WorkFlowResult processActionPreview(){
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+
         // save this submission as draft if submission is closed so we don't
         // lose the student's work. this may happen if the user was working
         // on their submission in the UI when the assignment closed and then
@@ -167,6 +178,9 @@ public class StudentSubmissionBean {
     }
 
     public WorkFlowResult processActionSaveDraft() {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;
+
         Assignment2 assignment = assignmentLogic.getAssignmentById(assignmentId);
         if (assignmentId == null){
             return WorkFlowResult.STUDENT_SUBMISSION_FAILURE;

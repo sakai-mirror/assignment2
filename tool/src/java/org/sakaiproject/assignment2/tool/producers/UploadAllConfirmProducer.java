@@ -25,6 +25,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
@@ -148,6 +149,10 @@ public class UploadAllConfirmProducer implements ViewComponentProducer, ViewPara
         makeBreadcrumbs(tofill, assignment);
 
         UIForm finishForm = UIForm.make(tofill, "finish-form");
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+	if (sessionToken != null)
+	    UIInput.make(finishForm, "csrf", "UploadBean.csrfToken", sessionToken.toString());
+
         UICommand.make(finishForm, "ok-button", UIMessage.make("assignment2.upload_grades_confirm.button.ok"), "UploadBean.processUploadConfirmAndSave");
         UICommand.make(finishForm, "cancel-button", UIMessage.make("assignment2.upload_grades_confirm.button.back"), "UploadBean.processBackToUpload");
 

@@ -125,7 +125,24 @@ public class AssignmentAuthoringBean {
         this.notificationBean = notificationBean;
     }
 
+    private String csrfToken;
+    public void setCsrfToken(String data) {
+	csrfToken = data;
+    }
+
+    static public boolean checkCsrf(String csrfToken) {
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+	if (sessionToken != null && sessionToken.toString().equals(csrfToken)) {
+	    return true;
+	}
+	else
+	    return false;
+    }
+
     public WorkFlowResult processActionPost() {
+	if (!checkCsrf(csrfToken))
+            return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
+
         WorkFlowResult result = WorkFlowResult.INSTRUCTOR_POST_ASSIGNMENT;
 
         Assignment2 assignment = assignmentAuthoringFlowBean.getAssignment(); //OTPMap.get(key);
@@ -368,6 +385,9 @@ public class AssignmentAuthoringBean {
     }
 
     public WorkFlowResult processActionSaveDraft() {
+	if (!checkCsrf(csrfToken))
+            return WorkFlowResult.INSTRUCTOR_ASSIGNMENT_VALIDATION_FAILURE;
+
         WorkFlowResult result = WorkFlowResult.INSTRUCTOR_SAVE_DRAFT_ASSIGNMENT;
 
         Assignment2 assignment = assignmentAuthoringFlowBean.getAssignment();

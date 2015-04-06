@@ -153,17 +153,29 @@ public class GradeAndFeedbackSubmissionBean {
     }
 
 
+    private String csrfToken;
+    public void setCsrfToken(String data) {
+	csrfToken = data;
+    }
+
     /*
      * INSTRUCTOR FUNCTIONS
      */
 
+
     public WorkFlowResult processActionSaveAndReleaseFeedbackForSubmission(){
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
+
         this.releaseFeedback = true;
         return processActionGradeSubmit();
     }
     
     public WorkFlowResult processActionGradeSubmitOption()
     {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
+
         if (WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_NEXT.toString().equals(submitOption) 
           || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_PREV.toString().equals(submitOption) 
           || WorkFlowResult.INSTRUCTOR_FEEDBACK_RELEASE_RETURNTOLIST.toString().equals(submitOption))
@@ -197,6 +209,9 @@ public class GradeAndFeedbackSubmissionBean {
      * @return
      */
     public WorkFlowResult processActionGradeSubmitAndEditAnotherVersion() {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
+
         WorkFlowResult saveResult = processActionGradeSubmit();
         if (WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE.equals(saveResult)) {
             return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
@@ -207,6 +222,9 @@ public class GradeAndFeedbackSubmissionBean {
     }
 
     public WorkFlowResult processActionGradeSubmit(){
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
+
         if (assignmentId == null || userId == null){
             return WorkFlowResult.INSTRUCTOR_FEEDBACK_FAILURE;
         }

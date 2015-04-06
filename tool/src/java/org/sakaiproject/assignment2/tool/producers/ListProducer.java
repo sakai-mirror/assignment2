@@ -116,6 +116,11 @@ public class ListProducer implements ViewComponentProducer, DefaultView {
                 if (add || reorder) {
                     UIOutput.make(tofill, "sep2");
                 }
+
+		Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+		if (sessionToken != null)
+		    UIOutput.make(tofill, "csrf", sessionToken.toString());
+
             }
             
             if (gradebookLogic.isCurrentUserAbleToEdit(currContextId) && externalLogic.siteHasTool(currContextId, ExternalLogic.TOOL_ID_GRADEBOOK)) {

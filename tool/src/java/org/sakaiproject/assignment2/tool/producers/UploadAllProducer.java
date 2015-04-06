@@ -40,6 +40,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.UISelectChoice;
 import uk.org.ponder.rsf.components.UISelectLabel;
@@ -126,6 +127,10 @@ NavigationCaseReporter, ActionResultInterceptor
         ZipViewParams zvp = new ZipViewParams("zipSubmissions", params.assignmentId);
         UIForm upload_form = UIForm.make(tofill, "upload_form");
         upload_form.addParameter(new UIELBinding("UploadBean.uploadOptions.assignmentId", zvp.assignmentId));
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+	if (sessionToken != null)
+	    UIInput.make(upload_form, "csrf", "UploadBean.csrfToken", sessionToken.toString());
+
 
         // Release feedback radio buttons
         String [] release_fb_values = new String[] {

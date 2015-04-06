@@ -276,6 +276,9 @@ public class AssignmentProducer implements ViewComponentProducer, ViewParamsRepo
 
         UIForm form = UIForm.make(tofill, "assignment_form");
         form.addParameter(new UIELBinding("AssignmentAuthoringOptionsFlowBean.otpkey",OTPKey));
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+	if (sessionToken != null)
+	    UIInput.make(form, "csrf", "AssignmentAuthoringBean.csrfToken", sessionToken.toString());
 
         //Setting up Dates
         Calendar cal = Calendar.getInstance();

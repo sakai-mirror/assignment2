@@ -124,6 +124,11 @@ public class UploadBean
         this.externalLogic = externalLogic;
     }
 
+    private String csrfToken;
+    public void setCsrfToken(String data) {
+	csrfToken = data;
+    }
+
     /*
      * The members below are stateful variables used to store the uploaded data
      * while it's verified in the wizard/workflow
@@ -138,6 +143,9 @@ public class UploadBean
      * @return
      */
     public WorkFlowResult processUpload() {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.UPLOAD_FAILURE;
+
         if (uploadOptions == null || uploadOptions.assignmentId == null ) {
             messages.addMessage(new TargettedMessage("No assignmentId was passed " +
                     "in the request to processUploadGradesCSV. Cannot continue.", new Object[] {},
@@ -256,6 +264,9 @@ public class UploadBean
      * @return
      */
     public WorkFlowResult processUploadConfirmAndSave() {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.UPLOAD_FAILURE;
+
         // Putting in Confirm Dialog ASNN-313
         List<String> usersNotUpdated = uploadGradesLogic.uploadGrades(displayIdUserIdMap, uploadOptions, parsedContent);
 
@@ -287,6 +298,9 @@ public class UploadBean
 
     private WorkFlowResult processUploadAll(MultipartFile uploadedFile, Assignment2 assign)
     {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.UPLOAD_FAILURE;
+
         // you should have already done validation on the file at this point
 
         File newFile = null;
@@ -328,6 +342,9 @@ public class UploadBean
      */
     private WorkFlowResult processUploadGradesCSV(MultipartFile uploadedFile, Assignment2 assignment)
     {
+	if (!AssignmentAuthoringBean.checkCsrf(csrfToken))
+            return WorkFlowResult.UPLOAD_FAILURE;
+
         // validation on file should have already occurred
 
         File newFile = null;

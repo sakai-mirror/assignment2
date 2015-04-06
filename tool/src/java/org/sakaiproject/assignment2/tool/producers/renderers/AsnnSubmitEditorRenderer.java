@@ -183,6 +183,9 @@ public class AsnnSubmitEditorRenderer implements BasicProducer {
         DecoratorList disabledDecoratorList = new DecoratorList(new UIFreeAttributeDecorator(disabledAttr));
 
         UIForm form = UIForm.make(joint, "form");
+	Object sessionToken = org.sakaiproject.tool.cover.SessionManager.getCurrentSession().getAttribute("sakai.csrf.token");
+	if (sessionToken != null)
+	    UIInput.make(form, "csrf", "StudentSubmissionBean.csrfToken", sessionToken.toString());
 
         // Fill in with submission type specific instructions
         // If this is a Student Preview, we dont' want these instruction headers
