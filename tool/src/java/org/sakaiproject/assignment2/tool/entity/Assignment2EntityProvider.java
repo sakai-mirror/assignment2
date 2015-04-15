@@ -417,7 +417,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     public void updateEntity(EntityReference ref, Object entity,
             Map<String, Object> params) {
 
-	if (!checkCsrf((String)params.get("csrf")))
+	if (!checkCsrf((String)params.get("csrftoken")))
 	    return;
 
         Assignment2 assignment = (Assignment2) entity;
@@ -470,7 +470,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
     }
 
     public void deleteEntity(EntityReference ref, Map<String, Object> params) {
-	if (!checkCsrf((String)params.get("csrf")))
+	if (!checkCsrf((String)params.get("csrftoken")))
 	    return;
 
         Assignment2 asnn = assignmentLogic.getAssignmentById(new Long(ref.getId()));
@@ -701,7 +701,7 @@ CoreEntityProvider, RESTful, RequestStorable, RequestAware, Statisticable {
      */
     @EntityCustomAction(action = "deleteAssignments", viewKey = EntityView.VIEW_NEW)
     public void deleteAssignments(EntityView view) {
-	if (!checkCsrf((String) requestStorage.getStoredValue("csrf")))
+	if (!checkCsrf((String) requestStorage.getStoredValue("csrftoken")))
 	    return;
 
         String assignIds = (String) requestStorage.getStoredValue("delete-ids");

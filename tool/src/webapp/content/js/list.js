@@ -486,7 +486,7 @@ var editFields = jQuery("#asnn-list .asnn-title-cell");
                           url: "/direct/assignment2/"+asnnid+"/edit",
                           data: {
                               id: asnnid,
-			      csrf: $(".csrf").text(),
+			      csrftoken: $(".csrf").text(),
                               title: newValue
                           },
                           error: function (jqXHR, textStatus, errorThrown) {
@@ -793,7 +793,7 @@ asnn2.setupRemoveDialog = function() {
       type: "POST",
       url: "/direct/assignment2/deleteAssignments",
       data: {
-	"csrf" : $(".csrf").text(),
+	"csrftoken" : $(".csrf").text(),
         "delete-ids" : toremove.toString()
       },
       success: function (data) {
