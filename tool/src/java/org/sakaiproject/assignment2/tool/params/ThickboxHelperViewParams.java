@@ -21,7 +21,7 @@
 
 package org.sakaiproject.assignment2.tool.params;
 
-import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
+import org.sakaiproject.rsf.helper.HelperViewParameters;
 
 /**
  * These view parameters contain information for creating links that will

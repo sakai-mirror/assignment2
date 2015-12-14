@@ -29,7 +29,7 @@
 	<bean id="org.sakaiproject.assignment2.taggable.api.AssignmentActivityProducer"
     	  class="org.sakaiproject.assignment2.taggable.impl.AssignmentActivityProducerImpl"
     	  init-method="init"
-    	  singleton="true">
+    	  scope="singleton">
 		<property name="assignmentDao">
 			<ref bean="org.sakaiproject.assignment2.dao.AssignmentDao" />
 		</property>

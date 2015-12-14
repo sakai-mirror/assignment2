@@ -13,7 +13,7 @@
    <bean id="SubmissionTableViewStateHolder" class="org.sakaiproject.assignment2.tool.beans.SubmissionTableViewStateHolder" />
 
    <!-- rich text evolver bean def -->
-   <bean id="richTextEvolver" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean">
+   <bean id="richTextEvolver" class="uk.org.ponder.springutil.BeanReferenceFactoryBean">
       <property name="targetBeanName" value="sakaiFCKTextEvolver" />
    </bean>
    

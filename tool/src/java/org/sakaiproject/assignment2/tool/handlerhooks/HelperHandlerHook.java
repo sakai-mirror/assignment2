@@ -2,7 +2,7 @@ package org.sakaiproject.assignment2.tool.handlerhooks;
 
 import org.sakaiproject.assignment2.tool.params.TaggableHelperViewParams;
 
-import uk.ac.cam.caret.sakai.rsf.helper.HelperViewParameters;
+import org.sakaiproject.rsf.helper.HelperViewParameters;
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 

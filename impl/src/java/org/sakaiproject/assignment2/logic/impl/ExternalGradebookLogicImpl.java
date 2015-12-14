@@ -438,7 +438,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
         }
 
         if (oldName != null) {
-            gradebookService.updateAssignment(contextId, oldName, assignmentGbItem);
+            gradebookService.updateAssignment(contextId, assignmentGbItem.getId(), assignmentGbItem);
         }
         
     }
@@ -734,7 +734,7 @@ public class ExternalGradebookLogicImpl implements ExternalGradebookLogic {
                 gbAssign.setCounted(includeInCourseGrade);
             }
 
-            gradebookService.updateAssignment(contextId, gbAssign.getName(), gbAssign);
+            gradebookService.updateAssignment(contextId, gbAssign.getId(), gbAssign);
             if (log.isDebugEnabled()) log.debug("Gradebook setting released updated to " + release);
         } catch (AssessmentNotFoundException anfe) {
             throw new GradebookItemNotFoundException(

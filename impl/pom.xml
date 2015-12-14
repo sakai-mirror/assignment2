@@ -56,11 +56,10 @@
             <artifactId>commons-logging</artifactId>
         </dependency>
         <!-- generic-dao -->
-        <dependency>
-            <groupId>org.sakaiproject</groupId>
-            <artifactId>generic-dao</artifactId>
-            <version>${generic-dao.version}</version>
-        </dependency>
+	<dependency>
+	  <groupId>org.sakaiproject.genericdao</groupId>
+	  <artifactId>generic-dao</artifactId>
+	</dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -207,16 +206,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>1.2_Java1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sakaiproject.mock</groupId>
-            <artifactId>sakai-mock</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

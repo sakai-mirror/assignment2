@@ -19,13 +19,14 @@
     <packaging>war</packaging>
 
     <dependencies>
+<!--
         <dependency>
             <groupId>uk.org.ponder</groupId>
             <artifactId>ponderutilcore</artifactId>
             <version>1.2.4B-IU</version>
             <type>jar</type>
         </dependency>
-
+-->
         <!-- Daisy Diff -->
         <dependency>
             <groupId>org.outerj.daisy</groupId>
@@ -50,32 +51,34 @@
             <artifactId>sakai-kernel-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>uk.org.ponder.sakairsf</groupId>
-            <artifactId>SakaiRSFComponents-templates</artifactId>
-            <version>${sakairsf.components.version}</version>
+            <groupId>org.sakaiproject.rsf</groupId>
+            <artifactId>sakai-rsf-web-templates</artifactId>
+            <version>${sakai.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>uk.org.ponder.sakairsf</groupId>
-            <artifactId>SakaiRSFComponents-evolvers</artifactId>
-            <version>${sakairsf.components.version}</version>
+            <groupId>org.sakaiproject.rsf</groupId>
+            <artifactId>sakai-rsf-web-evolvers</artifactId>
+            <version>${sakai.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>uk.org.ponder.sakairsf</groupId>
-            <artifactId>sakairsf</artifactId>
-            <version>${sakairsf.version}</version>
+         <dependency>
+            <groupId>org.sakaiproject.rsf</groupId>
+            <artifactId>sakai-rsf-core</artifactId>
+            <version>${sakai.version}</version>
             <type>jar</type>
         </dependency>
+<!--
+         <dependency>
+            <groupId>uk.org.ponder.rsfutil</groupId>
+            <artifactId>RSFComponents-templates</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ponder.rsfutil</groupId>
-            <artifactId>RSFComponents-templates</artifactId>
-            <version>${rsfutil.version}</version>
-            <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.sakaiproject.contentreview</groupId>

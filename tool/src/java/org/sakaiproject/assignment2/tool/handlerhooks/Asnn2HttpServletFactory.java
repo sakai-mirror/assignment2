@@ -2,7 +2,7 @@ package org.sakaiproject.assignment2.tool.handlerhooks;
 
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import uk.ac.cam.caret.sakai.rsf.servlet.SakaiHttpServletFactory;
+import org.sakaiproject.rsf.servlet.SakaiHttpServletFactory;
 
 /**
  * This servlet factory is a temporary work around for our Asnn2/Matrix 
